@@ -31,7 +31,7 @@ void eventlogs::paint_traverse()
 			}
 
 			log.color.SetAlpha(opacity);
-			log.y -= factor * 1.25f;
+			log.x -= 20 * (factor * 1.25);
 		}
 
 		last_y -= 14;
@@ -92,14 +92,14 @@ void eventlogs::events(IGameEvent* event)
 			ss << crypt_str("Hit ") << userid_info.szName << crypt_str(" in the ") << get_hitgroup_name(event->GetInt(crypt_str("hitgroup"))) << crypt_str(" for ") << event->GetInt(crypt_str("dmg_health"));
 			ss << crypt_str(" damage (") << event->GetInt(crypt_str("health")) << crypt_str(" health remaining)");
 
-			add(ss.str());
+			add(2, ss.str());
 		}
 		else if (userid_id == m_engine()->GetLocalPlayer() && attacker_id != m_engine()->GetLocalPlayer()) 
 		{
 			ss << crypt_str("Take ") << event->GetInt(crypt_str("dmg_health")) << crypt_str(" damage from ") << attacker_info.szName << crypt_str(" in the ") << get_hitgroup_name(event->GetInt(crypt_str("hitgroup")));
 			ss << crypt_str(" (") << event->GetInt(crypt_str("health")) << crypt_str(" health remaining)");
 
-			add(ss.str());
+			add(3, ss.str());
 		}
 	}
 
@@ -133,7 +133,7 @@ void eventlogs::events(IGameEvent* event)
 		std::stringstream ss;
 		ss << userid_info.szName << crypt_str(" bought ") << weapon;
 
-		add(ss.str());
+		add(4, ss.str());
 	}
 
 	if (g_cfg.misc.events_to_log[EVENTLOG_BOMB] && !strcmp(event->GetName(), crypt_str("bomb_beginplant")))
@@ -158,7 +158,7 @@ void eventlogs::events(IGameEvent* event)
 		std::stringstream ss;
 		ss << userid_info.szName << crypt_str(" has began planting the bomb");
 
-		add(ss.str());
+		add(0, ss.str());
 	}
 
 	if (g_cfg.misc.events_to_log[EVENTLOG_BOMB] && !strcmp(event->GetName(), crypt_str("bomb_begindefuse")))
@@ -183,30 +183,49 @@ void eventlogs::events(IGameEvent* event)
 		std::stringstream ss;
 		ss << userid_info.szName << crypt_str(" has began defusing the bomb ") << (event->GetBool(crypt_str("haskit")) ? crypt_str("with defuse kit") : crypt_str("without defuse kit"));
 
-		add(ss.str());
+		add(0, ss.str());
 	}
 }
 
-void eventlogs::add(std::string text, bool full_display)
+void eventlogs::add(int type, std::string text, bool full_display)
 {
 	logs.emplace_front(loginfo_t(util::epoch_time(), text, g_cfg.misc.log_color));
 
 	if (!full_display)
 		return;
 
+	std::string type_ = "INFO";
+	switch (type) {
+	case 0:
+		type_ = "INFO";
+		break;
+	case 1:
+		type_ = "MISS";
+		break;
+	case 2:
+		type_ = "HIT";
+		break;
+	case 3:
+		type_ = "HURT";
+		break;
+	case 4:
+		type_ = "BUY";
+		break;
+	case 5:
+		type_ = "CONFIG";
+		break;
+	case 6:
+		type_ = "LUA";
+		break;
+	}
+
 	if (g_cfg.misc.log_output[EVENTLOG_OUTPUT_CONSOLE])
 	{
 		last_log = true;
 
-#if RELEASE
-#if BETA
-		m_cvar()->ConsoleColorPrintf(g_cfg.misc.log_color, crypt_str("[ limehook beta ] ")); //-V807
-#else
-		m_cvar()->ConsoleColorPrintf(g_cfg.misc.log_color, crypt_str("[ limehook ] "));
-#endif
-#else
-		m_cvar()->ConsoleColorPrintf(g_cfg.misc.log_color, crypt_str("[ limehook ] ")); //-V807
-#endif
+		m_cvar()->ConsoleColorPrintf(g_cfg.misc.log_color, crypt_str("NessLess [ ")); //-V807
+		m_cvar()->ConsoleColorPrintf(g_cfg.misc.log_color, crypt_str(type_.c_str()));
+		m_cvar()->ConsoleColorPrintf(g_cfg.misc.log_color, crypt_str(" ]: "));
 
 		m_cvar()->ConsoleColorPrintf(Color::White, text.c_str());
 		m_cvar()->ConsolePrintf(crypt_str("\n"));
@@ -219,17 +238,7 @@ void eventlogs::add(std::string text, bool full_display)
 		if (!chat)
 			chat = util::FindHudElement <CHudChat> (crypt_str("CHudChat"));
 
-#if RELEASE
-#if BETA
-		auto log = crypt_str("[ \x0Climehook beta \x01] ") + text;
+		auto log = crypt_str("\x0CNessLess [ ") + crypt_str(type_) + crypt_str(" ]:\x01 ") + text;
 		chat->chat_print(log.c_str());
-#else
-		auto log = crypt_str("[ \x0Climehook \x01] ") + text;
-		chat->chat_print(log.c_str());
-#endif
-#else
-		auto log = crypt_str("[ \x0Climehook \x01] ") + text;
-		chat->chat_print(log.c_str());
-#endif
 	}
 }

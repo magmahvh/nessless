@@ -366,21 +366,20 @@ void __stdcall hooks::hooked_fsn(ClientFrameStage_t stage)
 						++g_ctx.globals.missed_shots[current_shot->last_target]; //-V807
 						lagcompensation::get().player_resolver[current_shot->last_target].last_side = (resolver_side)current_shot->side;
 
-#if BETA
 						if (g_cfg.misc.events_to_log[EVENTLOG_HIT])
-							eventlogs::get().add(crypt_str("Missed shot due to resolver"));
-#endif
+							eventlogs::get().add(1, crypt_str("Missed shot due to resolver"));
+
 					}
 					else if (g_cfg.misc.events_to_log[EVENTLOG_HIT])
 					{
 						current_shot->shot_info.result = crypt_str("Spread");
 
 						if (current_shot->occlusion)
-							eventlogs::get().add(crypt_str("Missed shot due to occlusion"));
+							eventlogs::get().add(1, crypt_str("Missed shot due to occlusion"));
 						else if (current_shot->shot_info.hitchance == 100)
-							eventlogs::get().add(crypt_str("Missed shot due to prediction error"));
+							eventlogs::get().add(1, crypt_str("Missed shot due to prediction error"));
 						else
-							eventlogs::get().add(crypt_str("Missed shot due to spread"));
+							eventlogs::get().add(1, crypt_str("Missed shot due to spread"));
 					}
 				}
 			}
