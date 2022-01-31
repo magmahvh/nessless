@@ -252,18 +252,6 @@ void zeusbot::fire(CUserCmd* cmd)
 	player_info_t player_info;
 	m_engine()->GetPlayerInfo(final_target.record->i, &player_info);
 
-#if BETA
-	std::stringstream log;
-
-	log << crypt_str("Fired shot at ") + (std::string)player_info.szName + crypt_str(": ");
-	log << crypt_str("hitchance: ") + (final_hitchance == 101 ? crypt_str("MA") : std::to_string(final_hitchance)) + crypt_str(", ");
-	log << crypt_str("hitbox: ") + get_hitbox_name(final_target.data.hitbox) + crypt_str(", ");
-	log << crypt_str("damage: ") + std::to_string(final_target.data.damage) + crypt_str(", ");
-	log << crypt_str("backtrack: ") + std::to_string(backtrack_ticks);
-
-	if (g_cfg.misc.events_to_log[EVENTLOG_HIT])
-		eventlogs::get().add(log.str());
-#endif
 	cmd->m_viewangles = aim_angle;
 	cmd->m_buttons |= IN_ATTACK;
 	cmd->m_tickcount = TIME_TO_TICKS(final_target.record->simulation_time + util::get_interpolation());

@@ -289,7 +289,7 @@ void load_config()
 	cfg_manager->load(cfg_manager->files.at(g_cfg.selected_config), true);
 	cfg_manager->config_files();
 
-	eventlogs::get().add(crypt_str("Loaded ") + files.at(g_cfg.selected_config) + crypt_str(" config"), false);
+	eventlogs::get().add(5, crypt_str("Loaded ") + files.at(g_cfg.selected_config) + crypt_str(" config"), false);
 }
 
 void save_config()
@@ -310,7 +310,7 @@ void save_config()
 	cfg_manager->save(cfg_manager->files.at(g_cfg.selected_config));
 	cfg_manager->config_files();
 
-	eventlogs::get().add(crypt_str("Saved ") + files.at(g_cfg.selected_config) + crypt_str(" config"), false);
+	eventlogs::get().add(5, crypt_str("Saved ") + files.at(g_cfg.selected_config) + crypt_str(" config"), false);
 }
 
 void remove_config()
@@ -318,7 +318,7 @@ void remove_config()
 	if (cfg_manager->files.empty())
 		return;
 
-	eventlogs::get().add(crypt_str("Removed ") + files.at(g_cfg.selected_config) + crypt_str(" config"), false);
+	eventlogs::get().add(5, crypt_str("Removed ") + files.at(g_cfg.selected_config) + crypt_str(" config"), false);
 
 	cfg_manager->remove(cfg_manager->files.at(g_cfg.selected_config));
 	cfg_manager->config_files();
@@ -349,7 +349,7 @@ void add_config()
 	if (empty)
 		g_cfg.new_config_name = crypt_str("config");
 
-	eventlogs::get().add(crypt_str("Added ") + g_cfg.new_config_name + crypt_str(" config"), false);
+	eventlogs::get().add(5, crypt_str("Added ") + g_cfg.new_config_name + crypt_str(" config"), false);
 
 	if (g_cfg.new_config_name.find(crypt_str(".lw")) == std::string::npos)
 		g_cfg.new_config_name += crypt_str(".lw");
@@ -2326,7 +2326,7 @@ void c_menu::draw_lua(int child)
 						current.erase(current.size() - 4, 4);
 				}
 
-				eventlogs::get().add(crypt_str("Loaded ") + scripts.at(selected_script) + crypt_str(" script"), false); //-V106
+				eventlogs::get().add(6, crypt_str("Loaded ") + scripts.at(selected_script) + crypt_str(" script"), false); //-V106
 			}
 
 			if (ImGui::CustomButton(crypt_str("Unload script"), crypt_str("##SCRIPTS__UNLOAD"), ImVec2(291 * dpi_scale, 26 * dpi_scale)))
@@ -2347,7 +2347,7 @@ void c_menu::draw_lua(int child)
 						current.erase(current.size() - 4, 4);
 				}
 
-				eventlogs::get().add(crypt_str("Unloaded ") + scripts.at(selected_script) + crypt_str(" script"), false); //-V106
+				eventlogs::get().add(6, crypt_str("Unloaded ") + scripts.at(selected_script) + crypt_str(" script"), false); //-V106
 			}
 
 			if (ImGui::CustomButton(crypt_str("Reload all scripts"), crypt_str("##SCRIPTS__RELOAD"), ImVec2(291 * dpi_scale, 26 * dpi_scale)))

@@ -221,24 +221,14 @@ adjust_data* aim::get_record(std::deque <adjust_data>* records, bool history)
 	return nullptr;
 }
 
-int aim::get_minimum_damage(bool visible, int health)
+int aim::get_minimum_damage(int health)
 {
 	auto minimum_damage = 1;
 
-	if (visible)
-	{
-		if (g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].minimum_visible_damage > 100)
-			minimum_damage = health + g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].minimum_visible_damage - 100;
-		else
-			minimum_damage = math::clamp(g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].minimum_visible_damage, 1, health);
-	}
+	if (g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].minimum_visible_damage > 100)
+		minimum_damage = health + g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].minimum_visible_damage - 100;
 	else
-	{
-		if (g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].minimum_damage > 100)
-			minimum_damage = health + g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].minimum_damage - 100;
-		else
-			minimum_damage = math::clamp(g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].minimum_damage, 1, health);
-	}
+		minimum_damage = math::clamp(g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].minimum_visible_damage, 1, health);
 
 	if (key_binds::get().get_key_bind_state(4 + g_ctx.globals.current_weapon))
 	{
@@ -392,8 +382,7 @@ void aim::scan(adjust_data* record, scan_data& data, const Vector& shoot_positio
 	auto force_safe_points = record->player->m_iHealth() <= weapon_info->iDamage || key_binds::get().get_key_bind_state(3) || g_cfg.player_list.force_safe_points[record->i] || g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].max_misses && g_ctx.globals.missed_shots[record->i] >= g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].max_misses_amount; //-V648
 	auto best_damage = 0;
 
-	auto minimum_damage = get_minimum_damage(false, record->player->m_iHealth());
-	auto minimum_visible_damage = get_minimum_damage(true, record->player->m_iHealth());
+	auto minimum_visible_damage = get_minimum_damage(record->player->m_iHealth());
 	
 	auto get_hitgroup = [](const int& hitbox)
 	{
@@ -524,7 +513,7 @@ void aim::scan(adjust_data* record, scan_data& data, const Vector& shoot_positio
 		if (!optimized && get_hitgroup(fire_data.hitbox) != get_hitgroup(point.hitbox))
 			continue;
 
-		auto current_minimum_damage = fire_data.visible ? minimum_visible_damage : minimum_damage;
+		auto current_minimum_damage = minimum_visible_damage;
 
 		if (fire_data.damage >= current_minimum_damage && fire_data.damage >= best_damage)
 		{
@@ -569,14 +558,14 @@ std::vector <int> aim::get_hitboxes(adjust_data* record, bool optimized)
 	if (g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].hitboxes.at(3))
 		hitboxes.emplace_back(HITBOX_LOWER_CHEST);
 
+	if (g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].hitboxes.at(0))
+		hitboxes.emplace_back(HITBOX_HEAD);
+
 	if (g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].hitboxes.at(4))
 		hitboxes.emplace_back(HITBOX_STOMACH);
 
 	if (g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].hitboxes.at(5))
 		hitboxes.emplace_back(HITBOX_PELVIS);
-
-	if (g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].hitboxes.at(0))
-		hitboxes.emplace_back(HITBOX_HEAD);
 
 	if (g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].hitboxes.at(6))
 	{
@@ -654,7 +643,6 @@ std::vector <scan_point> aim::get_points(adjust_data* record, int hitbox, bool f
 	}
 	else 
 	{
-
 		auto transformed_center = center;
 		math::vector_transform(transformed_center, record->matrixes_data.main[bbox->bone], transformed_center);
 
@@ -872,20 +860,6 @@ void aim::fire(CUserCmd* cmd)
 	player_info_t player_info;
 	m_engine()->GetPlayerInfo(final_target.record->i, &player_info);
 
-#if BETA
-	std::stringstream log;
-
-	log << crypt_str("Fired shot at ") + (std::string)player_info.szName + crypt_str(": ");
-	log << crypt_str("hitchance: ") + (final_hitchance == 101 ? crypt_str("MA") : std::to_string(final_hitchance)) + crypt_str(", ");
-	log << crypt_str("hitbox: ") + get_hitbox_name(final_target.data.hitbox) + crypt_str(", ");
-	log << crypt_str("damage: ") + std::to_string(final_target.data.damage) + crypt_str(", ");
-	log << crypt_str("safe: ") + std::to_string((bool)final_target.data.point.safe) + crypt_str(", ");
-	log << crypt_str("backtrack: ") + std::to_string(backtrack_ticks) + crypt_str(", ");
-	log << crypt_str("resolver type: ") + get_resolver_type(final_target.record->type) + std::to_string(final_target.record->side);
-
-	if (g_cfg.misc.events_to_log[EVENTLOG_HIT])
-		eventlogs::get().add(log.str());
-#endif
 	cmd->m_viewangles = aim_angle;
 	cmd->m_buttons |= IN_ATTACK;
 	cmd->m_tickcount = TIME_TO_TICKS(final_target.record->simulation_time + util::get_interpolation());
@@ -1042,15 +1016,19 @@ int aim::hitchance(const Vector& aim_angle)
 			if (hitbox_intersection(final_target.record->player, final_target.record->matrixes_data.main, final_target.data.hitbox, g_ctx.globals.eye_pos, end))
 			{
 				auto fire_data = autowall::get().wall_penetration(g_ctx.globals.eye_pos, end, final_target.record->player);
+				auto valid_hitbox = true;
 
-				if (fire_data.valid && fire_data.damage >= 1)
+				if (final_target.data.hitbox == HITBOX_HEAD && fire_data.hitbox != HITBOX_HEAD)
+					valid_hitbox = false;
+
+				if (fire_data.valid && fire_data.damage >= 1 && valid_hitbox)
 					damage += high_accuracy_weapon ? fire_data.damage : 1;
 			}
 		}
 	}
 	
 	if (high_accuracy_weapon)
-		return (float)damage / 48.0f >= get_minimum_damage(final_target.data.visible, final_target.health) ? final_hitchance : 0;
+		return (float)damage / 48.0f >= get_minimum_damage(final_target.health) ? final_hitchance : 0;
 
 	return (float)damage / 48.0f >= (float)g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].hitchance_amount * 0.01f ? final_hitchance : 0;
 }
