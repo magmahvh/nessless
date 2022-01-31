@@ -80,7 +80,7 @@ void __stdcall hooks::hooked_dme(IMatRenderContext* ctx, const DrawModelState_t&
 				"$wireframe"				"0"
 			}
 		)#")),
-		CreateMaterial(true, crypt_str(R"#("VertexLitGeneric" 
+	CreateMaterial(true, crypt_str(R"#("VertexLitGeneric" 
 			{
 				"$basetexture"				"vgui/white" 
 				"$ignorez"					"0" 
@@ -117,6 +117,10 @@ void __stdcall hooks::hooked_dme(IMatRenderContext* ctx, const DrawModelState_t&
 		m_materialsystem()->FindMaterial(crypt_str("models/inventory_items/cologne_prediction/cologne_prediction_glass"), nullptr),
 		m_materialsystem()->FindMaterial(crypt_str("dev/glow_armsrace.vmt"), nullptr),
 		m_materialsystem()->FindMaterial(crypt_str("models/inventory_items/wildfire_gold/wildfire_gold_detail"), nullptr),
+
+		//rifk7
+
+		//rifk7end
 		CreateMaterial(true, crypt_str(R"#("VertexLitGeneric" 
 			{ 
 				"$additive"					"1" 
@@ -153,7 +157,44 @@ void __stdcall hooks::hooked_dme(IMatRenderContext* ctx, const DrawModelState_t&
 		            }
 		        }
 		    }
-		)#"))
+		)#")),
+		m_materialsystem()->FindMaterial(crypt_str("models/gibs/glass/glass"), nullptr),
+		m_materialsystem()->FindMaterial(crypt_str("models/inventory_items/trophy_majors/gloss"), nullptr),
+
+		CreateMaterial(true, crypt_str(R"#("VertexLitGeneric"
+		    {
+		          "$envmap"    "env_cubemap"
+                  "$envmaptint" "[.3 .3 .3]"
+                  "$envmapcontrast" "1"
+                  "$envmapsaturation" "1.0"
+                  "$phong" "1"
+                  "$phongexponent" "15.0"
+                  "$normalmapalphaenvmask" "1"
+                  "$phongboost"                "6.0"
+		    }
+		)#")),
+	CreateMaterial(true, crypt_str(R"#("VertexLitGeneric"
+		    {
+		          "$envmap"    "editor/cube_vertigo"
+
+		    }
+		)#")),
+	//mbremove
+	m_materialsystem()->FindMaterial(crypt_str("models/f18/thrust_tiled"), nullptr),
+	m_materialsystem()->FindMaterial(crypt_str("models/brokenglass/glassbroken_piece3"), nullptr),
+	m_materialsystem()->FindMaterial(crypt_str("models/editor/spot_sheet"), nullptr),
+	m_materialsystem()->FindMaterial(crypt_str("models/error/new light1"), nullptr),
+	m_materialsystem()->FindMaterial(crypt_str("models/error/error"), nullptr),
+	m_materialsystem()->FindMaterial(crypt_str("models/cs_italy/tomatoes01"), nullptr), //5
+    //	m_materialsystem()->FindMaterial(crypt_str("models/inventory_items/dogtags/dogtags_lightray"), nullptr),
+    m_materialsystem()->FindMaterial(crypt_str("models/props_plants/bushb"), nullptr),
+    m_materialsystem()->FindMaterial(crypt_str("models/props_shacks/fishing_net01"), nullptr),
+    m_materialsystem()->FindMaterial(crypt_str("models/props/gg_tibet/bell01"), nullptr), // 10
+    m_materialsystem()->FindMaterial(crypt_str("models/inventory_items/op09/op09_shards"), nullptr),
+    m_materialsystem()->FindMaterial(crypt_str("models/inventory_items/skillgroups/skillgroups"), nullptr)
+
+
+
 	};
 
 	auto called_original = false;
