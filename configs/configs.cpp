@@ -84,9 +84,6 @@ void C_ConfigManager::setup()
 		setup_item(&g_cfg.ragebot.weapon[i].damage_override_key, key_bind(HOLD), std::to_string(i) + crypt_str("Ragebot.damage_override_key"));
 		setup_item(&g_cfg.ragebot.weapon[i].minimum_override_damage, 1, std::to_string(i) + crypt_str("Ragebot.minimum_override_damage"));
 		setup_item(&g_cfg.ragebot.weapon[i].hitboxes, 9, std::to_string(i) + crypt_str("Ragebot.hitboxes"));
-		setup_item(&g_cfg.ragebot.weapon[i].static_point_scale, false, std::to_string(i) + crypt_str("Ragebot.static_point_scale"));
-		setup_item(&g_cfg.ragebot.weapon[i].head_scale, 0.0f, std::to_string(i) + crypt_str("Ragebot.head_scale"));
-		setup_item(&g_cfg.ragebot.weapon[i].body_scale, 0.0f, std::to_string(i) + crypt_str("Ragebot.body_scale"));
 		setup_item(&g_cfg.ragebot.weapon[i].max_misses, false, std::to_string(i) + crypt_str("Ragebot.max_misses"));
 		setup_item(&g_cfg.ragebot.weapon[i].max_misses_amount, 0, std::to_string(i) + crypt_str("Ragebot.max_misses_amount"));
 		setup_item(&g_cfg.ragebot.weapon[i].prefer_safe_points, false, std::to_string(i) + crypt_str("Ragebot.prefer_safe_points"));
@@ -138,8 +135,6 @@ void C_ConfigManager::setup()
 	setup_item(&g_cfg.player.arrows, false, crypt_str("Player.arrows"));
 	setup_item(&g_cfg.player.distance, 1, crypt_str("Player.arrows_distance"));
 	setup_item(&g_cfg.player.size, 1, crypt_str("Player.arrows_size"));
-	setup_item(&g_cfg.player.show_multi_points, false, crypt_str("Player.show_multi_points"));
-	setup_item(&g_cfg.player.show_multi_points_color, Color(255, 255, 255), crypt_str("Player.show_multi_points_color"));
 	setup_item(&g_cfg.player.lag_hitbox, false, crypt_str("Player.lag_hitbox"));
 	setup_item(&g_cfg.player.lag_hitbox_color, Color(255, 255, 255), crypt_str("Player.lag_hitbox_color"));
 	setup_item(&g_cfg.player.player_model_t, 0, crypt_str("Esp.player_model_t"));

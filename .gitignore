@@ -1,0 +1,14 @@
+
+*.obj
+*.iobj
+*.recipe
+*.ipdb
+*.log
+*.tlog
+.vs/nessless/v16/.suo
+*.db
+*.db-shm
+*.pdb
+*.ipch
+*.db-wal
+*.opendb

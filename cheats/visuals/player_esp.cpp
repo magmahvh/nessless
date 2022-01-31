@@ -211,9 +211,6 @@ void playeresp::paint_traverse()
 
 					misc::get().PovArrows(e, color);
 				}
-
-				if (!e->IsDormant())
-					draw_multi_points(e);
 			}
 		}
 	
@@ -665,89 +662,4 @@ void playeresp::draw_lines(player_t* e)
 	color.SetAlpha(min(255.0f * esp_alpha_fade[e->EntIndex()], color.a()));
 
 	render::get().line(width / 2, height, angle.x, angle.y, color);
-}
-
-void playeresp::draw_multi_points(player_t* e)
-{
-	if (!g_cfg.ragebot.enable)
-		return;
-
-	if (!g_cfg.player.show_multi_points)
-		return;
-
-	if (!g_ctx.local()->is_alive()) //-V807
-		return;
-
-	if (g_ctx.local()->get_move_type() == MOVETYPE_NOCLIP)
-		return;
-
-	if (g_ctx.globals.current_weapon == -1)
-		return;
-
-	auto weapon = g_ctx.local()->m_hActiveWeapon().Get();
-
-	if (weapon->is_non_aim())
-		return;
-
-	auto records = &player_records[e->EntIndex()]; //-V826
-
-	if (records->empty())
-		return;
-
-	auto record = &records->front();
-
-	if (!record->valid(false))
-		return;
-
-	std::vector <scan_point> points; //-V826
-	auto hitboxes = aim::get().get_hitboxes(record);
-
-	for (auto& hitbox : hitboxes)
-	{
-		auto current_points = aim::get().get_points(record, hitbox, false);
-		
-		for (auto& point : current_points)
-			points.emplace_back(point);
-	}
-
-	for (auto& point : points)
-	{
-		if (points.empty())
-			break;
-
-		if (point.hitbox == HITBOX_HEAD)
-			continue;
-
-		for (auto it = points.begin(); it != points.end(); ++it)
-		{
-			if (point.point == it->point)
-				continue;
-
-			auto first_angle = math::calculate_angle(g_ctx.globals.eye_pos, point.point);
-			auto second_angle = math::calculate_angle(g_ctx.globals.eye_pos, it->point);
-
-			auto distance = g_ctx.globals.eye_pos.DistTo(point.point);
-			auto fov = math::fast_sin(DEG2RAD(math::get_fov(first_angle, second_angle))) * distance;
-
-			if (fov < 5.0f)
-			{
-				points.erase(it);
-				break;
-			}
-		}
-	}
-
-	if (points.empty())
-		return;
-
-	for (auto& point : points)
-	{
-		Vector screen;
-
-		if (!math::world_to_screen(point.point, screen))
-			continue;
-
-		render::get().rect_filled(screen.x - 1, screen.y - 1, 3, 3, g_cfg.player.show_multi_points_color);
-		render::get().rect(screen.x - 2, screen.y - 2, 5, 5, Color::Black);
-	}
 }

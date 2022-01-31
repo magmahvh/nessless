@@ -324,9 +324,6 @@ struct Config
 			key_bind damage_override_key;
 			int minimum_override_damage;
 			std::vector <int> hitboxes;
-			bool static_point_scale;
-			float head_scale;
-			float body_scale;
 			bool max_misses;
 			int max_misses_amount;
 			bool prefer_safe_points;
@@ -380,8 +377,6 @@ struct Config
 		Color arrows_color;
 		int distance;
 		int size;
-		bool show_multi_points;
-		Color show_multi_points_color;
 		bool lag_hitbox;
 		Color lag_hitbox_color;
 		int player_model_t;

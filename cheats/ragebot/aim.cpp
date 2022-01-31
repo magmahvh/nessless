@@ -560,16 +560,6 @@ std::vector <int> aim::get_hitboxes(adjust_data* record, bool optimized)
 {
 	std::vector <int> hitboxes; //-V827
 
-	if (optimized)
-	{
-		hitboxes.emplace_back(HITBOX_HEAD);
-		hitboxes.emplace_back(HITBOX_CHEST);
-		hitboxes.emplace_back(HITBOX_STOMACH);
-		hitboxes.emplace_back(HITBOX_PELVIS);
-
-		return hitboxes;
-	}
-
 	if (g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].hitboxes.at(1))
 		hitboxes.emplace_back(HITBOX_UPPER_CHEST);
 
@@ -664,29 +654,18 @@ std::vector <scan_point> aim::get_points(adjust_data* record, int hitbox, bool f
 	}
 	else 
 	{
-		auto scale = 0.0f;
 
-		if (g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].static_point_scale)
-		{
-			if (hitbox == HITBOX_HEAD)
-				scale = g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].head_scale;
-			else
-				scale = g_cfg.ragebot.weapon[g_ctx.globals.current_weapon].body_scale;
-		}
-		else
-		{
-			auto transformed_center = center;
-			math::vector_transform(transformed_center, record->matrixes_data.main[bbox->bone], transformed_center);
+		auto transformed_center = center;
+		math::vector_transform(transformed_center, record->matrixes_data.main[bbox->bone], transformed_center);
 
-			auto spread = g_ctx.globals.spread + g_ctx.globals.inaccuracy;
-			auto distance = transformed_center.DistTo(g_ctx.globals.eye_pos);
+		auto spread = g_ctx.globals.spread + g_ctx.globals.inaccuracy;
+		auto distance = transformed_center.DistTo(g_ctx.globals.eye_pos);
 
-			distance /= math::fast_sin(DEG2RAD(90.0f - RAD2DEG(spread)));
-			spread = math::fast_sin(spread);
+		distance /= math::fast_sin(DEG2RAD(90.0f - RAD2DEG(spread)));
+		spread = math::fast_sin(spread);
 
-			auto radius = max(bbox->radius - distance * spread, 0.0f);
-			scale = math::clamp(radius / bbox->radius, 0.0f, 1.0f);
-		}
+		auto radius = max(bbox->radius - distance * spread, 0.0f);
+		auto scale = math::clamp(radius / bbox->radius, 0.0f, 1.0f);
 
 		if (scale <= 0.0f) //-V648
 		{
@@ -1063,12 +1042,8 @@ int aim::hitchance(const Vector& aim_angle)
 			if (hitbox_intersection(final_target.record->player, final_target.record->matrixes_data.main, final_target.data.hitbox, g_ctx.globals.eye_pos, end))
 			{
 				auto fire_data = autowall::get().wall_penetration(g_ctx.globals.eye_pos, end, final_target.record->player);
-				auto valid_hitbox = true;
 
-				if (final_target.data.hitbox == HITBOX_HEAD && fire_data.hitbox != HITBOX_HEAD)
-					valid_hitbox = false;
-
-				if (fire_data.valid && fire_data.damage >= 1 && valid_hitbox)
+				if (fire_data.valid && fire_data.damage >= 1)
 					damage += high_accuracy_weapon ? fire_data.damage : 1;
 			}
 		}

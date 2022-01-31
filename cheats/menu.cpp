@@ -895,16 +895,6 @@ void c_menu::draw_ragebot(int child)
 				padding(0, 3);
 				draw_multicombo(crypt_str("Hitboxes"), g_cfg.ragebot.weapon[hooks::rage_weapon].hitboxes, hitboxes, ARRAYSIZE(hitboxes), preview);
 
-#if BETA
-				ImGui::Checkbox(crypt_str("Static point scale"), &g_cfg.ragebot.weapon[hooks::rage_weapon].static_point_scale);
-
-				if (g_cfg.ragebot.weapon[hooks::rage_weapon].static_point_scale)
-				{
-					ImGui::SliderFloat(crypt_str("Head scale"), &g_cfg.ragebot.weapon[hooks::rage_weapon].head_scale, 0.0f, 1.0f, g_cfg.ragebot.weapon[hooks::rage_weapon].head_scale ? crypt_str("%.2f") : crypt_str("None"));
-					ImGui::SliderFloat(crypt_str("Body scale"), &g_cfg.ragebot.weapon[hooks::rage_weapon].body_scale, 0.0f, 1.0f, g_cfg.ragebot.weapon[hooks::rage_weapon].body_scale ? crypt_str("%.2f") : crypt_str("None"));
-				}
-#endif
-
 				ImGui::Checkbox(crypt_str("Enable max misses"), &g_cfg.ragebot.weapon[hooks::rage_weapon].max_misses);
 
 				if (g_cfg.ragebot.weapon[hooks::rage_weapon].max_misses)
@@ -1772,12 +1762,6 @@ void c_menu::draw_players(int child)
 
 				if (player == ENEMY)
 				{
-					if (g_cfg.ragebot.enable)
-					{
-						ImGui::Checkbox(crypt_str("Aimbot points"), &g_cfg.player.show_multi_points);
-						ImGui::SameLine();
-						ImGui::ColorEdit(crypt_str("##showmultipointscolor"), &g_cfg.player.show_multi_points_color, ALPHA);
-					}
 
 					ImGui::Checkbox(crypt_str("Aimbot hitboxes"), &g_cfg.player.lag_hitbox);
 					ImGui::SameLine();
