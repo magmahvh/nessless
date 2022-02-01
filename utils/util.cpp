@@ -448,23 +448,15 @@ namespace util
 		static auto cl_forwardspeed = m_cvar()->FindVar(crypt_str("cl_forwardspeed"));
 		static auto cl_sidespeed = m_cvar()->FindVar(crypt_str("cl_sidespeed"));
 
-		if (g_cfg.ragebot.slow_teleport)
-		{
-			cmd->m_forwardmove = 0.0f;
-			cmd->m_sidemove = 0.0f;
-		}
+		if (abs(cmd->m_sidemove) > 10.f)
+			cmd->m_sidemove = copysignf(450.f, cmd->m_sidemove);
 		else
-		{
-			if (g_ctx.globals.original_forwardmove >= 5.0f)
-				cmd->m_forwardmove = cl_forwardspeed->GetFloat();
-			else if (g_ctx.globals.original_forwardmove <= -5.0f)
-				cmd->m_forwardmove = -cl_forwardspeed->GetFloat();
+			cmd->m_sidemove = 0.f;
 
-			if (g_ctx.globals.original_sidemove >= 5.0f)
-				cmd->m_sidemove = cl_sidespeed->GetFloat();
-			else if (g_ctx.globals.original_sidemove <= -5.0f)
-				cmd->m_sidemove = -cl_sidespeed->GetFloat();
-		}
+		if (abs(cmd->m_sidemove) > 10.f)
+			cmd->m_sidemove = copysignf(450.f, cmd->m_sidemove);
+		else
+			cmd->m_sidemove = 0.f;
 
 		auto commands_to_add = 0;
 

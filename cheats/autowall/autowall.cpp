@@ -30,6 +30,8 @@ bool autowall::is_breakable_entity(IClientEntity* e)
 
 void autowall::scale_damage(player_t* e, CGameTrace &enterTrace, weapon_info_t *weaponData, float& currentDamage)
 {
+	if (e == nullptr || !e->is_alive()) return;
+
 	if (!e->is_player())
 		return;
 

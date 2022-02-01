@@ -769,7 +769,7 @@ void c_menu::draw_ragebot(int child)
 				{
 					ImGui::SameLine();
 					draw_keybind(crypt_str(""), &g_cfg.ragebot.double_tap_key, crypt_str("##HOTKEY_DT"));
-					ImGui::Checkbox(crypt_str("Slow teleport"), &g_cfg.ragebot.slow_teleport);
+					ImGui::Checkbox(crypt_str("Lag on peek"), &g_cfg.ragebot.lag_peek);
 				}
 
 				ImGui::Checkbox(crypt_str("Hide shots"), &g_cfg.antiaim.hide_shots);
@@ -1936,7 +1936,6 @@ void c_menu::draw_misc(int child)
 				ImGui::Checkbox(crypt_str("Fake lag"), &g_cfg.antiaim.fakelag);
 				if (g_cfg.antiaim.fakelag)
 				{
-					draw_combo(crypt_str("Fake lag type"), g_cfg.antiaim.fakelag_type, fakelags, ARRAYSIZE(fakelags));
 					ImGui::SliderInt(crypt_str("Limit"), &g_cfg.antiaim.fakelag_amount, 1, 16);
 
 					draw_multicombo(crypt_str("Fake lag triggers"), g_cfg.antiaim.fakelag_enablers, lagstrigger, ARRAYSIZE(lagstrigger), preview);
@@ -1969,13 +1968,6 @@ void c_menu::draw_misc(int child)
 				draw_multicombo(crypt_str("Logs"), g_cfg.misc.events_to_log, events, ARRAYSIZE(events), preview);
 				padding(0, 3);
 				draw_multicombo(crypt_str("Logs output"), g_cfg.misc.log_output, events_output, ARRAYSIZE(events_output), preview);
-
-				if (g_cfg.misc.events_to_log[EVENTLOG_HIT] || g_cfg.misc.events_to_log[EVENTLOG_ITEM_PURCHASES] || g_cfg.misc.events_to_log[EVENTLOG_BOMB])
-				{
-					ImGui::Text(crypt_str("Color "));
-					ImGui::SameLine();
-					ImGui::ColorEdit(crypt_str("##logcolor"), &g_cfg.misc.log_color, ALPHA);
-				}
 
 				ImGui::Checkbox(crypt_str("Show CS:GO logs"), &g_cfg.misc.show_default_log);
 

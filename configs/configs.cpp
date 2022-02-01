@@ -63,7 +63,7 @@ void C_ConfigManager::setup()
 	setup_item(&g_cfg.ragebot.knife_bot, false, crypt_str("Ragebot.knife_bot"));
 	setup_item(&g_cfg.ragebot.autoshoot, false, crypt_str("Ragebot.autoshoot"));
 	setup_item(&g_cfg.ragebot.double_tap, false, crypt_str("Ragebot.double_tap"));
-	setup_item(&g_cfg.ragebot.slow_teleport, false, crypt_str("Ragebot.slow_teleport"));
+	setup_item(&g_cfg.ragebot.lag_peek, false, crypt_str("Ragebot.lag_peek"));
 	setup_item(&g_cfg.ragebot.double_tap_key, key_bind(TOGGLE), crypt_str("Ragebot.double_tap_key"));
 	setup_item(&g_cfg.ragebot.autoscope, false, crypt_str("Ragebot.autoscope"));
 	setup_item(&g_cfg.ragebot.safe_point_key, key_bind(HOLD), crypt_str("Ragebot.safe_point_key"));
@@ -104,7 +104,6 @@ void C_ConfigManager::setup()
 	setup_item(&g_cfg.antiaim.flip_indicator, false, crypt_str("Antiaim.flip_indicator"));
 	setup_item(&g_cfg.antiaim.flip_indicator_color, Color(255, 255, 255), crypt_str("Antiaim.flip_indicator_color"));
 	setup_item(&g_cfg.antiaim.fakelag, false, crypt_str("Antiaim.fake_lag"));
-	setup_item(&g_cfg.antiaim.fakelag_type, 0, crypt_str("Antiaim.fake_lag_type"));
 	setup_item(&g_cfg.antiaim.fakelag_enablers, 4, crypt_str("Antiaim.fake_lag_enablers"));
 	setup_item(&g_cfg.antiaim.fakelag_amount, 1, crypt_str("Antiaim.fake_lag_limit"));
 	setup_item(&g_cfg.antiaim.triggers_fakelag_amount, 1, crypt_str("Antiaim.triggers_fakelag_limit"));
@@ -291,7 +290,7 @@ void C_ConfigManager::setup()
 	setup_item(&g_cfg.misc.log_output, 2, crypt_str("Misc.log_output"));
 	setup_item(&g_cfg.misc.events_to_log, 3, crypt_str("Misc.events_to_log"));
 	setup_item(&g_cfg.misc.show_default_log, false, crypt_str("Misc.show_default_log"));
-	setup_item(&g_cfg.misc.log_color, Color(255, 255, 255), crypt_str("Misc.log_color"));
+	setup_item(&g_cfg.misc.log_color, Color(145, 105, 235), crypt_str("Misc.log_color"));
 	setup_item(&g_cfg.misc.inventory_access, false, crypt_str("Misc.inventory_access"));
 	setup_item(&g_cfg.misc.rank_reveal, false, crypt_str("Misc.rank_reveal"));
 	setup_item(&g_cfg.misc.clantag_spammer, false, crypt_str("Misc.clantag_spammer"));

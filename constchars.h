@@ -306,8 +306,7 @@ const char* strafes[] =
 
 const char* events_output[] =
 {
-	"Console",
-	"Chat"
+	"Console"
 };
 
 const char* events[] =
@@ -325,13 +324,6 @@ const char* grenades[] =
 	"Defuser"
 };
 
-const char* fakelags[] =
-{
-	"Static",
-	"Random",
-	"Dynamic",
-	"Fluctuate"
-};
 
 const char* lagstrigger[] =
 {

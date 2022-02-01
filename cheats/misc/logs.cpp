@@ -17,6 +17,9 @@ void eventlogs::paint_traverse()
 	{
 		auto& log = logs.at(i);
 
+		if (log.y < 14)
+			log.y += 1;
+
 		if (util::epoch_time() - log.log_time > 4600) 
 		{
 			auto factor = log.log_time + 5000.0f - (float)util::epoch_time();
@@ -229,16 +232,5 @@ void eventlogs::add(int type, std::string text, bool full_display)
 
 		m_cvar()->ConsoleColorPrintf(Color::White, text.c_str());
 		m_cvar()->ConsolePrintf(crypt_str("\n"));
-	}
-
-	if (g_cfg.misc.log_output[EVENTLOG_OUTPUT_CHAT])
-	{
-		static CHudChat* chat = nullptr;
-
-		if (!chat)
-			chat = util::FindHudElement <CHudChat> (crypt_str("CHudChat"));
-
-		auto log = crypt_str("\x0CNessLess [ ") + crypt_str(type_) + crypt_str(" ]:\x01 ") + text;
-		chat->chat_print(log.c_str());
 	}
 }

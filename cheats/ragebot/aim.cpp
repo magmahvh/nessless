@@ -439,32 +439,29 @@ void aim::scan(adjust_data* record, scan_data& data, const Vector& shoot_positio
 		}
 	}
 
-	if (!optimized)
+	for (auto& point : points)
 	{
-		for (auto& point : points)
-		{
-			if (points.empty())
-				return;
+		if (points.empty())
+			return;
 
-			if (point.hitbox == HITBOX_HEAD)
+		if (point.hitbox == HITBOX_HEAD)
+			continue;
+
+		for (auto it = points.begin(); it != points.end(); ++it)
+		{
+			if (point.point == it->point)
 				continue;
 
-			for (auto it = points.begin(); it != points.end(); ++it)
+			auto first_angle = math::calculate_angle(shoot_position, point.point);
+			auto second_angle = math::calculate_angle(shoot_position, it->point);
+
+			auto distance = shoot_position.DistTo(point.point);
+			auto fov = math::fast_sin(DEG2RAD(math::get_fov(first_angle, second_angle))) * distance;
+
+			if (fov < 5.0f)
 			{
-				if (point.point == it->point)
-					continue;
-
-				auto first_angle = math::calculate_angle(shoot_position, point.point);
-				auto second_angle = math::calculate_angle(shoot_position, it->point);
-
-				auto distance = shoot_position.DistTo(point.point);
-				auto fov = math::fast_sin(DEG2RAD(math::get_fov(first_angle, second_angle))) * distance;
-
-				if (fov < 5.0f)
-				{
-					points.erase(it);
-					break;
-				}
+				points.erase(it);
+				break;
 			}
 		}
 	}

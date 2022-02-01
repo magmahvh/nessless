@@ -227,8 +227,7 @@ enum
 
 enum
 {
-	EVENTLOG_OUTPUT_CONSOLE,
-	EVENTLOG_OUTPUT_CHAT
+	EVENTLOG_OUTPUT_CONSOLE
 };
 
 enum 
@@ -306,7 +305,7 @@ struct Config
 		bool knife_bot;
 		bool autoshoot;
 		bool double_tap;
-		bool slow_teleport;
+		bool lag_peek;
 		key_bind double_tap_key;
 		bool autoscope;
 		key_bind safe_point_key;
@@ -351,7 +350,6 @@ struct Config
 		Color flip_indicator_color;
 		bool fakelag;
 		std::vector <int> fakelag_enablers;
-		int fakelag_type;
 		int fakelag_amount;
 		int triggers_fakelag_amount;
 
