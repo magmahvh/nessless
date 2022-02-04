@@ -1,1 +1,0 @@
-в препроцессор CURL_STATICLIB;
