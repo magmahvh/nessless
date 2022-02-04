@@ -345,9 +345,6 @@
     <ClInclude Include="render.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="singleton.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>

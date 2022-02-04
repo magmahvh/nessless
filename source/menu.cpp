@@ -849,7 +849,7 @@ void Menu::Render()
 				}
 				ImGui::SetCursorPos(ImVec2(def_pos.x - 10, def_pos.y));
 				ImGui::Popup("Healthbar", ImVec2(4, box_size.y));
-				cur_window->DrawList->AddRectFilled(ImVec2(w_pos.x + def_pos.x - 10, w_pos.y + def_pos.y), ImVec2(w_pos.x + def_pos.x - 6, w_pos.y + def_pos.y + box_size.y), ImColor(g_Options.esp_player_hp_health, g_Options.esp_player_hp_health, g_Options.esp_player_hp_health));
+				cur_window->DrawList->AddRectFilled(ImVec2(w_pos.x + def_pos.x - 10, w_pos.y + def_pos.y), ImVec2(w_pos.x + def_pos.x - 6, w_pos.y + def_pos.y + box_size.y), ImColor(255, 255, 255));
 				cur_window->DrawList->AddRect(ImVec2(w_pos.x + def_pos.x - 10, w_pos.y + def_pos.y), ImVec2(w_pos.x + def_pos.x - 6, w_pos.y + def_pos.y + box_size.y), ImColor(0, 0, 0));
 			}
 
