@@ -82,7 +82,7 @@ public:
 	{
 		items.clear();
 		std::string path = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Counter-Strike Global Offensive"; // Тут изменяем ( \\ после текста нинада)
-
+			
 		for (auto& p : std::filesystem::directory_iterator(path)) {
 			std::string all_files = p.path().string().substr(path.length() + 1);
 			if (all_files.find(".cfg") != std::string::npos)
