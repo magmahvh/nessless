@@ -9,7 +9,7 @@ void BunnyHop::OnCreateMove(CUserCmd* cmd)
 {
   static bool jumped_last_tick = false;
   static bool should_fake_jump = false;
-  if (!g_Options.misc_bhop2)
+  if (!g_Options.misc_bhop_param)
 	  return;
   if (!g_LocalPlayer)
 	  return;

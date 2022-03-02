@@ -135,7 +135,7 @@ void Options::SetupWeapons()
 		SetupValue(aimbot->enabled, "LEGITBOTWPN" + i, "Enabled");
 		SetupValue(aimbot->deathmatch, "LEGITBOTWPN" + i, "Deathmatch");
 		//SetupValue(aimbot->silent, key, "pSilent");
-		SetupValue(aimbot->silent2, "LEGITBOTWPN" + i, "Silent");
+		SetupValue(aimbot->silent, "LEGITBOTWPN" + i, "Silent");
 
 		SetupValue(aimbot->flash_check, "LEGITBOTWPN" + i, "Flash Check");
 		SetupValue(aimbot->smoke_check, "LEGITBOTWPN" + i, "Smoke Check");
@@ -155,7 +155,6 @@ void Options::SetupWeapons()
 
 		SetupValue(aimbot->rcs.enabled, "LEGITBOTWPN" + i, "RCS Enabled");
 		SetupValue(aimbot->rcs.start, "LEGITBOTWPN" + i, "RCS Start");
-		SetupValue(aimbot->rcs.type, "LEGITBOTWPN" + i, "RCS Type");
 		SetupValue(aimbot->rcs.x, "LEGITBOTWPN" + i, "RCS X");
 		SetupValue(aimbot->rcs.y, "LEGITBOTWPN" + i, "RCS Y");
 

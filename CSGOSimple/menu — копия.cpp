@@ -367,7 +367,7 @@ void Menu::Render()
 				ImGui::Checkbox("Weapon",&g_Options.esp_player_weapons);
 				//ImGui::Checkbox("Snaplines",&g_Options.esp_player_snaplines);
 				ImGui::Checkbox("Dropped Weapons",&g_Options.esp_dropped_weapons);
-				//ImGuiEx::ColorEdit4("Allies Visible",&g_Options.color_esp_ally_visible);
+				ImGui::ColorEdit4("Allies Visible",&g_Options.color_esp_ally_visible);
 				//ImGuiEx::ColorEdit4("Enemies Visible",&g_Options.color_esp_enemy_visible);
 				//ImGuiEx::ColorEdit4("Allies Occluded",&g_Options.color_esp_ally_occluded);
 				//ImGuiEx::ColorEdit4("Enemies Occluded",&g_Options.color_esp_enemy_occluded);

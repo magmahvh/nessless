@@ -9,16 +9,16 @@ int wpnGroup(CHandle<C_BaseCombatWeapon> pWeapon) {
 	if (!pWeapon)
 		return -1;
 
-	if (pWeapon->IsPistol())
+	if (pWeapon->IsPistol() && pWeapon->m_Item().m_iItemDefinitionIndex() != WEAPON_DEAGLE)
 		return 0;
 	else if (pWeapon->IsRifle())
 		return 1;
 	else if (pWeapon->m_Item().m_iItemDefinitionIndex() == WEAPON_DEAGLE)
 		return 2;
 	else if (pWeapon->IsSniper())
-		return 4;
+		return 3;
 	else
-		return 5;
+		return 4;
 }
 
 float CLegitbot::GetFovToPlayer(QAngle viewAngle, QAngle aimAngle)
@@ -88,8 +88,6 @@ void CLegitbot::RCS(QAngle& angle, C_BasePlayer* target)
 
 	if (target)
 		punch = { current_punch.pitch * x, current_punch.yaw * y, 0 };
-	else if (g_Options.legitbot[wpnGroup(weapon)].rcs.type == 0)
-		punch = { (current_punch.pitch - last_punch.pitch) * x, (current_punch.yaw - last_punch.yaw) * y, 0 };
 
 	if ((punch.pitch != 0.f || punch.yaw != 0.f) && current_punch.roll == 0.f) {
 		angle -= punch;
@@ -97,19 +95,9 @@ void CLegitbot::RCS(QAngle& angle, C_BasePlayer* target)
 	}
 }
 
-bool CLegitbot::IsSilent()
-{
-	if (g_Options.legitbot[wpnGroup(weapon)].silent2 == 2)
-		return !(shotsFired > 0 || !g_Options.legitbot[wpnGroup(weapon)].silent2 || !g_Options.legitbot[wpnGroup(weapon)].silent_fov);
-	if (g_Options.legitbot[wpnGroup(weapon)].silent2 == 1)
-		return !(!g_Options.legitbot[wpnGroup(weapon)].silent2 || !g_Options.legitbot[wpnGroup(weapon)].silent_fov);
-	if (g_Options.legitbot[wpnGroup(weapon)].silent2 == 0)
-		return !(shotsFired > 0 || !g_Options.legitbot[wpnGroup(weapon)].silent2 || !g_Options.legitbot[wpnGroup(weapon)].silent_fov);
-}
-
 float CLegitbot::GetFov()
 {
-	if (IsSilent())
+	if (g_Options.legitbot[wpnGroup(weapon)].silent)
 		return g_Options.legitbot[wpnGroup(weapon)].silent_fov;
 
 	return g_Options.legitbot[wpnGroup(weapon)].fov;
@@ -255,7 +243,7 @@ void CLegitbot::Run(CUserCmd* cmd)
 
 	if (GetClosestPlayer(cmd, bestBone, fov, angles))
 	{
-		if (!g_Options.legitbot[wpnGroup(weapon)].silent2 && !shot_delay && g_Options.legitbot[wpnGroup(weapon)].shot_delay > 0 && !shotsFired)
+		if (!g_Options.legitbot[wpnGroup(weapon)].silent && !shot_delay && g_Options.legitbot[wpnGroup(weapon)].shot_delay > 0 && !shotsFired)
 		{
 			shot_delay = true;
 			shot_delay_time = int(GetTickCount()) + g_Options.legitbot[wpnGroup(weapon)].shot_delay;
@@ -276,12 +264,12 @@ void CLegitbot::Run(CUserCmd* cmd)
 
 	last_punch = current_punch;
 
-	if (!IsSilent())
+	if (!g_Options.legitbot[wpnGroup(weapon)].silent)
 		Smooth(current, angles, angles);
 
 	Math::FixAngles(angles);
 	cmd->viewangles = angles;
-	if (!IsSilent())
+	if (!g_Options.legitbot[wpnGroup(weapon)].silent)
 		g_EngineClient->SetViewAngles(&angles);
 
 

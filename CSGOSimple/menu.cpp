@@ -17,11 +17,6 @@
 #include "features/skins.h"
 #include "render.hpp"
 
-const char* rcs_types[] = {
-	"Standalone",
-	"Aim"
-};
-
 const char* legit_weapons = "Pistols\0Rifles\0Deagle\0Sniper\0Other";
 
 void ReadDirectory(const std::string& name, std::vector<std::string>& v)
@@ -424,10 +419,11 @@ void Menu::Render()
 			case 1:
 				switch (subtab[1]) {
 				case 0:
+					ImGui::Separator("Weapons");
 					ImGui::Combo("Weapon", &g_Options.legitbot_weapon, legit_weapons);
 					ImGui::Checkbox("Enabled", &settings->enabled);
 					//ImGui::Checkbox("Friendly fire", &settings->deathmatch);
-					ImGui::Combo("Silent", &settings->silent2, "Off\0Silent \0Perfect silent\0");
+					ImGui::Checkbox("Silent", &settings->silent);
 					ImGui::Checkbox("Flash check", &settings->flash_check);
 					ImGui::Checkbox("Smoke check", &settings->smoke_check);
 					ImGui::Checkbox("Auto-pistol", &settings->autopistol);
@@ -452,14 +448,50 @@ void Menu::Render()
 			case 2:
 				switch (subtab[2]) {
 				case 0:
+					ImGui::Separator("ESP");
+					ImGui::Checkbox("Boxes", &g_Options.esp_player_boxes); ImGui::SameLine(); ImGuiEx::ColorEdit4("Enemies Visible   ", &g_Options.color_esp_enemy_visible);
+					ImGui::Checkbox("Occluded ", &g_Options.esp_player_boxesOccluded); ImGui::SameLine(); ImGuiEx::ColorEdit4("Enemies Occluded      ", &g_Options.color_esp_enemy_occluded);
 
+					ImGui::Checkbox("Names", &g_Options.esp_player_names);
+					ImGui::Checkbox("Health", &g_Options.esp_player_health);
+					ImGui::Checkbox("Weapon", &g_Options.esp_player_weapons);
+					ImGui::Checkbox("Dropped Weapons", &g_Options.esp_dropped_weapons);
+					ImGui::Spacing();
+					ImGui::Separator("Chams");
+					ImGui::Checkbox("Enabled ", &g_Options.chams_player_enabled); ImGui::SameLine(); ImGuiEx::ColorEdit4a("Enemy Visible ", &g_Options.color_chams_player_enemy_visible);
+					ImGui::Checkbox("Visible shine##chams_enemies_visible_shine", &g_Options.player_enemies_shine);
+					ImGui::SameLine();
+					ImGuiEx::ColorEdit4("##color_chams_enemies_visible_shine", &g_Options.player_enemy_visible_shine);
+					ImGui::Checkbox("Occluded  ", &g_Options.chams_player_ignorez); ImGui::SameLine(); ImGuiEx::ColorEdit4a("Enemy Occluded ", &g_Options.color_chams_player_enemy_occluded);
+					ImGui::Combo("##Flat", &g_Options.chams_player_flat, "Normal\0Flat \0");
 					break;
 				}
 				break;
 			case 3:
 				switch (subtab[3]) {
 				case 0:
+					ImGui::Separator("General");
 
+					ImGui::Checkbox("Rank reveal", &g_Options.misc_showranks);
+					ImGui::Checkbox("Spectator list", &g_Options.spectator_list);
+					ImGui::Checkbox("Watermark##hc", &g_Options.misc_watermark);
+					ImGui::Checkbox("Velocity", &g_Options.Velocity);
+					ImGui::SameLine();
+					ImGuiEx::ColorEdit4("##Velocity", &g_Options.Velocitycol);
+					ImGui::Spacing();
+
+					if (ImGui::BeginCombo("##Velocity", "Velocity", ImGuiComboFlags_NoArrowButton))
+					{
+						ImGui::Selectable("Outline", &g_Options.outline, ImGuiSelectableFlags_DontClosePopups);
+						ImGui::Selectable("Last jump", &g_Options.lastjump, ImGuiSelectableFlags_DontClosePopups);
+						ImGui::Selectable("Last jump outline", &g_Options.lastjumpoutline, ImGuiSelectableFlags_DontClosePopups);
+
+						ImGui::EndCombo();
+					}
+					ImGui::Checkbox("Auto accept", &g_Options.autoaccept);
+					ImGui::Checkbox("No flash", &g_Options.no_flash);
+					ImGui::Checkbox("No smoke", &g_Options.no_smoke);
+					ImGui::Checkbox("Sniper crosshair", &g_Options.sniper_xhair);
 					break;
 				}
 				break;
@@ -467,9 +499,10 @@ void Menu::Render()
 				switch (subtab[4]) {
 				case 0:
 					ReadDirectory(g_Options.folder, cfgList);
-					ImGui::PushItemWidth(150.f);
+					ImGui::Separator("Configs");
 					if (!cfgList.empty())
 					{
+						ImGui::PushItemWidth(150.f);
 						if (ImGui::BeginCombo("##SelectConfig", cfgList[selected].c_str(), ImGuiComboFlags_NoArrowButton))
 						{
 							for (size_t i = 0; i < cfgList.size(); i++)
@@ -480,6 +513,9 @@ void Menu::Render()
 							ImGui::EndCombo();
 
 						}
+						ImGui::PopItemWidth();
+
+						ImGui::Separator("Actions");
 
 						if (ImGui::Button(" Save Config"))
 							g_Options.SaveSettings(cfgList[selected]);
@@ -493,7 +529,6 @@ void Menu::Render()
 							selected = 0;
 						}
 					}
-					ImGui::PopItemWidth();
 					break;
 				case 1:
 
@@ -528,10 +563,11 @@ void Menu::Render()
 			case 1:
 				switch (subtab[1]) {
 				case 0:
+					ImGui::Separator("Settings");
 					ImGui::Text(" Fov");
 					ImGui::Spacing();
 					ImGui::SliderFloat("##Fov", &settings->fov, 0.f, 20.f, "%.f");
-					if (settings->silent2) {
+					if (settings->silent) {
 						ImGui::Text(" Silent fov");
 						ImGui::Spacing();
 						ImGui::SliderFloat("##Silentfov", &settings->silent_fov, 0.f, 20.f, "%.f");
@@ -540,7 +576,7 @@ void Menu::Render()
 					ImGui::Spacing();
 					ImGui::SliderFloat("##Smooth", &settings->smooth, 1.f, 20.f, "%.f");
 
-					if (!settings->silent2) {
+					if (!settings->silent) {
 						ImGui::Text(" Shot delay");
 						ImGui::Spacing();
 						ImGui::SliderInt("##Shotdelay", &settings->shot_delay, 0, 1000, "%i");
@@ -553,17 +589,6 @@ void Menu::Render()
 
 					ImGui::Checkbox("Enabled##rcs", &settings->rcs.enabled);
 
-
-					if (ImGui::BeginCombo("##type", rcs_types[settings->rcs.type], ImGuiComboFlags_NoArrowButton))
-					{
-						for (int i = 0; i < IM_ARRAYSIZE(rcs_types); i++)
-						{
-							if (ImGui::Selectable(rcs_types[i], i == settings->rcs.type))
-								settings->rcs.type = i;
-						}
-
-						ImGui::EndCombo();
-					}
 					//ImGui::SliderInt("##start", &settings->rcs.start, 1, 30, "Start: %i");
 					ImGui::Text(" X");
 					ImGui::Spacing();
@@ -585,21 +610,48 @@ void Menu::Render()
 			case 2:
 				switch (subtab[2]) {
 				case 0:
+					ImGui::Separator("Glow");
+					ImGui::Checkbox("Enabled", &g_Options.glow_enabled);
+					ImGui::SameLine();
+					ImGuiEx::ColorEdit4a("##Enemy   ", &g_Options.color_glow_enemy);
+					ImGui::Checkbox("Occluded   ", &g_Options.glow_enemiesOC);
+					ImGui::SameLine();
+					ImGuiEx::ColorEdit4a("##color_glow_enemiesOC   ", &g_Options.color_glow_enemyOC);
+					const char* glow_enemies_type[] = {
+						"Outline outer",
+						"Pulse",
+						"Outline inner"
+					};
+					if (ImGui::BeginCombo("##glow_enemies_type", glow_enemies_type[g_Options.glow_enemies_type], ImGuiComboFlags_NoArrowButton))
+					{
+						for (int i = 0; i < IM_ARRAYSIZE(glow_enemies_type); i++)
+						{
+							if (ImGui::Selectable(glow_enemies_type[i], i == g_Options.glow_enemies_type))
+								g_Options.glow_enemies_type = i;
+						}
 
+						ImGui::EndCombo();
+					}
 					break;
 				}
 				break;
 			case 3:
 				switch (subtab[3]) {
 				case 0:
+					ImGui::Separator("Movement");
 
+					ImGui::Checkbox("Bunny hop", &g_Options.misc_bhop);
+					ImGui::Checkbox("Edge bug", &g_Options.edge_bug); ImGui::SameLine(); ImGui::Hotkey("  ", &g_Options.edge_bug_key);
+					ImGui::Checkbox("Jump bug", &g_Options.jump_bug); ImGui::SameLine(); ImGui::Hotkey("   ", &g_Options.jump_bug_key);
+					ImGui::Checkbox("Edge jump", &g_Options.edgejump.enabled); ImGui::SameLine(); ImGui::Hotkey("    ", &g_Options.edgejump.hotkey);
+					ImGui::Checkbox("Duck in Air", &g_Options.edgejump.edge_jump_duck_in_air);
 					break;
 				}
 				break;
 			case 4:
 				switch (subtab[4]) {
 				case 0:
-					ImGui::PushItemWidth(150.f);
+					ImGui::Separator("New config");
 					ImGui::InputText("##configname", cfgName, 24);
 					//ImGui::SameLine();
 					if (ImGui::Button(" Create Config"))
@@ -607,7 +659,6 @@ void Menu::Render()
 						if (strlen(cfgName))
 							g_Options.SaveSettings(cfgName + std::string(".ini"));
 					}
-					ImGui::PopItemWidth();
 					break;
 				case 1:
 

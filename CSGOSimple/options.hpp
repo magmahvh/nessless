@@ -75,8 +75,7 @@ public:
 	{
 		bool enabled = false;
 		bool deathmatch = false;
-		//bool silent = false;
-		int silent2 = false;
+		bool silent = false;
 
 		bool flash_check = false;
 		bool smoke_check = false;
@@ -101,7 +100,6 @@ public:
 		{
 			bool enabled = false;
 			int start = 1;
-			int type = 0;
 			int x = 100;
 			int y = 100;
 		} rcs;
@@ -170,7 +168,7 @@ public:
 	// MISC
 	//
 	bool misc_bhop = false;
-	bool misc_bhop2 = false;
+	bool misc_bhop_param = false;
 	int playerModelT{ 0 };
 	int playerModelCT{ 0 };
 

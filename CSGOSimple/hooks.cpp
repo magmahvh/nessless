@@ -205,7 +205,7 @@ namespace Hooks {
 		float xThick = 23;
 		if (g_Options.jump_bug && GetAsyncKeyState(g_Options.jump_bug_key)) {
 			if (g_LocalPlayer->m_fFlags() & FL_ONGROUND) {
-				g_Options.misc_bhop2 = false;
+				g_Options.misc_bhop_param = false;
 				bool unduck = cmd->buttons &= ~in_duck;
 				if (unduck) {
 					cmd->buttons &= ~in_duck; // duck
@@ -288,7 +288,7 @@ namespace Hooks {
 				}
 			}
 		}
-		else g_Options.misc_bhop2 = true;
+		else g_Options.misc_bhop_param = true;
 
 		prediction->EndPrediction();
 		if (g_Options.edgejump.enabled && GetAsyncKeyState(g_Options.edgejump.hotkey))

@@ -29,7 +29,6 @@ private:
 	void RCS(QAngle& angle, C_BasePlayer* target);
 	bool IsLineGoesThroughSmoke(Vector vStartPos, Vector vEndPos);
 	void Smooth(QAngle currentAngle, QAngle aimAngle, QAngle& angle);
-	bool IsSilent();
 	C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& fov, QAngle& angles);
 
 	C_BasePlayer* target = nullptr;
