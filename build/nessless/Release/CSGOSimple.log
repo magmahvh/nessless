@@ -1,0 +1,8 @@
+﻿  csgostructs.cpp
+  Создание кода
+C:\Users\User\Desktop\source\CSGOSimple\features\aimbot.cpp(108): warning C4715: CLegitbot::IsSilent: значение возвращается не при всех путях выполнения
+  10 of 4198 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    21 functions had inline decision re-evaluated but remain unchanged
+  Создание кода завершено
+  CSGOSimple.vcxproj -> C:\Users\User\Desktop\source\bin\Release\nessless.dll

@@ -1,0 +1,709 @@
+#include "Menu.hpp"
+#define NOMINMAX
+#include <Windows.h>
+#include <chrono>
+
+#include "valve_sdk/csgostructs.hpp"
+#include "helpers/input.hpp"
+#include "options.hpp"
+#include "ui.hpp"
+
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui/imgui_internal.h"
+#include "imgui/impl/imgui_impl_dx9.h"
+#include "imgui/impl/imgui_impl_win32.h"
+#include "features/item_definitions.h"
+#include "features/kit_parser.h"
+#include "features/skins.h"
+#include "render.hpp"
+
+const char* rcs_types[] = {
+	"Standalone",
+	"Aim"
+};
+
+const char* legit_weapons = "Pistols\0Rifles\0Deagle\0Sniper\0Other";
+
+void ReadDirectory(const std::string& name, std::vector<std::string>& v)
+{
+	auto pattern(name);
+	pattern.append("\\*.ini");
+	WIN32_FIND_DATAA data;
+	HANDLE hFind;
+	if ((hFind = FindFirstFileA(pattern.c_str(), &data)) != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			v.emplace_back(data.cFileName);
+		} while (FindNextFileA(hFind, &data) != 0);
+		FindClose(hFind);
+	}
+}
+struct hud_weapons_t {
+	std::int32_t* get_weapon_count() {
+		return reinterpret_cast<std::int32_t*>(std::uintptr_t(this) + 0x80);
+	}
+};
+
+template<class T>
+static T* FindHudElement(const char* name)
+{
+	static auto pThis = *reinterpret_cast<DWORD**>(Utils::PatternScan2("client.dll", "B9 ? ? ? ? E8 ? ? ? ? 8B 5D 08") + 1);
+
+	static auto find_hud_element = reinterpret_cast<DWORD(__thiscall*)(void*, const char*)>(Utils::PatternScan2("client.dll", "55 8B EC 53 8B 5D 08 56 57 8B F9 33 F6 39 77 28"));
+	return (T*)find_hud_element(pThis, name);
+}
+namespace ImGuiEx
+{
+	inline bool ColorEdit4(const char* label, Color* v, bool show_alpha = true)
+	{
+		float clr[4] = {
+			v->r() / 255.0f,
+			v->g() / 255.0f,
+			v->b() / 255.0f,
+			v->a() / 255.0f
+		};
+		//clr[3]=255;
+		if (ImGui::ColorEdit4(label, clr, ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoTooltip | ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoOptions | ImGuiColorEditFlags_AlphaBar)) {
+			v->SetColor(clr[0], clr[1], clr[2], clr[3]);
+			return true;
+		}
+		return false;
+	}
+	inline bool ColorEdit4a(const char* label, Color* v, bool show_alpha = true)
+	{
+		float clr[4] = {
+			v->r() / 255.0f,
+			v->g() / 255.0f,
+			v->b() / 255.0f,
+			v->a() / 255.0f
+		};
+		//clr[3]=255;
+		if (ImGui::ColorEdit4(label, clr, show_alpha | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoTooltip | ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoOptions | ImGuiColorEditFlags_AlphaBar)) {
+			v->SetColor(clr[0], clr[1], clr[2], clr[3]);
+			return true;
+		}
+		return false;
+	}
+
+	inline bool ColorEdit3(const char* label, Color* v)
+    {
+        return ColorEdit4(label, v, false);
+    }
+}
+
+void Menu::Initialize()
+{
+	CreateStyle();
+
+    _visible = true;
+}
+
+void Menu::Shutdown()
+{
+    ImGui_ImplDX9_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
+}
+
+void Menu::OnDeviceLost()
+{
+    ImGui_ImplDX9_InvalidateDeviceObjects();
+}
+
+void Menu::OnDeviceReset()
+{
+    ImGui_ImplDX9_CreateDeviceObjects();
+}
+
+bool Tab(const char* label, const ImVec2& size_arg, bool state)
+{
+	ImGuiWindow* window = ImGui::GetCurrentWindow();
+	if (window->SkipItems)
+		return false;
+
+	ImGuiContext& g = *GImGui;
+	const ImGuiStyle& style = g.Style;
+	const ImGuiID id = window->GetID(label);
+	const ImVec2 label_size = ImGui::CalcTextSize(label, NULL, true);
+
+	ImVec2 pos = window->DC.CursorPos;
+	ImVec2 size = ImGui::CalcItemSize(size_arg, label_size.x + style.FramePadding.x * 2.0f, label_size.y + style.FramePadding.y * 2.0f);
+
+	const ImRect bb(pos, pos + size);
+	ImGui::ItemSize(size, style.FramePadding.y);
+	if (!ImGui::ItemAdd(bb, id))
+		return false;
+	bool hovered, held;
+	bool pressed = ImGui::ButtonBehavior(bb, id, &hovered, &held, NULL);
+	if (pressed)
+		ImGui::MarkItemEdited(id);
+
+	static std::map<ImGuiID, int> alpha_anim;
+	auto it_alpha = alpha_anim.find(id);
+	if (it_alpha == alpha_anim.end())
+	{
+		alpha_anim.insert({ id, 0 });
+		it_alpha = alpha_anim.find(id);
+	}
+	if (state) {
+		if (it_alpha->second < 250)
+			it_alpha->second += 10;
+	} else {
+		if (it_alpha->second > 0) 
+			it_alpha->second -= 10; 
+	}
+
+	static std::map<ImGuiID, int> alpha_anim2;
+	auto it_alpha2 = alpha_anim2.find(id);
+	if (it_alpha2 == alpha_anim2.end())
+	{
+		alpha_anim2.insert({ id, 0 });
+		it_alpha2 = alpha_anim2.find(id);
+	}
+	if (state) {
+		if (it_alpha2->second < size_arg.x)
+			it_alpha2->second += 2;
+	}
+	else {
+		if (it_alpha2->second > 0)
+			it_alpha2->second -= 2;
+	}
+
+	if (it_alpha2->second > 0 || it_alpha->second > 0)
+	{
+		window->DrawList->AddRectFilled(bb.Min + ImVec2(size_arg.x / 2 - it_alpha2->second / 2, 0), bb.Min + ImVec2(it_alpha2->second, 4), ImColor(100, 120, 235, it_alpha->second), 2);
+		window->DrawList->AddRectFilled(bb.Min + ImVec2(0, 2), bb.Max, ImColor(25, 25, 25, it_alpha->second));
+		window->DrawList->AddRectFilled(bb.Min + ImVec2(1, 2), bb.Max - ImVec2(1, 0), ImColor(11, 11, 11, it_alpha->second));
+	}
+
+	ImGui::RenderTextClipped(bb.Min + style.FramePadding, bb.Max - style.FramePadding, label, NULL, &label_size, style.ButtonTextAlign, &bb);
+
+	return pressed;
+}
+bool subTab(const char* label, const ImVec2& size_arg, bool state)
+{
+	ImGuiWindow* window = ImGui::GetCurrentWindow();
+	if (window->SkipItems)
+		return false;
+
+	ImGuiContext& g = *GImGui;
+	const ImGuiStyle& style = g.Style;
+	const ImGuiID id = window->GetID(label);
+	const ImVec2 label_size = ImGui::CalcTextSize(label, NULL, true);
+
+	ImVec2 pos = window->DC.CursorPos;
+	ImVec2 size = ImGui::CalcItemSize(size_arg, label_size.x + style.FramePadding.x * 2.0f, label_size.y + style.FramePadding.y * 2.0f);
+
+	const ImRect bb(pos, pos + size);
+	ImGui::ItemSize(size, style.FramePadding.y);
+	if (!ImGui::ItemAdd(bb, id))
+		return false;
+	bool hovered, held;
+	bool pressed = ImGui::ButtonBehavior(bb, id, &hovered, &held, NULL);
+	if (pressed)
+		ImGui::MarkItemEdited(id);
+
+	static std::map<ImGuiID, int> alpha_anim;
+	auto it_alpha = alpha_anim.find(id);
+	if (it_alpha == alpha_anim.end())
+	{
+		alpha_anim.insert({ id, 0 });
+		it_alpha = alpha_anim.find(id);
+	}
+	if (state) {
+		if (it_alpha->second < 80)
+			it_alpha->second += 4;
+	}
+	else {
+		if (it_alpha->second > 0)
+			it_alpha->second -= 4;
+	}
+
+
+	window->DrawList->AddRectFilledMultiColor(bb.Min, bb.Max, ImColor(40, 40, 40, 80 - it_alpha->second), ImColor(40, 40, 40, 0), ImColor(40, 40, 40, 0), ImColor(40, 40, 40, 80 - it_alpha->second));
+	window->DrawList->AddRectFilledMultiColor(bb.Min, bb.Max, ImColor(86, 93, 200, it_alpha->second), ImColor(86, 93, 200, 0), ImColor(86, 93, 200, 0), ImColor(86, 93, 200, it_alpha->second));
+	window->DrawList->AddRectFilled(bb.Min, bb.Min + ImVec2(3, size_arg.y), ImColor(86, 93, 200, it_alpha->second * 3));
+	window->DrawList->AddText(bb.Min + ImVec2(20, size_arg.y / 2 - ImGui::CalcTextSize(label).y / 2), ImColor(220, 220, 220), label);
+
+	return pressed;
+}
+void Menu::SpectatorList()
+{
+	if (!g_Options.spectator_list)
+		return;
+
+	std::string spectators;
+
+	if (g_EngineClient->IsInGame() && g_LocalPlayer)
+	{
+		for (int i = 1; i <= g_GlobalVars->maxClients; i++)
+		{
+			auto ent = C_BasePlayer::GetPlayerByIndex(i);
+
+			if (!ent || ent->IsAlive() || ent->IsDormant())
+				continue;
+
+			auto target = (C_BasePlayer*)ent->m_hObserverTarget();
+
+			if (!target || target != g_LocalPlayer)
+				continue;
+
+			if (ent == target)
+				continue;
+
+			auto info = ent->GetPlayerInfo();
+
+			spectators += std::string(info.szName) + u8"\n";
+		}
+	}
+
+	if (ImGui::Begin("Spectator List", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoBackground |( _visible ? NULL : ImGuiWindowFlags_NoMove)))
+	{
+		ImGui::PushFont(g_MenuFont);
+
+		ImGui::Text("Spectator List");
+
+		ImGui::Text(spectators.c_str());
+		ImGui::PopFont();
+
+	}
+	ImGui::End();
+}
+
+void Menu::Render()
+{
+	ImGui::GetIO().MouseDrawCursor = _visible;
+	SpectatorList();
+    if(!_visible)
+        return;
+	auto flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | NULL | NULL | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | NULL | NULL | NULL;
+
+	ImGuiStyle* Style = &ImGui::GetStyle();
+	static int tab = 0;
+	static float x = 600, y = 400;
+	static char cfg_name[64] = { 0 };
+	static char cfg_name_new[64] = { 0 };
+	const char* tabs[] = {
+		"Rage", "Legit", "Visuals", "Misc", "Profile", "Scripting"
+	};
+	static int subtab[] = {
+		0, 0, 0, 0, 0, 0
+	};
+
+	const char* subtabs_rage[] = {
+		"General", "Weapon"
+	};
+	const char* subtabs_legit[] = {
+		"General", "Other"
+	}; 
+	const char* subtabs_visuals[] = {
+		"General"
+	}; 
+	const char* subtabs_misc[] = {
+		"General"
+	}; 
+	const char* subtabs_profile[] = {
+		"Configs", "Scripts"
+	}; 
+	const char* subtabs_scripting[] = {
+		"Items"
+	};
+
+	static int selected = 0;
+	static char cfgName[64];
+	std::vector<std::string> cfgList;
+
+	Style->Colors[ImGuiCol_Text] = ImColor(220, 220, 220);
+	Style->Colors[ImGuiCol_WindowBg] = ImColor(11, 11, 11);
+	Style->Colors[ImGuiCol_ChildBg] = ImColor(7, 7, 7);
+	Style->WindowBorderSize = 0;
+	Style->WindowRounding = 0;
+	Style->ChildRounding = 0;
+
+	ImGui::SetNextWindowSize({ x, y });
+
+	ImGui::PushFont(g_MenuFont);
+	ImGui::Begin("nessless", nullptr, flags);
+	{
+		ImVec2 w = ImGui::GetWindowPos();
+		ImVec2 p = ImGui::GetCursorPos();
+		ImGui::SetCursorPos(ImVec2{ 0, 0 });
+		ImGui::BeginChild("##Tabs", ImVec2{ x, 25 });
+		{
+			ImGui::SetCursorPos(ImVec2(5, 4 ));
+			Style->Colors[ImGuiCol_Text] = ImColor(62, 123, 234);
+			ImGui::Text("nessless");
+#if _DEBUG
+			ImGui::SameLine();
+			ImGui::Text("| alpha");
+#endif
+			ImGui::GetWindowDrawList()->AddLine(ImVec2(w.x, w.y + 24), ImVec2(w.x + x, w.y + 24), ImColor(25, 25, 25), 2);
+			Style->Colors[ImGuiCol_Text] = ImColor(220, 220, 220);
+
+			for (int i = 0; i < 6; i++) {
+				float xpos = 160 + 70 * i;
+				ImGui::SetCursorPos(ImVec2( xpos, 2 ));
+				if (Tab(tabs[i], ImVec2( 70, 23 ), tab == i))
+					tab = i;
+			}
+		}
+		ImGui::EndChild();
+
+		Style->Colors[ImGuiCol_Border] = ImColor(25, 25, 25);
+		Style->ChildBorderSize = 2;
+
+		ImGui::SetCursorPos(ImVec2{ 10, 40 });
+		ImGui::BeginChild("##SubTab", ImVec2{ 120, y - 50 }, true);
+		{
+			switch (tab) {
+			case 0:
+				for (int i = 0; i < 2; i++) {
+					ImGui::SetCursorPos(ImVec2(0, 25 * i));
+					if (subTab(subtabs_rage[i], ImVec2(120, 25), subtab[0] == i))
+						subtab[0] = i;
+				}
+				break;
+			case 1:
+				for (int i = 0; i < 2; i++) {
+					ImGui::SetCursorPos(ImVec2(0, 25 * i));
+					if (subTab(subtabs_legit[i], ImVec2(120, 25), subtab[1] == i))
+						subtab[1] = i;
+				}
+				break;
+			case 2:
+				for (int i = 0; i < 1; i++) {
+					ImGui::SetCursorPos(ImVec2(0, 25 * i));
+					if (subTab(subtabs_visuals[i], ImVec2(120, 25), subtab[2] == i))
+						subtab[2] = i;
+				}
+				break;
+			case 3:
+				for (int i = 0; i < 1; i++) {
+					ImGui::SetCursorPos(ImVec2(0, 25 * i));
+					if (subTab(subtabs_misc[i], ImVec2(120, 25), subtab[3] == i))
+						subtab[3] = i;
+				}
+				break;
+			case 4:
+				for (int i = 0; i < 2; i++) {
+					ImGui::SetCursorPos(ImVec2(0, 25 * i));
+					if (subTab(subtabs_profile[i], ImVec2(120, 25), subtab[4] == i))
+						subtab[4] = i;
+				}
+				break;
+			case 5:
+				for (int i = 0; i < 1; i++) {
+					ImGui::SetCursorPos(ImVec2(0, 25 * i));
+					if (subTab(subtabs_scripting[i], ImVec2(120, 25), subtab[5] == i))
+						subtab[5] = i;
+				}
+				break;
+			}
+		}
+		ImGui::EndChild();
+
+		int last_x = x - (10 + 120 + 30);
+
+		auto settings = &g_Options.legitbot[g_Options.legitbot_weapon];
+
+		ImGui::SetCursorPos(ImVec2{ 10 + 120 + 10, 40 });
+		ImGui::BeginChild("##FuncitonalTab1", ImVec2{ (float)(last_x / 2), y - 85 }, true);
+		{
+			switch (tab) {
+			case 0:
+				switch (subtab[0]) {
+				case 0:
+
+					break;
+				case 1:
+
+					break;
+				}
+				break;
+			case 1:
+				switch (subtab[1]) {
+				case 0:
+					ImGui::Combo("Weapon", &g_Options.legitbot_weapon, legit_weapons);
+					ImGui::Checkbox("Enabled", &settings->enabled);
+					//ImGui::Checkbox("Friendly fire", &settings->deathmatch);
+					ImGui::Combo("Silent", &settings->silent2, "Off\0Silent \0Perfect silent\0");
+					ImGui::Checkbox("Flash check", &settings->flash_check);
+					ImGui::Checkbox("Smoke check", &settings->smoke_check);
+					ImGui::Checkbox("Auto-pistol", &settings->autopistol);
+
+					if (ImGui::BeginCombo("##hitbox_filter", "Hitboxes", ImGuiComboFlags_NoArrowButton))
+					{
+						ImGui::Selectable("Head", &settings->hitboxes.head, ImGuiSelectableFlags_DontClosePopups);
+						ImGui::Selectable("Chest", &settings->hitboxes.chest, ImGuiSelectableFlags_DontClosePopups);
+						ImGui::Selectable("Hands", &settings->hitboxes.hands, ImGuiSelectableFlags_DontClosePopups);
+						ImGui::Selectable("Legs", &settings->hitboxes.legs, ImGuiSelectableFlags_DontClosePopups);
+
+						ImGui::EndCombo();
+					}
+					break;
+				case 1:
+					ImGui::Checkbox("Enabled autofire##autofire", &settings->autofire.enabled);
+					ImGui::SameLine();
+					ImGui::Hotkey("##autofire", &settings->autofire.hotkey);
+					break;
+				}
+				break;
+			case 2:
+				switch (subtab[2]) {
+				case 0:
+
+					break;
+				}
+				break;
+			case 3:
+				switch (subtab[3]) {
+				case 0:
+
+					break;
+				}
+				break;
+			case 4:
+				switch (subtab[4]) {
+				case 0:
+					ReadDirectory(g_Options.folder, cfgList);
+					ImGui::PushItemWidth(150.f);
+					if (!cfgList.empty())
+					{
+						if (ImGui::BeginCombo("##SelectConfig", cfgList[selected].c_str(), ImGuiComboFlags_NoArrowButton))
+						{
+							for (size_t i = 0; i < cfgList.size(); i++)
+							{
+								if (ImGui::Selectable(cfgList[i].c_str(), i == selected))
+									selected = i;
+							}
+							ImGui::EndCombo();
+
+						}
+
+						if (ImGui::Button(" Save Config"))
+							g_Options.SaveSettings(cfgList[selected]);
+
+						if (ImGui::Button(" Load Config"))
+							g_Options.LoadSettings(cfgList[selected]);
+
+						if (ImGui::Button(" Delete Config"))
+						{
+							g_Options.DeleteSettings(cfgList[selected]);
+							selected = 0;
+						}
+					}
+					ImGui::PopItemWidth();
+					break;
+				case 1:
+
+					break;
+				}
+				break;
+			case 5:
+				switch (subtab[5]) {
+				case 0:
+
+					break;
+				}
+				break;
+			}
+		}
+		ImGui::EndChild();
+
+		ImGui::SetCursorPos(ImVec2{ (float)(10 + 120 + 10 + last_x / 2 + 10), 40 });
+		ImGui::BeginChild("##FuncitonalTab2", ImVec2{ (float)(last_x / 2), y - 85 }, true);
+		{
+			switch (tab) {
+			case 0:
+				switch (subtab[0]) {
+				case 0:
+
+					break;
+				case 1:
+
+					break;
+				}
+				break;
+			case 1:
+				switch (subtab[1]) {
+				case 0:
+					ImGui::Text(" Fov");
+					ImGui::Spacing();
+					ImGui::SliderFloat("##Fov", &settings->fov, 0.f, 20.f, "%.f");
+					if (settings->silent2) {
+						ImGui::Text(" Silent fov");
+						ImGui::Spacing();
+						ImGui::SliderFloat("##Silentfov", &settings->silent_fov, 0.f, 20.f, "%.f");
+					}
+					ImGui::Text(" Smooth");
+					ImGui::Spacing();
+					ImGui::SliderFloat("##Smooth", &settings->smooth, 1.f, 20.f, "%.f");
+
+					if (!settings->silent2) {
+						ImGui::Text(" Shot delay");
+						ImGui::Spacing();
+						ImGui::SliderInt("##Shotdelay", &settings->shot_delay, 0, 1000, "%i");
+					}
+					ImGui::Text(" Kill delay");
+					ImGui::Spacing();
+					ImGui::SliderInt("##Killdelay", &settings->kill_delay, 0, 1000, "%i");
+
+					ImGui::Spacing();
+
+					ImGui::Checkbox("Enabled##rcs", &settings->rcs.enabled);
+
+
+					if (ImGui::BeginCombo("##type", rcs_types[settings->rcs.type], ImGuiComboFlags_NoArrowButton))
+					{
+						for (int i = 0; i < IM_ARRAYSIZE(rcs_types); i++)
+						{
+							if (ImGui::Selectable(rcs_types[i], i == settings->rcs.type))
+								settings->rcs.type = i;
+						}
+
+						ImGui::EndCombo();
+					}
+					//ImGui::SliderInt("##start", &settings->rcs.start, 1, 30, "Start: %i");
+					ImGui::Text(" X");
+					ImGui::Spacing();
+					ImGui::SliderInt("##x", &settings->rcs.x, 0, 100, "%i");
+					ImGui::Text(" Y");
+					ImGui::Spacing();
+					ImGui::SliderInt("##t", &settings->rcs.y, 0, 100, "%i");
+					break;
+				case 1:
+					ImGui::Checkbox("Enabled autowall##autowall", &settings->autowall.enabled);
+					ImGui::Spacing();
+					ImGui::SameLine();
+					ImGui::Text(" Min Damage");
+					ImGui::Spacing();
+					ImGui::SliderInt("##minDamage", &settings->autowall.min_damage, 1, 100, "%i");
+					break;
+				}
+				break;
+			case 2:
+				switch (subtab[2]) {
+				case 0:
+
+					break;
+				}
+				break;
+			case 3:
+				switch (subtab[3]) {
+				case 0:
+
+					break;
+				}
+				break;
+			case 4:
+				switch (subtab[4]) {
+				case 0:
+					ImGui::PushItemWidth(150.f);
+					ImGui::InputText("##configname", cfgName, 24);
+					//ImGui::SameLine();
+					if (ImGui::Button(" Create Config"))
+					{
+						if (strlen(cfgName))
+							g_Options.SaveSettings(cfgName + std::string(".ini"));
+					}
+					ImGui::PopItemWidth();
+					break;
+				case 1:
+
+					break;
+				}
+				break;
+			case 5:
+				switch (subtab[5]) {
+				case 0:
+
+					break;
+				}
+				break;
+			}
+		}
+		ImGui::EndChild();
+
+		ImGui::SetCursorPos(ImVec2{ 10 + 120 + 10, y - 85 + 40 + 10 });
+		ImGui::BeginChild("##Info", ImVec2{ (float)(last_x + 10), 25 }, true);
+		{
+			ImGui::SetCursorPos(ImVec2(5, 4));
+			ImGui::Text("Active user: ");
+			ImGui::SameLine();
+			ImGui::TextColored(ImColor(62, 123, 234), "Admin");
+			ImGui::SameLine();
+			ImGui::Text("  Cheat: ");
+			ImGui::SameLine();
+			ImGui::TextColored(ImColor(18, 211, 26), "Active");
+		}
+		ImGui::EndChild();
+	}
+	ImGui::End();
+	ImGui::PopFont();
+}
+
+void Menu::Toggle()
+{
+    _visible = !_visible;
+}
+
+void Menu::CreateStyle()
+{
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.900000f, 0.900000f, 0.900000f, 1.000000f));
+	ImGui::PushStyleColor(ImGuiCol_TextDisabled, ImVec4(0.600000f, 0.600000f, 0.600000f, 1.000000f));
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.000000f, 0.000000f, 0.000000f, 0.4f));
+	ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.000000f, 0.000000f, 0.000000f, 0.000000f));
+	ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.110000f, 0.110000f, 0.110000f, 0.920000f));
+	ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.500000f, 0.500000f, 0.500000f, 0.500000f));
+	ImGui::PushStyleColor(ImGuiCol_BorderShadow, ImVec4(0.000000f, 0.000000f, 0.000000f, 0.000000f));
+	ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.430000f, 0.430000f, 0.430000f, 0.390000f));
+	ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.470000f, 0.470000f, 0.470000f, 0.400000f));
+	ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.40000f, 0.40000f, 0.40000f, 0.690000f));
+	ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.270000f, 0.270000f, 0.540000f, 0.830000f));
+	ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(0.320000f, 0.320000f, 0.630000f, 0.870000f));
+	ImGui::PushStyleColor(ImGuiCol_TitleBgCollapsed, ImVec4(0.400000f, 0.400000f, 0.800000f, 0.200000f));
+	ImGui::PushStyleColor(ImGuiCol_MenuBarBg, ImVec4(0.400000f, 0.400000f, 0.550000f, 0.800000f));
+	ImGui::PushStyleColor(ImGuiCol_ScrollbarBg, ImVec4(0.200000f, 0.250000f, 0.300000f, 0.00000f));
+	ImGui::PushStyleColor(ImGuiCol_ScrollbarGrab, ImVec4(0.400000f, 0.400000f, 0.800000f, 0.00000f));
+	ImGui::PushStyleColor(ImGuiCol_ScrollbarGrabHovered, ImVec4(0.400000f, 0.400000f, 0.800000f, 0.00000f));
+	ImGui::PushStyleColor(ImGuiCol_ScrollbarGrabActive, ImVec4(0.410000f, 0.390000f, 0.800000f, 0.00000f));
+	ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(0.900000f, 0.900000f, 0.900000f, 0.500000f));
+	ImGui::PushStyleColor(ImGuiCol_SliderGrab, ImVec4(1.000000f, 1.000000f, 1.000000f, 0.300000f));
+	ImGui::PushStyleColor(ImGuiCol_SliderGrabActive, ImVec4(0.410000f, 0.390000f, 0.800000f, 0.600000f));
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.350000f, 0.400000f, 0.610000f, 0.0000f));
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.400000f, 0.480000f, 0.710000f, 0.0000f));
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.460000f, 0.540000f, 0.800000f, 0.000000f));
+	ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.400000f, 0.400000f, 0.400000f, 0.450000f));
+	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.400000f, 0.400000f, 0.400000f, 0.800000f));
+	ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.400000f, 0.400000f, 0.400000f, 0.800000f));
+	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.500000f, 0.500000f, 0.500000f, 0.600000f));
+	ImGui::PushStyleColor(ImGuiCol_SeparatorHovered, ImVec4(0.600000f, 0.600000f, 0.700000f, 1.000000f));
+	ImGui::PushStyleColor(ImGuiCol_SeparatorActive, ImVec4(0.700000f, 0.700000f, 0.900000f, 1.000000f));
+	ImGui::PushStyleColor(ImGuiCol_ResizeGrip, ImVec4(1.000000f, 1.000000f, 1.000000f, 0.160000f));
+	ImGui::PushStyleColor(ImGuiCol_ResizeGripHovered, ImVec4(0.780000f, 0.820000f, 1.000000f, 0.600000f));
+	ImGui::PushStyleColor(ImGuiCol_ResizeGripActive, ImVec4(0.780000f, 0.820000f, 1.000000f, 0.900000f));
+	ImGui::PushStyleColor(ImGuiCol_TextSelectedBg, ImVec4(0.000000f, 0.000000f, 1.000000f, 0.350000f));
+	ImGui::PushStyleColor(ImGuiCol_DragDropTarget, ImVec4(1.000000f, 1.000000f, 0.000000f, 0.900000f));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.000000f,6.000000f });
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 4.000000f,3.000000f });
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, { 8.000000f,4.000000f });
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, { 4.000000f,4.000000f });
+	ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, 21.000000f);
+	ImGui::PushStyleVar(ImGuiStyleVar_ScrollbarSize, 1.000000f);
+	ImGui::PushStyleVar(ImGuiStyleVar_GrabMinSize, 1.000000f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.000000f);
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 1.000000f);
+	ImGui::PushStyleVar(ImGuiStyleVar_PopupBorderSize, 0.000000f);
+	ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.000000f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.000000f);
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 0.000000f);
+	ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.000000f);
+	ImGui::PushStyleVar(ImGuiStyleVar_PopupRounding, 0.000000f);
+	ImGui::PushStyleVar(ImGuiStyleVar_ScrollbarRounding, 0.000000f);
+	ImGui::PushStyleVar(ImGuiStyleVar_GrabRounding, 0.000000f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowTitleAlign, { 0.000000f,0.500000f });
+	ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, { 0.500000f,0.500000f });
+	ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, { 0.500000f,0.500000f });
+}
+

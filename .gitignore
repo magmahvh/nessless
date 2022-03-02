@@ -1,7 +1,2 @@
-
-.vs/cheat/v16/.suo
-*.db
-*.db-shm
-*.db-wal
-*.opendb
-*.ipch
+.vs
+dll
