@@ -426,5 +426,8 @@
     <ClInclude Include="features\ragebot.hpp">
       <Filter>Source Files\features</Filter>
     </ClInclude>
+    <ClInclude Include="user.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

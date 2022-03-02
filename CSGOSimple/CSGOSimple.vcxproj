@@ -150,6 +150,7 @@
     <ClInclude Include="imgui\impl\imgui_impl_dx9.h" />
     <ClInclude Include="imgui\impl\imgui_impl_win32.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="user.hpp" />
     <ClInclude Include="valve_sdk\interfaces\IGameTypes.hpp" />
     <ClInclude Include="valve_sdk\interfaces\IStudioRender.hpp" />
     <ClInclude Include="valve_sdk\Misc\datamap.hpp" />

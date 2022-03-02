@@ -7,6 +7,7 @@
 #include "helpers/input.hpp"
 #include "options.hpp"
 #include "ui.hpp"
+#include "user.hpp"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui/imgui_internal.h"
@@ -948,7 +949,7 @@ void Menu::Render()
 			ImGui::SetCursorPos(ImVec2(5, 4));
 			ImGui::Text("Active user: ");
 			ImGui::SameLine();
-			ImGui::TextColored(ImColor(62, 123, 234), "Admin");
+			ImGui::TextColored(ImColor(62, 123, 234), Cheat::Get().username.c_str());
 			ImGui::SameLine();
 			ImGui::Text("  Cheat: ");
 			ImGui::SameLine();

@@ -11,6 +11,7 @@
 #include "menu.hpp"
 #include "options.hpp"
 #include "render.hpp"
+#include "user.hpp"
 
 DWORD WINAPI OnDllAttach(LPVOID base)
 {
