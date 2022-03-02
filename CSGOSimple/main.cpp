@@ -31,6 +31,7 @@ DWORD WINAPI OnDllAttach(LPVOID base)
 		Render::Get().Initialize();
         Menu::Get().Initialize();
         g_Legitbot = new CLegitbot();
+        g_Ragebot = new CRagebot();
         g_Options.Initialize();
         initialize_kits();
 
@@ -83,6 +84,7 @@ BOOL WINAPI OnDllDetach()
 
     Hooks::Shutdown();
     delete g_Legitbot;
+    delete g_Ragebot;
 
     Menu::Get().Shutdown();
     return TRUE;

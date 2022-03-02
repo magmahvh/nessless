@@ -71,6 +71,7 @@ public:
 	}changers;
 
 	int legitbot_weapon = 0;
+	bool legit_enabled = false;
 	struct
 	{
 		bool enabled = false;
@@ -117,10 +118,34 @@ public:
 		} autofire;
 	} legitbot[5];
 
+
+	int ragebot_weapon = 0;
+	bool rage_enabled = false;
+	struct
+	{
+		bool enabled = false;
+		bool autoshot = false;
+		bool autowall = false;
+		bool silent = false;
+
+		int damage = 1;
+		int hitchance = 1;
+
+		struct
+		{
+			bool head = true;
+			bool upper_chest = true;
+			bool chest = true;
+			bool lower_chest = true;
+			bool hands = true;
+			bool legs = true;
+		} hitboxes;
+	} ragebot[6];
+
 	// 
 	// ESP
 	// 
-//	bool esp_enabled = false;
+
 	bool esp_enemies_only = false;
 	bool esp_player_boxes = false;
 	bool esp_player_boxesOccluded = false;

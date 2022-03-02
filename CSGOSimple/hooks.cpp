@@ -200,6 +200,7 @@ namespace Hooks {
 		prediction->StartPrediction(cmd);
 
 		g_Legitbot->Run(cmd);
+		g_Ragebot->Run(cmd);
 		float max_radias = D3DX_PI * 2;
 		float step = max_radias / 128;
 		float xThick = 23;

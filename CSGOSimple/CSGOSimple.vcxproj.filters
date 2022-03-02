@@ -136,6 +136,9 @@
     <ClCompile Include="options.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="features\ragebot.cpp">
+      <Filter>Source Files\features</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="features\bhop.hpp">
@@ -419,6 +422,9 @@
     </ClInclude>
     <ClInclude Include="imgui\imgui_internal.h">
       <Filter>Source Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="features\ragebot.hpp">
+      <Filter>Source Files\features</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

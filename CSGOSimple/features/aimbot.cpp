@@ -4,7 +4,7 @@
 #include "..//helpers/math.hpp"
 #include "..//helpers/input.hpp"
 
-int wpnGroup(CHandle<C_BaseCombatWeapon> pWeapon) {
+int wpnGroupLegit(CHandle<C_BaseCombatWeapon> pWeapon) {
 
 	if (!pWeapon)
 		return -1;
@@ -46,18 +46,18 @@ bool CLegitbot::IsEnabled(CUserCmd* cmd)
 	if (!weapon || !weapon->IsGun())
 		return false;
 
-	if (!g_Options.legitbot[wpnGroup(weapon)].enabled)
+	if (!g_Options.legitbot[wpnGroupLegit(weapon)].enabled)
 		return false;
 
 	if (!weapon->HasBullets())
 		return false;
 
-	return (cmd->buttons & IN_ATTACK) || (g_Options.legitbot[wpnGroup(weapon)].autofire.enabled && GetAsyncKeyState(g_Options.legitbot[wpnGroup(weapon)].autofire.hotkey));
+	return (cmd->buttons & IN_ATTACK) || (g_Options.legitbot[wpnGroupLegit(weapon)].autofire.enabled && GetAsyncKeyState(g_Options.legitbot[wpnGroupLegit(weapon)].autofire.hotkey));
 }
 
 void CLegitbot::Smooth(QAngle currentAngle, QAngle aimAngle, QAngle& angle)
 {
-	auto smooth_value = max(1.0f, g_Options.legitbot[wpnGroup(weapon)].smooth);
+	auto smooth_value = max(1.0f, g_Options.legitbot[wpnGroupLegit(weapon)].smooth);
 	
 	Vector current, aim;
 
@@ -72,17 +72,17 @@ void CLegitbot::Smooth(QAngle currentAngle, QAngle aimAngle, QAngle& angle)
 
 void CLegitbot::RCS(QAngle& angle, C_BasePlayer* target)
 {
-	if (!g_Options.legitbot[wpnGroup(weapon)].rcs.enabled || shotsFired < g_Options.legitbot[wpnGroup(weapon)].rcs.start - 1)
+	if (!g_Options.legitbot[wpnGroupLegit(weapon)].rcs.enabled || shotsFired < g_Options.legitbot[wpnGroupLegit(weapon)].rcs.start - 1)
 		return;
 
-	if (!g_Options.legitbot[wpnGroup(weapon)].rcs.x && !g_Options.legitbot[wpnGroup(weapon)].rcs.y)
+	if (!g_Options.legitbot[wpnGroupLegit(weapon)].rcs.x && !g_Options.legitbot[wpnGroupLegit(weapon)].rcs.y)
 		return;
 
 	static auto recoil_scale = g_CVar->FindVar("weapon_recoil_scale");
 	auto scale = recoil_scale->GetFloat();
 
-	const auto x = float(g_Options.legitbot[wpnGroup(weapon)].rcs.y) / 100.f * scale;
-	const auto y = float(g_Options.legitbot[wpnGroup(weapon)].rcs.x) / 100.f * scale;
+	const auto x = float(g_Options.legitbot[wpnGroupLegit(weapon)].rcs.y) / 100.f * scale;
+	const auto y = float(g_Options.legitbot[wpnGroupLegit(weapon)].rcs.x) / 100.f * scale;
 
 	QAngle punch = { 0, 0, 0 };
 
@@ -97,19 +97,19 @@ void CLegitbot::RCS(QAngle& angle, C_BasePlayer* target)
 
 float CLegitbot::GetFov()
 {
-	if (g_Options.legitbot[wpnGroup(weapon)].silent)
-		return g_Options.legitbot[wpnGroup(weapon)].silent_fov;
+	if (g_Options.legitbot[wpnGroupLegit(weapon)].silent)
+		return g_Options.legitbot[wpnGroupLegit(weapon)].silent_fov;
 
-	return g_Options.legitbot[wpnGroup(weapon)].fov;
+	return g_Options.legitbot[wpnGroupLegit(weapon)].fov;
 }
 
 C_BasePlayer* CLegitbot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& bestFov, QAngle& bestAngles)
 {
-	if (target && !kill_delay && g_Options.legitbot[wpnGroup(weapon)].kill_delay > 0 && !target->IsAlive())
+	if (target && !kill_delay && g_Options.legitbot[wpnGroupLegit(weapon)].kill_delay > 0 && !target->IsAlive())
 	{
 		target = nullptr;
 		kill_delay = true;
-		kill_delay_time = int(GetTickCount()) + g_Options.legitbot[wpnGroup(weapon)].kill_delay;
+		kill_delay_time = int(GetTickCount()) + g_Options.legitbot[wpnGroupLegit(weapon)].kill_delay;
 	}
 	if (kill_delay)
 	{
@@ -123,17 +123,17 @@ C_BasePlayer* CLegitbot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& b
 
 	std::vector<int> hitboxes;
 
-	if (g_Options.legitbot[wpnGroup(weapon)].hitboxes.head)
+	if (g_Options.legitbot[wpnGroupLegit(weapon)].hitboxes.head)
 		hitboxes.emplace_back(HITBOX_HEAD);
 
-	if (g_Options.legitbot[wpnGroup(weapon)].hitboxes.chest)
+	if (g_Options.legitbot[wpnGroupLegit(weapon)].hitboxes.chest)
 	{
 		hitboxes.emplace_back(HITBOX_UPPER_CHEST);
 		hitboxes.emplace_back(HITBOX_CHEST);
 		hitboxes.emplace_back(HITBOX_LOWER_CHEST);
 	}
 
-	if (g_Options.legitbot[wpnGroup(weapon)].hitboxes.hands)
+	if (g_Options.legitbot[wpnGroupLegit(weapon)].hitboxes.hands)
 	{
 		hitboxes.emplace_back(HITBOX_LEFT_FOREARM);
 		hitboxes.emplace_back(HITBOX_LEFT_HAND);
@@ -144,7 +144,7 @@ C_BasePlayer* CLegitbot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& b
 		hitboxes.emplace_back(HITBOX_RIGHT_UPPER_ARM);
 	}
 
-	if (g_Options.legitbot[wpnGroup(weapon)].hitboxes.legs)
+	if (g_Options.legitbot[wpnGroupLegit(weapon)].hitboxes.legs)
 	{
 		hitboxes.emplace_back(HITBOX_LEFT_FOOT);
 		hitboxes.emplace_back(HITBOX_LEFT_CALF);
@@ -164,7 +164,7 @@ C_BasePlayer* CLegitbot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& b
 		if (!player || !player->IsAlive() || !player->IsPlayer() || player->m_bGunGameImmunity())
 			continue;
 
-		if (!player->IsEnemy() && !g_Options.legitbot[wpnGroup(weapon)].deathmatch)
+		if (!player->IsEnemy() && !g_Options.legitbot[wpnGroupLegit(weapon)].deathmatch)
 			continue;
 
 		for (const auto hitbox : hitboxes)
@@ -179,17 +179,17 @@ C_BasePlayer* CLegitbot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& b
 
 			if (!g_LocalPlayer->CanSeePlayer(player, hitboxPos))
 			{
-				if (!g_Options.legitbot[wpnGroup(weapon)].autowall.enabled)
+				if (!g_Options.legitbot[wpnGroupLegit(weapon)].autowall.enabled)
 					continue;
 
 				//const auto damage = c_autowall::get()->autowall(g_LocalPlayer->GetEyePos(), hitboxPos, g_LocalPlayer, player).damage;
 				const auto damage = int(Autowall::GetDamage(hitboxPos));
 
-				if (damage < g_Options.legitbot[wpnGroup(weapon)].autowall.min_damage)
+				if (damage < g_Options.legitbot[wpnGroupLegit(weapon)].autowall.min_damage)
 					continue;
 			}
 
-			if (g_Options.legitbot[wpnGroup(weapon)].smoke_check && IsLineGoesThroughSmoke(eyePos, hitboxPos))
+			if (g_Options.legitbot[wpnGroupLegit(weapon)].smoke_check && IsLineGoesThroughSmoke(eyePos, hitboxPos))
 				continue;
 
 			if (bestFov > fov)
@@ -231,7 +231,7 @@ void CLegitbot::Run(CUserCmd* cmd)
 	if (!weapon_data)
 		return;
 
-	if (g_Options.legitbot[wpnGroup(weapon)].flash_check && g_LocalPlayer->IsFlashed())
+	if (g_Options.legitbot[wpnGroupLegit(weapon)].flash_check && g_LocalPlayer->IsFlashed())
 		return;
 
 	auto angles = cmd->viewangles;
@@ -243,10 +243,10 @@ void CLegitbot::Run(CUserCmd* cmd)
 
 	if (GetClosestPlayer(cmd, bestBone, fov, angles))
 	{
-		if (!g_Options.legitbot[wpnGroup(weapon)].silent && !shot_delay && g_Options.legitbot[wpnGroup(weapon)].shot_delay > 0 && !shotsFired)
+		if (!g_Options.legitbot[wpnGroupLegit(weapon)].silent && !shot_delay && g_Options.legitbot[wpnGroupLegit(weapon)].shot_delay > 0 && !shotsFired)
 		{
 			shot_delay = true;
-			shot_delay_time = int(GetTickCount()) + g_Options.legitbot[wpnGroup(weapon)].shot_delay;
+			shot_delay_time = int(GetTickCount()) + g_Options.legitbot[wpnGroupLegit(weapon)].shot_delay;
 		}
 
 		if (shot_delay && shot_delay_time <= int(GetTickCount()))
@@ -255,7 +255,7 @@ void CLegitbot::Run(CUserCmd* cmd)
 		if (shot_delay)
 			cmd->buttons &= ~IN_ATTACK;
 
-		if (g_Options.legitbot[wpnGroup(weapon)].autofire.enabled && GetAsyncKeyState(g_Options.legitbot[wpnGroup(weapon)].autofire.hotkey))
+		if (g_Options.legitbot[wpnGroupLegit(weapon)].autofire.enabled && GetAsyncKeyState(g_Options.legitbot[wpnGroupLegit(weapon)].autofire.hotkey))
 			cmd->buttons |= IN_ATTACK;
 	}
 
@@ -264,16 +264,16 @@ void CLegitbot::Run(CUserCmd* cmd)
 
 	last_punch = current_punch;
 
-	if (!g_Options.legitbot[wpnGroup(weapon)].silent)
+	if (!g_Options.legitbot[wpnGroupLegit(weapon)].silent)
 		Smooth(current, angles, angles);
 
 	Math::FixAngles(angles);
 	cmd->viewangles = angles;
-	if (!g_Options.legitbot[wpnGroup(weapon)].silent)
+	if (!g_Options.legitbot[wpnGroupLegit(weapon)].silent)
 		g_EngineClient->SetViewAngles(&angles);
 
 
-	if (g_LocalPlayer->m_hActiveWeapon()->IsPistol() && g_Options.legitbot[wpnGroup(weapon)].autopistol)
+	if (g_LocalPlayer->m_hActiveWeapon()->IsPistol() && g_Options.legitbot[wpnGroupLegit(weapon)].autopistol)
 	{
 		const float server_time = g_LocalPlayer->m_nTickBase() * g_GlobalVars->interval_per_tick;
 		const float next_shot = g_LocalPlayer->m_hActiveWeapon()->m_flNextPrimaryAttack() - server_time;

@@ -18,6 +18,7 @@
 #include "render.hpp"
 
 const char* legit_weapons = "Pistols\0Rifles\0Deagle\0Sniper\0Other";
+const char* rage_weapons = "AWP\0Auto-Sniper\0Scout\0Deagle and R8\0Pistols\0Other";
 
 void ReadDirectory(const std::string& name, std::vector<std::string>& v)
 {
@@ -400,7 +401,8 @@ void Menu::Render()
 
 		int last_x = x - (10 + 120 + 30);
 
-		auto settings = &g_Options.legitbot[g_Options.legitbot_weapon];
+		auto legitbot = &g_Options.legitbot[g_Options.legitbot_weapon];
+		auto ragebot = &g_Options.ragebot[g_Options.ragebot_weapon];
 
 		ImGui::SetCursorPos(ImVec2{ 10 + 120 + 10, 40 });
 		ImGui::BeginChild("##FuncitonalTab1", ImVec2{ (float)(last_x / 2), y - 85 }, true);
@@ -409,10 +411,19 @@ void Menu::Render()
 			case 0:
 				switch (subtab[0]) {
 				case 0:
-
+					ImGui::Separator("General");
+					ImGui::Checkbox("Enable Ragebot", &g_Options.rage_enabled);
+					if (g_Options.rage_enabled) {
+						g_Options.legit_enabled = false;
+					}
 					break;
 				case 1:
-
+					ImGui::Separator("Weapons");
+					ImGui::Combo("Weapon", &g_Options.ragebot_weapon, rage_weapons);
+					ImGui::Checkbox("Enabled Weapon", &ragebot->enabled);
+					ImGui::Checkbox("Auto shot", &ragebot->autoshot);
+					ImGui::Checkbox("Through obstacle", &ragebot->autowall); 
+					ImGui::Checkbox("Silent", &ragebot->silent);
 					break;
 				}
 				break;
@@ -420,28 +431,32 @@ void Menu::Render()
 				switch (subtab[1]) {
 				case 0:
 					ImGui::Separator("Weapons");
+					ImGui::Checkbox("Enabled Legitbot", &g_Options.legit_enabled);
+					if (g_Options.legit_enabled) {
+						g_Options.rage_enabled = false;
+					}
 					ImGui::Combo("Weapon", &g_Options.legitbot_weapon, legit_weapons);
-					ImGui::Checkbox("Enabled", &settings->enabled);
+					ImGui::Checkbox("Enabled Weapon", &legitbot->enabled);
 					//ImGui::Checkbox("Friendly fire", &settings->deathmatch);
-					ImGui::Checkbox("Silent", &settings->silent);
-					ImGui::Checkbox("Flash check", &settings->flash_check);
-					ImGui::Checkbox("Smoke check", &settings->smoke_check);
-					ImGui::Checkbox("Auto-pistol", &settings->autopistol);
+					ImGui::Checkbox("Silent", &legitbot->silent);
+					ImGui::Checkbox("Flash check", &legitbot->flash_check);
+					ImGui::Checkbox("Smoke check", &legitbot->smoke_check);
+					ImGui::Checkbox("Auto-pistol", &legitbot->autopistol);
 
 					if (ImGui::BeginCombo("##hitbox_filter", "Hitboxes", ImGuiComboFlags_NoArrowButton))
 					{
-						ImGui::Selectable("Head", &settings->hitboxes.head, ImGuiSelectableFlags_DontClosePopups);
-						ImGui::Selectable("Chest", &settings->hitboxes.chest, ImGuiSelectableFlags_DontClosePopups);
-						ImGui::Selectable("Hands", &settings->hitboxes.hands, ImGuiSelectableFlags_DontClosePopups);
-						ImGui::Selectable("Legs", &settings->hitboxes.legs, ImGuiSelectableFlags_DontClosePopups);
+						ImGui::Selectable("Head", &legitbot->hitboxes.head, ImGuiSelectableFlags_DontClosePopups);
+						ImGui::Selectable("Chest", &legitbot->hitboxes.chest, ImGuiSelectableFlags_DontClosePopups);
+						ImGui::Selectable("Hands", &legitbot->hitboxes.hands, ImGuiSelectableFlags_DontClosePopups);
+						ImGui::Selectable("Legs", &legitbot->hitboxes.legs, ImGuiSelectableFlags_DontClosePopups);
 
 						ImGui::EndCombo();
 					}
 					break;
 				case 1:
-					ImGui::Checkbox("Enabled autofire##autofire", &settings->autofire.enabled);
+					ImGui::Checkbox("Enabled autofire##autofire", &legitbot->autofire.enabled);
 					ImGui::SameLine();
-					ImGui::Hotkey("##autofire", &settings->autofire.hotkey);
+					ImGui::Hotkey("##autofire", &legitbot->autofire.hotkey);
 					break;
 				}
 				break;
@@ -556,7 +571,26 @@ void Menu::Render()
 
 					break;
 				case 1:
+					ImGui::Separator("Settings");
+					ImGui::Text(" Minimum Damage");
+					ImGui::Spacing();
+					ImGui::SliderInt("##damage", &ragebot->damage, 1, 130, "%i");
+					
+					ImGui::Text(" Hit Chance");
+					ImGui::Spacing();
+					ImGui::SliderInt("##hitchance", &ragebot->hitchance, 1, 100, "%i");
 
+					if (ImGui::BeginCombo("##hitbox_filter", "Hitboxes", ImGuiComboFlags_NoArrowButton))
+					{
+						ImGui::Selectable("Head", &ragebot->hitboxes.head, ImGuiSelectableFlags_DontClosePopups);
+						ImGui::Selectable("Upper Chest", &ragebot->hitboxes.upper_chest, ImGuiSelectableFlags_DontClosePopups);
+						ImGui::Selectable("Chest", &ragebot->hitboxes.chest, ImGuiSelectableFlags_DontClosePopups);
+						ImGui::Selectable("Lower Chest", &ragebot->hitboxes.lower_chest, ImGuiSelectableFlags_DontClosePopups);
+						ImGui::Selectable("Hands", &ragebot->hitboxes.hands, ImGuiSelectableFlags_DontClosePopups);
+						ImGui::Selectable("Legs", &ragebot->hitboxes.legs, ImGuiSelectableFlags_DontClosePopups);
+
+						ImGui::EndCombo();
+					}
 					break;
 				}
 				break;
@@ -566,44 +600,44 @@ void Menu::Render()
 					ImGui::Separator("Settings");
 					ImGui::Text(" Fov");
 					ImGui::Spacing();
-					ImGui::SliderFloat("##Fov", &settings->fov, 0.f, 20.f, "%.f");
-					if (settings->silent) {
+					ImGui::SliderFloat("##Fov", &legitbot->fov, 0.f, 20.f, "%.f");
+					if (legitbot->silent) {
 						ImGui::Text(" Silent fov");
 						ImGui::Spacing();
-						ImGui::SliderFloat("##Silentfov", &settings->silent_fov, 0.f, 20.f, "%.f");
+						ImGui::SliderFloat("##Silentfov", &legitbot->silent_fov, 0.f, 20.f, "%.f");
 					}
 					ImGui::Text(" Smooth");
 					ImGui::Spacing();
-					ImGui::SliderFloat("##Smooth", &settings->smooth, 1.f, 20.f, "%.f");
+					ImGui::SliderFloat("##Smooth", &legitbot->smooth, 1.f, 20.f, "%.f");
 
-					if (!settings->silent) {
+					if (!legitbot->silent) {
 						ImGui::Text(" Shot delay");
 						ImGui::Spacing();
-						ImGui::SliderInt("##Shotdelay", &settings->shot_delay, 0, 1000, "%i");
+						ImGui::SliderInt("##Shotdelay", &legitbot->shot_delay, 0, 1000, "%i");
 					}
 					ImGui::Text(" Kill delay");
 					ImGui::Spacing();
-					ImGui::SliderInt("##Killdelay", &settings->kill_delay, 0, 1000, "%i");
+					ImGui::SliderInt("##Killdelay", &legitbot->kill_delay, 0, 1000, "%i");
 
 					ImGui::Spacing();
 
-					ImGui::Checkbox("Enabled##rcs", &settings->rcs.enabled);
+					ImGui::Checkbox("Enabled##rcs", &legitbot->rcs.enabled);
 
 					//ImGui::SliderInt("##start", &settings->rcs.start, 1, 30, "Start: %i");
 					ImGui::Text(" X");
 					ImGui::Spacing();
-					ImGui::SliderInt("##x", &settings->rcs.x, 0, 100, "%i");
+					ImGui::SliderInt("##x", &legitbot->rcs.x, 0, 100, "%i");
 					ImGui::Text(" Y");
 					ImGui::Spacing();
-					ImGui::SliderInt("##t", &settings->rcs.y, 0, 100, "%i");
+					ImGui::SliderInt("##t", &legitbot->rcs.y, 0, 100, "%i");
 					break;
 				case 1:
-					ImGui::Checkbox("Enabled autowall##autowall", &settings->autowall.enabled);
+					ImGui::Checkbox("Enabled autowall##autowall", &legitbot->autowall.enabled);
 					ImGui::Spacing();
 					ImGui::SameLine();
 					ImGui::Text(" Min Damage");
 					ImGui::Spacing();
-					ImGui::SliderInt("##minDamage", &settings->autowall.min_damage, 1, 100, "%i");
+					ImGui::SliderInt("##minDamage", &legitbot->autowall.min_damage, 1, 100, "%i");
 					break;
 				}
 				break;

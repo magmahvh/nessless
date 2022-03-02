@@ -221,7 +221,7 @@ bool Autowall::HandleBulletPenetration(CCSWeaponInfo* weaponInfo, FireBulletData
 {
 	surfacedata_t* enter_surface_data = g_PhysSurface->GetSurfaceData(data.enter_trace.surface.surfaceProps);
 	int enter_material = enter_surface_data->game.material;
-	float enter_surf_penetration_mod = enter_surface_data->game.flPenetrationModifier;
+	float enter_surf_penetration_mod = *(float*)((uint8_t*)enter_surface_data + 80);
 	data.trace_length += data.enter_trace.fraction * data.trace_length_remaining;
 	data.current_damage *= powf(weaponInfo->flRangeModifier, data.trace_length * 0.002f);
 

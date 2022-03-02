@@ -165,6 +165,28 @@ void Options::SetupWeapons()
 		SetupValue(aimbot->autofire.hotkey, "LEGITBOTWPN" + i, "AutoFire Hotkey");
 
 	}
+
+	for (int i = 0; i < 6; i++)
+	{
+		auto aimbot = &g_Options.ragebot[i];
+
+		SetupValue(aimbot->enabled, "RAGEBOTWPN" + i, "Enabled");
+		SetupValue(aimbot->autoshot, "RAGEBOTWPN" + i, "Autoshot");
+		SetupValue(aimbot->autowall, "RAGEBOTWPN" + i, "Autowall");
+		SetupValue(aimbot->silent, "RAGEBOTWPN" + i, "Silent");
+
+		SetupValue(aimbot->damage, "RAGEBOTWPN" + i, "Damage");
+		SetupValue(aimbot->hitchance, "RAGEBOTWPN" + i, "Hitchance");
+
+		SetupValue(aimbot->hitboxes.head, "RAGEBOTWPN" + i, "Head Hitbox");
+		SetupValue(aimbot->hitboxes.upper_chest, "RAGEBOTWPN" + i, "Upper Chest Hitbox");
+		SetupValue(aimbot->hitboxes.chest, "RAGEBOTWPN" + i, "Chest Hitbox");
+		SetupValue(aimbot->hitboxes.lower_chest, "RAGEBOTWPN" + i, "Lower Chest Hitbox");
+		SetupValue(aimbot->hitboxes.hands, "RAGEBOTWPN" + i, "Hands Hitbox");
+		SetupValue(aimbot->hitboxes.legs, "RAGEBOTWPN" + i, "Legs Hitbox");
+
+	}
+
 	for (auto& [key, val] : k_weapon_names) {
 		auto& option = g_Options.changers.skin.m_items[key];
 		SetupValue(option.definition_vector_index, val, "d_vec_index");

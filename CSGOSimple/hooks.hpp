@@ -4,6 +4,7 @@
 #include "helpers/vfunc_hook.hpp"
 #include <d3d9.h>
 #include "features/aimbot.hpp"
+#include "features/ragebot.hpp"
 #include "helpers/prediction.hpp"
 
 namespace index
