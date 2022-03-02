@@ -297,7 +297,7 @@ void Menu::Render()
 		"General"
 	}; 
 	const char* subtabs_misc[] = {
-		"General"
+		"General", "Skinchanger"
 	}; 
 	const char* subtabs_profile[] = {
 		"Configs", "Scripts"
@@ -309,6 +309,11 @@ void Menu::Render()
 	static int selected = 0;
 	static char cfgName[64];
 	std::vector<std::string> cfgList;
+
+	static std::string selected_weapon_name = "";
+	static std::string selected_skin_name = "";
+	static auto definition_vector_index = 0;
+	auto& entries = g_Options.changers.skin.m_items;
 
 	Style->Colors[ImGuiCol_Text] = ImColor(220, 220, 220);
 	Style->Colors[ImGuiCol_WindowBg] = ImColor(11, 11, 11);
@@ -327,7 +332,7 @@ void Menu::Render()
 		ImGui::SetCursorPos(ImVec2{ 0, 0 });
 		ImGui::BeginChild("##Tabs", ImVec2{ x, 25 });
 		{
-			ImGui::SetCursorPos(ImVec2(5, 4 ));
+			ImGui::SetCursorPos(ImVec2(0, 4 ));
 			Style->Colors[ImGuiCol_Text] = ImColor(62, 123, 234);
 			ImGui::Text("nessless");
 #if _DEBUG
@@ -375,7 +380,7 @@ void Menu::Render()
 				}
 				break;
 			case 3:
-				for (int i = 0; i < 1; i++) {
+				for (int i = 0; i < 2; i++) {
 					ImGui::SetCursorPos(ImVec2(0, 25 * i));
 					if (subTab(subtabs_misc[i], ImVec2(120, 25), subtab[3] == i))
 						subtab[3] = i;
@@ -508,6 +513,45 @@ void Menu::Render()
 					ImGui::Checkbox("No smoke", &g_Options.no_smoke);
 					ImGui::Checkbox("Sniper crosshair", &g_Options.sniper_xhair);
 					break;
+				case 1:
+					ImGui::Spacing();
+					ImGui::Spacing();
+					for (size_t w = 0; w < k_weapon_names.size(); w++)
+					{
+						switch (w)
+						{
+						case 0:
+							ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.f), "Group: knife");
+							break;
+						case 2:
+							ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.f), "Group: gloves");
+							break;
+						case 4:
+							ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.f), "Group: pistols");
+							break;
+						case 14:
+							ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.f), "Group: semi-rifles");
+							break;
+						case 21:
+							ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.f), "Group: rifles");
+							break;
+						case 28:
+							ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.f), "Group: snipers");
+							break;
+						case 32:
+							ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.f), "Group: machine");
+							break;
+						case 34:
+							ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.f), "Group: shotgun");
+							break;
+						}
+
+						if (ImGui::Selectable(k_weapon_names[w].name, definition_vector_index == w))
+						{
+							definition_vector_index = w;
+						}
+					}
+					break;
 				}
 				break;
 			case 4:
@@ -572,11 +616,11 @@ void Menu::Render()
 					break;
 				case 1:
 					ImGui::Separator("Settings");
-					ImGui::Text(" Minimum Damage");
+					ImGui::Text("Minimum Damage");
 					ImGui::Spacing();
 					ImGui::SliderInt("##damage", &ragebot->damage, 1, 130, "%i");
 					
-					ImGui::Text(" Hit Chance");
+					ImGui::Text("Hit Chance");
 					ImGui::Spacing();
 					ImGui::SliderInt("##hitchance", &ragebot->hitchance, 1, 100, "%i");
 
@@ -598,24 +642,24 @@ void Menu::Render()
 				switch (subtab[1]) {
 				case 0:
 					ImGui::Separator("Settings");
-					ImGui::Text(" Fov");
+					ImGui::Text("Fov");
 					ImGui::Spacing();
 					ImGui::SliderFloat("##Fov", &legitbot->fov, 0.f, 20.f, "%.f");
 					if (legitbot->silent) {
-						ImGui::Text(" Silent fov");
+						ImGui::Text("Silent fov");
 						ImGui::Spacing();
 						ImGui::SliderFloat("##Silentfov", &legitbot->silent_fov, 0.f, 20.f, "%.f");
 					}
-					ImGui::Text(" Smooth");
+					ImGui::Text("Smooth");
 					ImGui::Spacing();
 					ImGui::SliderFloat("##Smooth", &legitbot->smooth, 1.f, 20.f, "%.f");
 
 					if (!legitbot->silent) {
-						ImGui::Text(" Shot delay");
+						ImGui::Text("Shot delay");
 						ImGui::Spacing();
 						ImGui::SliderInt("##Shotdelay", &legitbot->shot_delay, 0, 1000, "%i");
 					}
-					ImGui::Text(" Kill delay");
+					ImGui::Text("Kill delay");
 					ImGui::Spacing();
 					ImGui::SliderInt("##Killdelay", &legitbot->kill_delay, 0, 1000, "%i");
 
@@ -624,10 +668,10 @@ void Menu::Render()
 					ImGui::Checkbox("Enabled##rcs", &legitbot->rcs.enabled);
 
 					//ImGui::SliderInt("##start", &settings->rcs.start, 1, 30, "Start: %i");
-					ImGui::Text(" X");
+					ImGui::Text("X");
 					ImGui::Spacing();
 					ImGui::SliderInt("##x", &legitbot->rcs.x, 0, 100, "%i");
-					ImGui::Text(" Y");
+					ImGui::Text("Y");
 					ImGui::Spacing();
 					ImGui::SliderInt("##t", &legitbot->rcs.y, 0, 100, "%i");
 					break;
@@ -679,6 +723,194 @@ void Menu::Render()
 					ImGui::Checkbox("Jump bug", &g_Options.jump_bug); ImGui::SameLine(); ImGui::Hotkey("   ", &g_Options.jump_bug_key);
 					ImGui::Checkbox("Edge jump", &g_Options.edgejump.enabled); ImGui::SameLine(); ImGui::Hotkey("    ", &g_Options.edgejump.hotkey);
 					ImGui::Checkbox("Duck in Air", &g_Options.edgejump.edge_jump_duck_in_air);
+					break;
+				case 1:
+					ImGui::Spacing();
+					ImGui::Spacing();
+
+					auto& selected_entry = entries[k_weapon_names[definition_vector_index].definition_index];
+					auto& satatt = g_Options.changers.skin.statrack_items[k_weapon_names[definition_vector_index].definition_index];
+					selected_entry.definition_index = k_weapon_names[definition_vector_index].definition_index;
+					selected_entry.definition_vector_index = definition_vector_index;
+					if (selected_entry.definition_index == WEAPON_KNIFE || selected_entry.definition_index == WEAPON_KNIFE_T)
+					{
+						ImGui::PushItemWidth(160.f);
+
+						ImGui::Combo("", &selected_entry.definition_override_vector_index, [](void* data, int idx, const char** out_text)
+							{
+								*out_text = k_knife_names.at(idx).name;
+								return true;
+							}, nullptr, k_knife_names.size(), 10);
+						selected_entry.definition_override_index = k_knife_names.at(selected_entry.definition_override_vector_index).definition_index;
+
+					}
+					else if (selected_entry.definition_index == GLOVE_T_SIDE || selected_entry.definition_index == GLOVE_CT_SIDE)
+					{
+						ImGui::PushItemWidth(160.f);
+
+						ImGui::Combo("", &selected_entry.definition_override_vector_index, [](void* data, int idx, const char** out_text)
+							{
+								*out_text = k_glove_names.at(idx).name;
+								return true;
+							}, nullptr, k_glove_names.size(), 10);
+						selected_entry.definition_override_index = k_glove_names.at(selected_entry.definition_override_vector_index).definition_index;
+					}
+					else {
+						static auto unused_value = 0;
+						selected_entry.definition_override_vector_index = 0;
+					}
+
+					if (selected_entry.definition_index != GLOVE_T_SIDE &&
+						selected_entry.definition_index != GLOVE_CT_SIDE &&
+						selected_entry.definition_index != WEAPON_KNIFE &&
+						selected_entry.definition_index != WEAPON_KNIFE_T)
+					{
+						selected_weapon_name = k_weapon_names_preview[definition_vector_index].name;
+					}
+					else
+					{
+						if (selected_entry.definition_index == GLOVE_T_SIDE ||
+							selected_entry.definition_index == GLOVE_CT_SIDE)
+						{
+							selected_weapon_name = k_glove_names_preview.at(selected_entry.definition_override_vector_index).name;
+						}
+						if (selected_entry.definition_index == WEAPON_KNIFE ||
+							selected_entry.definition_index == WEAPON_KNIFE_T)
+						{
+							selected_weapon_name = k_knife_names_preview.at(selected_entry.definition_override_vector_index).name;
+						}
+					}
+					if (skins_parsed)
+					{
+						static char filter_name[32];
+						std::string filter = filter_name;
+
+						bool is_glove = selected_entry.definition_index == GLOVE_T_SIDE ||
+							selected_entry.definition_index == GLOVE_CT_SIDE;
+
+						bool is_knife = selected_entry.definition_index == WEAPON_KNIFE ||
+							selected_entry.definition_index == WEAPON_KNIFE_T;
+
+						int cur_weapidx = 0;
+						if (!is_glove && !is_knife)
+						{
+							cur_weapidx = k_weapon_names[definition_vector_index].definition_index;
+							//selected_weapon_name = k_weapon_names_preview[definition_vector_index].name;
+						}
+						else
+						{
+							if (selected_entry.definition_index == GLOVE_T_SIDE ||
+								selected_entry.definition_index == GLOVE_CT_SIDE)
+							{
+								cur_weapidx = k_glove_names.at(selected_entry.definition_override_vector_index).definition_index;
+							}
+							if (selected_entry.definition_index == WEAPON_KNIFE ||
+								selected_entry.definition_index == WEAPON_KNIFE_T)
+							{
+								cur_weapidx = k_knife_names.at(selected_entry.definition_override_vector_index).definition_index;
+
+							}
+						}
+
+						auto weaponName = weaponnames(cur_weapidx);
+						{
+							if (selected_entry.definition_index != GLOVE_T_SIDE && selected_entry.definition_index != GLOVE_CT_SIDE)
+							{
+								if (ImGui::Selectable(" - ", selected_entry.paint_kit_index == -1))
+								{
+									selected_entry.paint_kit_vector_index = -1;
+									selected_entry.paint_kit_index = -1;
+									selected_skin_name = "";
+								}
+
+								int lastID = ImGui::GetItemID();
+								for (size_t w = 0; w < k_skins.size(); w++)
+								{
+									for (auto names : k_skins[w].weaponName)
+									{
+										std::string name = k_skins[w].name;
+
+										if (g_Options.changers.skin.show_cur)
+										{
+											if (names != weaponName)
+												continue;
+										}
+
+										if (name.find(filter) != name.npos)
+										{
+											ImGui::PushID(lastID++);
+
+											ImGui::PushStyleColor(ImGuiCol_Text, skins::get_color_ratiry(is_knife && g_Options.changers.skin.show_cur ? 6 : k_skins[w].rarity));
+											{
+												if (ImGui::Selectable(name.c_str(), selected_entry.paint_kit_vector_index == w))
+												{
+													selected_entry.paint_kit_vector_index = w;
+													selected_entry.paint_kit_index = k_skins[selected_entry.paint_kit_vector_index].id;
+													selected_skin_name = k_skins[w].name_short;
+												}
+											}
+											ImGui::PopStyleColor();
+
+											ImGui::PopID();
+										}
+									}
+								}
+							}
+							else
+							{
+								int lastID = ImGui::GetItemID();
+
+								if (ImGui::Selectable(" - ", selected_entry.paint_kit_index == -1))
+								{
+									selected_entry.paint_kit_vector_index = -1;
+									selected_entry.paint_kit_index = -1;
+									selected_skin_name = "";
+								}
+
+								for (size_t w = 0; w < k_gloves.size(); w++)
+								{
+									for (auto names : k_gloves[w].weaponName)
+									{
+										std::string name = k_gloves[w].name;
+
+										if (g_Options.changers.skin.show_cur)
+										{
+											if (names != weaponName)
+												continue;
+										}
+
+										if (name.find(filter) != name.npos)
+										{
+											ImGui::PushID(lastID++);
+
+											ImGui::PushStyleColor(ImGuiCol_Text, skins::get_color_ratiry(6));
+											{
+												if (ImGui::Selectable(name.c_str(), selected_entry.paint_kit_vector_index == w))
+												{
+													selected_entry.paint_kit_vector_index = w;
+													selected_entry.paint_kit_index = k_gloves[selected_entry.paint_kit_vector_index].id;
+													selected_skin_name = k_gloves[selected_entry.paint_kit_vector_index].name_short;
+												}
+											}
+											ImGui::PopStyleColor();
+
+											ImGui::PopID();
+										}
+									}
+								}
+							}
+						}
+					}
+					else
+					{
+						ImGui::Text("Skins dont downloading");
+						ImGui::Text("Wait...");
+						ImGui::Spacing();
+						ImGui::Spacing();
+						ImGui::Spacing();
+						ImGui::Spacing();
+						ImGui::Text("Download...");
+					}
 					break;
 				}
 				break;
