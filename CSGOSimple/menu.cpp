@@ -614,7 +614,11 @@ void Menu::Render()
 			case 0:
 				switch (subtab[0]) {
 				case 0:
-
+					ImGui::Separator("AntiAim");
+					ImGui::Checkbox("Enabled", &g_Options.antiaim);
+					ImGui::Text("Flip fake body");
+					ImGui::SameLine();
+					ImGui::Hotkey("", &g_Options.antiaim_flip);
 					break;
 				case 1:
 					ImGui::Separator("Settings");
@@ -722,9 +726,15 @@ void Menu::Render()
 
 					ImGui::Checkbox("Bunny hop", &g_Options.misc_bhop);
 					ImGui::Checkbox("Edge bug", &g_Options.edge_bug); ImGui::SameLine(); ImGui::Hotkey("  ", &g_Options.edge_bug_key);
-					ImGui::Checkbox("Jump bug", &g_Options.jump_bug); ImGui::SameLine(); ImGui::Hotkey("   ", &g_Options.jump_bug_key);
 					ImGui::Checkbox("Edge jump", &g_Options.edgejump.enabled); ImGui::SameLine(); ImGui::Hotkey("    ", &g_Options.edgejump.hotkey);
 					ImGui::Checkbox("Duck in Air", &g_Options.edgejump.edge_jump_duck_in_air);
+
+					ImGui::Separator("Third Person");
+					ImGui::Checkbox("Third Person", &g_Options.misc_thirdperson);
+					ImGui::SameLine();
+					ImGui::Hotkey("", &g_Options.misc_thirdperson_bind);
+					ImGui::Spacing();
+					ImGui::SliderFloat("Distance", &g_Options.misc_thirdperson_dist, 50.f, 300.f);
 					break;
 				case 1:
 					ImGui::Spacing();

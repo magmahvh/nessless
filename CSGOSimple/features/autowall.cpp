@@ -10,7 +10,7 @@
 #define HITGROUP_RIGHTLEG 7
 #define HITGROUP_GEAR 10
 
-float Autowall::GetHitgroupDamageMultiplier(int iHitGroup)
+float GetHitgroupDamageMultiplier(int iHitGroup)
 {
 	switch (iHitGroup)
 	{
@@ -38,7 +38,7 @@ float Autowall::GetHitgroupDamageMultiplier(int iHitGroup)
 	return 1.0f;
 }
 
-void Autowall::ClipTraceToPlayers(const Vector& vecAbsStart, const Vector& vecAbsEnd, uint32_t mask, ITraceFilter* filter, trace_t* tr)
+void ClipTraceToPlayers(const Vector& vecAbsStart, const Vector& vecAbsEnd, uint32_t mask, ITraceFilter* filter, trace_t* tr)
 {
 	float smallestFraction = tr->fraction;
 	constexpr float maxRange = 60.0f;
@@ -91,7 +91,7 @@ void Autowall::ClipTraceToPlayers(const Vector& vecAbsStart, const Vector& vecAb
 	}
 }
 
-void Autowall::ScaleDamage(int hitgroup, C_BasePlayer* enemy, float weapon_armor_ratio, float& current_damage)
+void ScaleDamage(int hitgroup, C_BasePlayer* enemy, float weapon_armor_ratio, float& current_damage)
 {
 	static auto mp_damage_scale_ct_head = g_CVar->FindVar("mp_damage_scale_ct_head");
 	static auto mp_damage_scale_t_head = g_CVar->FindVar("mp_damage_scale_t_head");
@@ -183,7 +183,7 @@ void Autowall::ScaleDamage(int hitgroup, C_BasePlayer* enemy, float weapon_armor
 	}
 }
 
-bool Autowall::TraceToExit(Vector& end, trace_t* enter_trace, Vector start, Vector dir, trace_t* exit_trace)
+bool TraceToExit(Vector& end, trace_t* enter_trace, Vector start, Vector dir, trace_t* exit_trace)
 {
 	float distance = 0.0f;
 	while (distance <= 90.0f)
@@ -239,7 +239,7 @@ bool Autowall::TraceToExit(Vector& end, trace_t* enter_trace, Vector start, Vect
 	return false;
 }
 
-bool Autowall::HandleBulletPenetration(CCSWeaponInfo* weaponInfo, FireBulletData& data)
+bool HandleBulletPenetration(CCSWeaponInfo* weaponInfo, Autowall::FireBulletData& data)
 {
 	surfacedata_t* enter_surface_data = g_PhysSurface->GetSurfaceData(data.enter_trace.surface.surfaceProps);
 
@@ -316,7 +316,7 @@ void TraceLine(Vector vecAbsStart, Vector vecAbsEnd, unsigned int mask, C_BasePl
 	g_EngineTrace->TraceRay(ray, mask, &filter, ptr);
 }
 
-bool Autowall::SimulateFireBullet(C_BaseCombatWeapon* pWeapon, FireBulletData& data)
+bool SimulateFireBullet(C_BasePlayer* player, C_BaseCombatWeapon* pWeapon, Autowall::FireBulletData& data)
 {
 	CCSWeaponInfo* weaponInfo = pWeapon->GetCSWeaponData();
 
@@ -333,16 +333,16 @@ bool Autowall::SimulateFireBullet(C_BaseCombatWeapon* pWeapon, FireBulletData& d
 		CTraceFilter local_filter;
 		local_filter.pSkip = g_LocalPlayer;
 		ClipTraceToPlayers(data.src, end + data.direction * 40.0f, MASK_SHOT_HULL | CONTENTS_HITBOX, &local_filter, &data.enter_trace);
-		if (data.enter_trace.fraction == 1.0f)
-			break;
+
+		g_CVar->ConsolePrintf(std::to_string(data.enter_trace.hitgroup).c_str());
+		g_CVar->ConsolePrintf("\n"); 
 
 		if (data.enter_trace.hitgroup <= HITGROUP_RIGHTLEG && data.enter_trace.hitgroup > HITGROUP_GENERIC)
-		{
+		{ 
 			data.trace_length += data.enter_trace.fraction * data.trace_length_remaining;
 			data.current_damage *= powf(weaponInfo->flRangeModifier, data.trace_length * 0.002f);
 
-			C_BasePlayer* player = (C_BasePlayer*)data.enter_trace.hit_entity;
-			Autowall::ScaleDamage(data.enter_trace.hitgroup, player, weaponInfo->flArmorRatio, data.current_damage);
+			ScaleDamage(data.enter_trace.hitgroup, player, weaponInfo->flArmorRatio, data.current_damage);
 
 			return true;
 		}
@@ -354,7 +354,7 @@ bool Autowall::SimulateFireBullet(C_BaseCombatWeapon* pWeapon, FireBulletData& d
 	return false;
 }
 
-float Autowall::GetDamage(const Vector& point)
+float Autowall::GetDamage(C_BasePlayer* player, const Vector& point)
 {
 	float damage = 0.f;
 	Vector dst = point;
@@ -370,7 +370,7 @@ float Autowall::GetDamage(const Vector& point)
 	if (!activeWeapon)
 		return -1.0f;
 
-	if (SimulateFireBullet(activeWeapon, data))
+	if (SimulateFireBullet(player, activeWeapon, data))
 		damage = data.current_damage;
 
 	return damage;

@@ -155,7 +155,7 @@ C_BasePlayer* CRagebot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& be
 			Math::VectorAngles(hitboxPos - eyePos, ang);
 			const float fov = GetFovToPlayer(cmd->viewangles + last_punch * 2.f, ang);
 			
-			const auto damage = Autowall::Get().GetDamage(hitboxPos);
+			const auto damage = Autowall::Get().GetDamage(player, hitboxPos);
 
 			if (!g_LocalPlayer->CanSeePlayer(player, hitboxPos))
 			{

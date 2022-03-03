@@ -4,6 +4,13 @@
 
 namespace Math
 {
+    void NormalizeAngles(QAngle& angles)
+    {
+        for (auto i = 0; i < 3; i++) {
+            while (angles[i] < -180.0f) angles[i] += 360.0f;
+            while (angles[i] > 180.0f) angles[i] -= 360.0f;
+        }
+    }
 	//--------------------------------------------------------------------------------
 	float VectorDistance(const Vector& v1, const Vector& v2)
 	{
@@ -214,6 +221,34 @@ namespace Math
                     cmd->buttons |= IN_FORWARD;
             }
         }
+    }
+
+    void CorrectMovement(QAngle vOldAngles, CUserCmd* pCmd, float fOldForward, float fOldSidemove)
+    {
+        // side/forward move correction
+        float deltaView;
+        float f1;
+        float f2;
+
+        if (vOldAngles.yaw < 0.f)
+            f1 = 360.0f + vOldAngles.yaw;
+        else
+            f1 = vOldAngles.yaw;
+
+        if (pCmd->viewangles.yaw < 0.0f)
+            f2 = 360.0f + pCmd->viewangles.yaw;
+        else
+            f2 = pCmd->viewangles.yaw;
+
+        if (f2 < f1)
+            deltaView = abs(f2 - f1);
+        else
+            deltaView = 360.0f - abs(f1 - f2);
+
+        deltaView = 360.0f - deltaView;
+
+        pCmd->forwardmove = cos(DEG2RAD(deltaView)) * fOldForward + cos(DEG2RAD(deltaView + 90.f)) * fOldSidemove;
+        pCmd->sidemove = sin(DEG2RAD(deltaView)) * fOldForward + sin(DEG2RAD(deltaView + 90.f)) * fOldSidemove;
     }
 
 

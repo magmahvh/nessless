@@ -11,6 +11,38 @@
 
 #define A( s ) #s
 #define OPTION(type, var, val) Var<type> var = {A(var), val}
+
+enum AntiAimPitch_t
+{
+	ANTIAIM_PITCH_NONE,
+	ANTIAIM_PITCH_DOWN,
+	ANTIAIM_PITCH_UP,
+	ANTIAIM_PITCH_DANCE,
+	ANTIAIM_PITCH_FAKEUP,
+	ANTIAIM_PITCH_FAKEDOWN,
+	ANTIAIM_PITCH_RANDOM
+};
+
+enum AntiAimYaw_t
+{
+	ANTIAIM_YAW_NONE,
+	ANTIAIM_YAW_SPIN,
+	ANTIAIM_YAW_STATIC_FORWARD,
+	ANTIAIM_YAW_STATIC_RIGHT,
+	ANTIAIM_YAW_STATIC_BACKWARDS,
+	ANTIAIM_YAW_STATIC_LEFT,
+	ANTIAIM_YAW_BACKWARDS,
+	ANTIAIM_YAW_LEFT,
+	ANTIAIM_YAW_RIGHT,
+	ANTIAIM_YAW_SIDE,
+	ANTIAIM_YAW_FAKE_LBY1,
+	ANTIAIM_YAW_FAKE_LBY2,
+	ANTIAIM_YAW_JITTER,
+	ANTIAIM_YAW_BACKJITTER,
+	ANTIAIM_YAW_FAKE_SIDE_LBY,
+	ANTIAIM_YAW_RANDOM
+};
+
 template <typename T>
 class ConfigValue
 {
@@ -143,6 +175,11 @@ public:
 		} hitboxes;
 	} ragebot[6];
 
+	
+	bool antiaim = false;
+	int antiaim_flip = 0;
+
+
 	// 
 	// ESP
 	// 
@@ -194,7 +231,6 @@ public:
 	// MISC
 	//
 	bool misc_bhop = false;
-	bool misc_bhop_param = false;
 	int playerModelT{ 0 };
 	int playerModelCT{ 0 };
 
@@ -208,6 +244,9 @@ public:
 	bool no_flash = false;
 	bool no_smoke = false;
 	bool spectator_list = false;
+	bool misc_thirdperson = false;
+	int misc_thirdperson_bind = 0;
+	float misc_thirdperson_dist = 50.f;
 
 	struct
 	{
@@ -218,8 +257,6 @@ public:
 	} edgejump;
 	bool edge_bug;
 	int edge_bug_key;
-	bool jump_bug = false;
-	int jump_bug_key;
 	int glow_enemies_type;
 	bool sniper_xhair = false;
 

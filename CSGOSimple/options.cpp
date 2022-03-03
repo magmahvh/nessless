@@ -190,6 +190,9 @@ void Options::SetupWeapons()
 
 	}
 
+	SetupValue(g_Options.antiaim, "AntiAim", "Enabled");
+	SetupValue(g_Options.antiaim_flip, "AntiAim", "Flip");
+
 	for (auto& [key, val] : k_weapon_names) {
 		auto& option = g_Options.changers.skin.m_items[key];
 		SetupValue(option.definition_vector_index, val, "d_vec_index");
@@ -246,14 +249,15 @@ void Options::SetupMisc()
 	SetupValue(g_Options.misc_bhop, "Misc", "Bunny hop");
 	SetupValue(g_Options.edge_bug, "Misc", "Edge bug");
 	SetupValue(g_Options.edge_bug_key, "Misc", "edge_bug_key");
-	SetupValue(g_Options.jump_bug, "Misc", "jump_bug");
-	SetupValue(g_Options.jump_bug_key, "Misc", "jump_bug_key");
 	SetupValue(g_Options.edgejump.enabled, "Misc", "Edge jump");
 	SetupValue(g_Options.edgejump.hotkey, "Misc", "edgejump_key");
 	SetupValue(g_Options.edgejump.edge_jump_duck_in_air, "Misc", "Duck in Air");
 	SetupValue(g_Options.sniper_xhair, "Misc", "Sniper crosshair");
 	SetupValue(g_Options.playerModelCT, "Misc", "playerModelCT");
 	SetupValue(g_Options.playerModelT, "Misc", "playerModelT");
+	SetupValue(g_Options.misc_thirdperson, "Misc", "Thirdperson");
+	SetupValue(g_Options.misc_thirdperson_bind, "Misc", "Thirdperson bind");
+	SetupValue(g_Options.misc_thirdperson_dist, "Misc", "Thirdperson distance");
 
 }
 

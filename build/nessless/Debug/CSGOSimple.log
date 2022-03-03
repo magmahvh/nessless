@@ -1,27 +1,2 @@
-﻿  render.cpp
-C:\Users\User\Desktop\source\CSGOSimple\render.hpp(95,49): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
-          with
-          [
-              T=LONG
-          ]
-C:\Users\User\Desktop\source\CSGOSimple\render.hpp(98): message : выполняется компиляция ссылки на экземпляр шаблон функции "void Render::RenderBox<LONG>(T,T,T,T,Color,float,float)"
-          with
-          [
-              T=LONG
-          ]
-C:\Users\User\Desktop\source\CSGOSimple\render.hpp(95,45): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
-          with
-          [
-              T=LONG
-          ]
-C:\Users\User\Desktop\source\CSGOSimple\render.hpp(95,33): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
-          with
-          [
-              T=LONG
-          ]
-C:\Users\User\Desktop\source\CSGOSimple\render.hpp(95,29): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
-          with
-          [
-              T=LONG
-          ]
-  CSGOSimple.vcxproj -> C:\Users\User\Desktop\source\bin\Debug\csgosimple.dll
+﻿  autowall.cpp
+  CSGOSimple.vcxproj -> C:\Users\User\Documents\GitHub\nessless\bin\Debug\csgosimple.dll

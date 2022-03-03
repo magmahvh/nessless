@@ -11,6 +11,9 @@
 #include "features/visuals.hpp"
 #include "features/glow.hpp"
 #include "features/skins.h"
+#include "features/antiaim.hpp"
+#include "features/misc.hpp"
+#include "features/resolver.h"
 
 #pragma intrinsic(_ReturnAddress)  
 
@@ -201,96 +204,6 @@ namespace Hooks {
 
 		g_Legitbot->Run(cmd);
 		g_Ragebot->Run(cmd);
-		float max_radias = D3DX_PI * 2;
-		float step = max_radias / 128;
-		float xThick = 23;
-		if (g_Options.jump_bug && GetAsyncKeyState(g_Options.jump_bug_key)) {
-			if (g_LocalPlayer->m_fFlags() & FL_ONGROUND) {
-				g_Options.misc_bhop_param = false;
-				bool unduck = cmd->buttons &= ~in_duck;
-				if (unduck) {
-					cmd->buttons &= ~in_duck; // duck
-					cmd->buttons |= in_jump; // jump
-					unduck = false;
-				}
-				Vector pos = g_LocalPlayer->abs_origin();
-				for (float a = 0.f; a < max_radias; a += step) {
-					Vector pt;
-					pt.x = (xThick * cos(a)) + pos.x;
-					pt.y = (xThick * sin(a)) + pos.y;
-					pt.z = pos.z;
-
-
-					Vector pt2 = pt;
-					pt2.z -= 8192;
-
-					trace_t fag;
-
-					Ray_t ray;
-					ray.Init(pt, pt2);
-
-					CTraceFilter flt;
-					flt.pSkip = g_LocalPlayer;
-					g_EngineTrace->TraceRay(ray, MASK_PLAYERSOLID, &flt, &fag);
-
-					if (fag.fraction != 1.f && fag.fraction != 0.f) {
-						cmd->buttons |= in_duck; // duck
-						cmd->buttons &= ~in_jump; // jump
-						unduck = true;
-					}
-				}
-				for (float a = 0.f; a < max_radias; a += step) {
-					Vector pt;
-					pt.x = ((xThick - 2.f) * cos(a)) + pos.x;
-					pt.y = ((xThick - 2.f) * sin(a)) + pos.y;
-					pt.z = pos.z;
-
-					Vector pt2 = pt;
-					pt2.z -= 8192;
-
-					trace_t fag;
-
-					Ray_t ray;
-					ray.Init(pt, pt2);
-
-					CTraceFilter flt;
-					flt.pSkip = g_LocalPlayer;
-					g_EngineTrace->TraceRay(ray, MASK_PLAYERSOLID, &flt, &fag);
-
-					if (fag.fraction != 1.f && fag.fraction != 0.f) {
-						cmd->buttons |= in_duck; // duck
-						cmd->buttons &= ~in_jump; // jump
-						unduck = true;
-					}
-				}
-				for (float a = 0.f; a < max_radias; a += step) {
-					Vector pt;
-					pt.x = ((xThick - 20.f) * cos(a)) + pos.x;
-					pt.y = ((xThick - 20.f) * sin(a)) + pos.y;
-					pt.z = pos.z;
-
-					Vector pt2 = pt;
-					pt2.z -= 8192;
-
-					trace_t fag;
-
-					Ray_t ray;
-					ray.Init(pt, pt2);
-
-					CTraceFilter flt;
-					flt.pSkip = g_LocalPlayer;
-					g_EngineTrace->TraceRay(ray, MASK_PLAYERSOLID, &flt, &fag);
-
-					if (fag.fraction != 1.f && fag.fraction != 0.f) {
-						cmd->buttons |= in_duck; // duck
-						cmd->buttons &= ~in_jump; // jump
-						unduck = true;
-					}
-				}
-			}
-		}
-		else g_Options.misc_bhop_param = true;
-
 		prediction->EndPrediction();
 		if (g_Options.edgejump.enabled && GetAsyncKeyState(g_Options.edgejump.hotkey))
 		{
@@ -299,6 +212,21 @@ namespace Hooks {
 
 			if (!(g_LocalPlayer->m_fFlags() & FL_ONGROUND) && g_Options.edgejump.edge_jump_duck_in_air && !(cmd->buttons |= IN_DUCK))
 				cmd->buttons |= IN_DUCK;
+		}
+
+		if (g_LocalPlayer->IsAlive() && g_EngineClient->IsInGame()) Antiaim::Get().Run(cmd, bSendPacket);
+
+		for (int i = 1; i < g_EngineClient->GetMaxClients(); i++)
+		{
+			C_BasePlayer* pEntity = (C_BasePlayer*)g_EntityList->GetClientEntity(i)->GetBaseEntity();
+
+			if (!pEntity)
+				continue; 
+
+			if (pEntity == g_LocalPlayer)
+				continue;
+
+			Resolver::Get().Resolve(pEntity);
 		}
 
 		// https://github.com/spirthack/CSGOSimple/issues/69
@@ -411,6 +339,8 @@ namespace Hooks {
 	void __fastcall hkOverrideView(void* _this, int edx, CViewSetup* vsView)
 	{
 		static auto ofunc = clientmode_hook.get_original<decltype(&hkOverrideView)>(index::OverrideView);
+
+		//Misc::Get().ThirdPerson();
 
 		ofunc(g_ClientMode, edx, vsView);
 	}

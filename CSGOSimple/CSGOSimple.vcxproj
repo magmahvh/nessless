@@ -98,14 +98,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="features\aimbot.cpp" />
+    <ClCompile Include="features\antiaim.cpp" />
     <ClCompile Include="features\autowall.cpp" />
     <ClCompile Include="features\bhop.cpp" />
     <ClCompile Include="features\chams.cpp" />
     <ClCompile Include="features\glow.cpp" />
     <ClCompile Include="features\item_definitions.cpp" />
     <ClCompile Include="features\kit_parser.cpp" />
+    <ClCompile Include="features\misc.cpp" />
     <ClCompile Include="features\parser.cpp" />
     <ClCompile Include="features\ragebot.cpp" />
+    <ClCompile Include="features\resolver.cpp" />
     <ClCompile Include="features\skins.cpp" />
     <ClCompile Include="features\visuals.cpp" />
     <ClCompile Include="helpers\input.cpp" />
@@ -140,11 +143,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="features\aimbot.hpp" />
+    <ClInclude Include="features\antiaim.hpp" />
     <ClInclude Include="features\autowall.hpp" />
     <ClInclude Include="features\item_definitions.h" />
     <ClInclude Include="features\kit_parser.h" />
+    <ClInclude Include="features\misc.hpp" />
     <ClInclude Include="features\parser.h" />
     <ClInclude Include="features\ragebot.hpp" />
+    <ClInclude Include="features\resolver.h" />
     <ClInclude Include="features\skins.h" />
     <ClInclude Include="helpers\prediction.hpp" />
     <ClInclude Include="imgui\impl\imgui_impl_dx9.h" />

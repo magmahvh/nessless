@@ -20,6 +20,7 @@ namespace Math
 		i >>= 1;
 		return *(float*)&i;
 	}
+	void NormalizeAngles(QAngle& angles);
 	float VectorDistance(const Vector& v1, const Vector& v2);
 	QAngle CalcAngle(const Vector& src, const Vector& dst);
 	float GetFOV(const QAngle& viewAngle, const QAngle& aimAngle);
@@ -40,6 +41,7 @@ namespace Math
     void VectorAngles(const Vector& forward, QAngle& angles);
     bool WorldToScreen(const Vector& in, Vector& out);
 	void CorrectMovement(CUserCmd* cmd, QAngle wish_angle, QAngle old_angles);
+	void CorrectMovement(QAngle vOldAngles, CUserCmd* pCmd, float fOldForward, float fOldSidemove);
 	void vector_angles(const Vector& forward, Vector& angles);
 	void angle_vectors(const Vector& angles, Vector& forward);
 
