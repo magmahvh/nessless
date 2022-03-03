@@ -128,6 +128,8 @@ void Options::SetupColor(Color& value, const std::string& name)
 
 void Options::SetupWeapons()
 {
+	SetupValue(g_Options.legit_enabled, "LEGITON", "Enabled Legit");
+	SetupValue(g_Options.rage_enabled, "RAGEON", "Enabled Rage");
 	for (int i = 0; i < 5; i++)
 	{
 		auto aimbot = &g_Options.legitbot[i];
@@ -173,6 +175,7 @@ void Options::SetupWeapons()
 		SetupValue(aimbot->enabled, "RAGEBOTWPN" + i, "Enabled");
 		SetupValue(aimbot->autoshot, "RAGEBOTWPN" + i, "Autoshot");
 		SetupValue(aimbot->autowall, "RAGEBOTWPN" + i, "Autowall");
+		SetupValue(aimbot->autostop, "RAGEBOTWPN" + i, "Autostop");
 		SetupValue(aimbot->silent, "RAGEBOTWPN" + i, "Silent");
 
 		SetupValue(aimbot->damage, "RAGEBOTWPN" + i, "Damage");

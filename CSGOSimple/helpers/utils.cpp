@@ -225,6 +225,7 @@ namespace Utils {
      *
      * @returns Address of the first occurence
      */
+
     HMODULE GetModule(const char* name)
     {
         if (!modules.count(name) || !modules[name])

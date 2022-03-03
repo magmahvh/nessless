@@ -126,6 +126,7 @@ public:
 		bool enabled = false;
 		bool autoshot = false;
 		bool autowall = false;
+		bool autostop = false;
 		bool silent = false;
 
 		int damage = 1;

@@ -426,8 +426,9 @@ void Menu::Render()
 				case 1:
 					ImGui::Separator("Weapons");
 					ImGui::Combo("Weapon", &g_Options.ragebot_weapon, rage_weapons);
-					ImGui::Checkbox("Enabled Weapon", &ragebot->enabled);
+					ImGui::Checkbox("Enabled Weapon", &ragebot->enabled); 
 					ImGui::Checkbox("Auto shot", &ragebot->autoshot);
+					ImGui::Checkbox("Auto accuracy", &ragebot->autostop);
 					ImGui::Checkbox("Through obstacle", &ragebot->autowall); 
 					ImGui::Checkbox("Silent", &ragebot->silent);
 					break;

@@ -40,5 +40,7 @@ namespace Math
     void VectorAngles(const Vector& forward, QAngle& angles);
     bool WorldToScreen(const Vector& in, Vector& out);
 	void CorrectMovement(CUserCmd* cmd, QAngle wish_angle, QAngle old_angles);
+	void vector_angles(const Vector& forward, Vector& angles);
+	void angle_vectors(const Vector& angles, Vector& forward);
 
 }

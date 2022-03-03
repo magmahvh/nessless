@@ -155,16 +155,13 @@ C_BasePlayer* CRagebot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& be
 			Math::VectorAngles(hitboxPos - eyePos, ang);
 			const float fov = GetFovToPlayer(cmd->viewangles + last_punch * 2.f, ang);
 			
-			const auto damage = int(Autowall::GetDamage(hitboxPos));
+			const auto damage = Autowall::Get().GetDamage(hitboxPos);
 
 			if (!g_LocalPlayer->CanSeePlayer(player, hitboxPos))
 			{
 				if (!g_Options.ragebot[wpnGroupRage(weapon)].autowall)
 					continue;
 			}
-
-			if (!Hitchance(g_Options.ragebot[wpnGroupRage(weapon)].hitchance, weapon))
-				continue;
 
 			if (bestFov > fov)
 			{
@@ -177,6 +174,38 @@ C_BasePlayer* CRagebot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& be
 	}
 
 	return target;
+}
+
+void CRagebot::AutoStop(CUserCmd* cmd, CCSWeaponInfo* weapon_data) {
+	if (g_Options.ragebot[wpnGroupRage(weapon)].autostop)
+	{
+		if (!(g_LocalPlayer->m_fFlags() & FL_ONGROUND))
+			return;
+
+		Vector velocity = g_LocalPlayer->m_vecVelocity();
+		QAngle direction;
+
+		Math::VectorAngles(velocity, direction);
+
+		float speed = velocity.Length2D();
+
+		direction.yaw = cmd->viewangles.yaw - direction.yaw;
+
+		Vector forward;
+
+		Math::AngleVectors(direction, forward);
+
+		Vector source = forward * -speed;
+
+		const float factor = max(source.x, source.y) / 450.f;
+		source *= factor;
+
+		if (speed > ((g_LocalPlayer->m_bIsScoped() ? weapon_data->flSpread : weapon_data->flSpreadAlt) * 0.37f))
+		{
+			cmd->forwardmove = source.x;
+			cmd->sidemove = source.y;
+		}
+	}
 }
 
 void CRagebot::Run(CUserCmd* cmd)
@@ -209,9 +238,15 @@ void CRagebot::Run(CUserCmd* cmd)
 
 	if (GetClosestPlayer(cmd, bestBone, fov, angles))
 	{
+		AutoStop(cmd, weapon_data);
 
-		if (g_Options.ragebot[wpnGroupRage(weapon)].autoshot)
-			cmd->buttons |= IN_ATTACK;
+		if (Hitchance(g_Options.ragebot[wpnGroupRage(weapon)].hitchance, weapon)) {
+
+			if (g_Options.ragebot[wpnGroupRage(weapon)].autoshot)
+				cmd->buttons |= IN_ATTACK;
+
+		}
+
 	}
 
 	if ((cmd->buttons & IN_ATTACK))
