@@ -99,6 +99,7 @@
   <ItemGroup>
     <ClCompile Include="features\aimbot.cpp" />
     <ClCompile Include="features\antiaim.cpp" />
+    <ClCompile Include="features\autowalk.cpp" />
     <ClCompile Include="features\autowall.cpp" />
     <ClCompile Include="features\bhop.cpp" />
     <ClCompile Include="features\chams.cpp" />
@@ -144,13 +145,14 @@
   <ItemGroup>
     <ClInclude Include="features\aimbot.hpp" />
     <ClInclude Include="features\antiaim.hpp" />
+    <ClInclude Include="features\autowalk.hpp" />
     <ClInclude Include="features\autowall.hpp" />
     <ClInclude Include="features\item_definitions.h" />
     <ClInclude Include="features\kit_parser.h" />
     <ClInclude Include="features\misc.hpp" />
     <ClInclude Include="features\parser.h" />
     <ClInclude Include="features\ragebot.hpp" />
-    <ClInclude Include="features\resolver.h" />
+    <ClInclude Include="features\resolver.hpp" />
     <ClInclude Include="features\skins.h" />
     <ClInclude Include="helpers\prediction.hpp" />
     <ClInclude Include="imgui\impl\imgui_impl_dx9.h" />

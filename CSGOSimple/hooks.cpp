@@ -13,7 +13,8 @@
 #include "features/skins.h"
 #include "features/antiaim.hpp"
 #include "features/misc.hpp"
-#include "features/resolver.h"
+#include "features/resolver.hpp"
+#include "features/autowalk.hpp"
 
 #pragma intrinsic(_ReturnAddress)  
 
@@ -187,6 +188,7 @@ namespace Hooks {
 
 		auto cmd = g_Input->GetUserCmd(sequence_number);
 		auto verified = g_Input->GetVerifiedUserCmd(sequence_number);
+		auto oldangles = cmd->viewangles;
 
 		if (!cmd || !cmd->command_number)
 			return;
@@ -201,6 +203,8 @@ namespace Hooks {
 		auto flags = g_LocalPlayer->m_fFlags();
 
 		prediction->StartPrediction(cmd);
+
+		Autowalk::Get().Run(oldangles, cmd);
 
 		g_Legitbot->Run(cmd);
 		g_Ragebot->Run(cmd);
@@ -229,8 +233,7 @@ namespace Hooks {
 			Resolver::Get().Resolve(pEntity);
 		}
 
-		// https://github.com/spirthack/CSGOSimple/issues/69
-		if (g_Options.misc_showranks && cmd->buttons & IN_SCORE) // rank revealer will work even after unhooking, idk how to "hide" ranks  again
+		if (g_Options.misc_showranks && cmd->buttons & IN_SCORE)
 			g_CHLClient->DispatchUserMessage(CS_UM_ServerRankRevealAll, 0, 0, nullptr);
 
 		if (g_Options.sniper_xhair && !g_LocalPlayer->m_bIsScoped())

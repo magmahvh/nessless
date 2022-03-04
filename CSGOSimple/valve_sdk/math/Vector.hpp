@@ -163,6 +163,10 @@ public:
     {
         return sqrt(x*x + y*y);
     }
+    float Size()
+    {
+        return (float)sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
+    }
 
     Vector& operator=(const Vector &vOther)
     {

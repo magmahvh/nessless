@@ -235,6 +235,7 @@ void Options::SetupVisuals()
 
 void Options::SetupMisc()
 {
+	SetupValue(g_Options.autowalk, "Misc", "Walk bot");
 	SetupColor(g_Options.Velocitycol, "Velocity");
 	SetupValue(g_Options.misc_showranks, "Misc", "Rank reveal");
 	SetupValue(g_Options.spectator_list, "Misc", "Spectator list");

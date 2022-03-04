@@ -148,6 +148,9 @@
     <ClCompile Include="features\resolver.cpp">
       <Filter>Source Files\features</Filter>
     </ClCompile>
+    <ClCompile Include="features\autowalk.cpp">
+      <Filter>Source Files\features</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="features\bhop.hpp">
@@ -444,7 +447,10 @@
     <ClInclude Include="features\misc.hpp">
       <Filter>Source Files\features</Filter>
     </ClInclude>
-    <ClInclude Include="features\resolver.h">
+    <ClInclude Include="features\resolver.hpp">
+      <Filter>Source Files\features</Filter>
+    </ClInclude>
+    <ClInclude Include="features\autowalk.hpp">
       <Filter>Source Files\features</Filter>
     </ClInclude>
   </ItemGroup>

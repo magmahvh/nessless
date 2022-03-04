@@ -626,7 +626,7 @@ void Menu::Render()
 					ImGui::Spacing();
 					ImGui::SliderInt("##damage", &ragebot->damage, 1, 130, "%i");
 					
-					ImGui::Text("Hit Chance");
+					ImGui::Text("Hit Chance"); 
 					ImGui::Spacing();
 					ImGui::SliderInt("##hitchance", &ragebot->hitchance, 1, 100, "%i");
 
@@ -728,6 +728,8 @@ void Menu::Render()
 					ImGui::Checkbox("Edge bug", &g_Options.edge_bug); ImGui::SameLine(); ImGui::Hotkey("  ", &g_Options.edge_bug_key);
 					ImGui::Checkbox("Edge jump", &g_Options.edgejump.enabled); ImGui::SameLine(); ImGui::Hotkey("    ", &g_Options.edgejump.hotkey);
 					ImGui::Checkbox("Duck in Air", &g_Options.edgejump.edge_jump_duck_in_air);
+
+					ImGui::Checkbox("Auto player (beta)", &g_Options.autowalk);
 
 					ImGui::Separator("Third Person");
 					ImGui::Checkbox("Third Person", &g_Options.misc_thirdperson);

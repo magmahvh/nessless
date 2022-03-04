@@ -1,4 +1,4 @@
-#include "resolver.h"
+#include "resolver.hpp"
 #include "../options.hpp"
 #include "../helpers/math.hpp"
 #include <algorithm>
