@@ -218,7 +218,7 @@ namespace Hooks {
 
 		for (int i = 1; i < g_EngineClient->GetMaxClients(); i++)
 		{
-			C_BasePlayer* pEntity = (C_BasePlayer*)g_EntityList->GetClientEntity(i)->GetBaseEntity();
+			C_BasePlayer* pEntity = (C_BasePlayer*)g_EntityList->GetClientEntity(i);
 
 			if (!pEntity)
 				continue; 
