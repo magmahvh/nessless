@@ -1,6 +1,4 @@
-#include "../singleton.hpp"
-#include "../helpers/math.hpp"
-#include "../valve_sdk/csgostructs.hpp"
+
 #include <windows.h>
 #include <Lmcons.h>
 

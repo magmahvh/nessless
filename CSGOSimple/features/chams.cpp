@@ -6,6 +6,85 @@
 #include "../hooks.hpp"
 #include "../helpers/input.hpp"
 
+Chams::Chams() {
+	KeyValues* Overlay = new KeyValues("Overlay");
+	KeyValues* Animated = new KeyValues("Animated");
+	Overlay->LoadFromBuffer(Overlay, "Overlay", R"#("VertexLitGeneric" {
+ 
+	"$additive" "1"
+	"$envmap" "models/effects/cube_white"
+	"$envmaptint" "[1 1 1]"
+	"$envmapfresnel" "1"
+	"$envmapfresnelminmaxexp" "[0 1 2]"
+	"$alpha" "0.6"
+	})#");
+	Animated->LoadFromBuffer(Animated, "Animated", R"#("VertexLitGeneric" {
+    "$basetexture" "VGUI/white_additive"
+    "$bumpmap" "de_nuke/hr_nuke/pool_water_normals_002"
+    "$bumptransform" "center 0.5 0.5 scale 0.25 0.25 rotate 0.0 translate 0.0 0.0"
+	"$ignorez" "0"
+	"$nofog" "1"
+	"$model" "1"
+	"$color2" "[1.0, 1.0, 1.0]"
+	"$halflambert" "1"
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[1 1 1]"
+	"$envmapfresnel" "1.0"
+	"$envmapfresnelminmaxexp" "[1.0, 1.0, 1.0]"
+	"$phong" "1"
+	"$phongexponent" "1024"
+	"$phongboost" "4.0"
+	"$phongfresnelranges" "[1.0, 1.0, 1.0]"
+	"$rimlight" "1"
+	"$rimlightexponent" "4.0"
+	"$rimlightboost" "2.0"
+	"Proxies"
+        {
+            "TextureScroll"
+            {
+                "textureScrollVar" "$bumptransform"
+                "textureScrollRate" "0.25"
+                "textureScrollAngle" "0.0"
+            }
+        }
+	})#");
+	materialRegular = g_MatSystem->FindMaterial("debug/debugambientcube", "Model textures");
+	materialFlat = g_MatSystem->FindMaterial("debug/debugdrawflat", "Model textures");
+	materialGlass = g_MatSystem->FindMaterial("models/inventory_items/cologne_prediction/cologne_prediction_glass", "Model textures");
+	materialGlow = g_MatSystem->FindMaterial("dev/glow_armsrace", "Model textures");
+	materialOverlay = g_MatSystem->CreateMaterial("Overlay", Overlay);
+	materialOverlay->IncrementReferenceCount();
+	materialAnimated = g_MatSystem->CreateMaterial("Animated", Animated);
+	materialAnimated->IncrementReferenceCount();
+}
+
+Chams::~Chams() {
+}
+
+void Chams::OverrideMaterial(bool ignorez, int type, const Color& rgba)
+{
+	IMaterial* material = nullptr;
+	switch (type)
+	{
+	case 0: material = materialRegular; break;
+	case 1: material = materialFlat; break;
+	case 2: material = materialGlass; break;
+	case 3: material = materialGlow; break;
+	case 4: material = materialOverlay; break;
+	case 5: material = materialAnimated; break;
+	}
+	bool bFound = false;
+	IMaterialVar* pMatVar = material->FindVar("$envmaptint", &bFound);
+	if (bFound)
+	//	pMatVar->SetVecValue(rgba.r() / 255.f, rgba.g() / 255.f, rgba.b() / 255.f);
+	material->SetMaterialVarFlag(MATERIAL_VAR_IGNOREZ, ignorez);
+	material->ColorModulate(
+		rgba.r() / 255.0f,
+		rgba.g() / 255.0f,
+		rgba.b() / 255.0f);
+	g_MdlRender->ForcedMaterialOverride(material);
+}
+
 void modulate(const Color color, IMaterial* material)
 {
 	if (!g_EngineClient->IsInGame())

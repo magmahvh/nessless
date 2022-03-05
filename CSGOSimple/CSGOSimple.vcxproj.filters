@@ -151,6 +151,9 @@
     <ClCompile Include="features\autowalk.cpp">
       <Filter>Source Files\features</Filter>
     </ClCompile>
+    <ClCompile Include="valve_sdk\interfaces\IVModelRender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="features\bhop.hpp">
@@ -451,6 +454,12 @@
       <Filter>Source Files\features</Filter>
     </ClInclude>
     <ClInclude Include="features\autowalk.hpp">
+      <Filter>Source Files\features</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyValues.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IMaterialVar.h">
       <Filter>Source Files\features</Filter>
     </ClInclude>
   </ItemGroup>

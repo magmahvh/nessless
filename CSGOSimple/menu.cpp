@@ -485,7 +485,7 @@ void Menu::Render()
 					ImGui::SameLine();
 					ImGuiEx::ColorEdit4("##color_chams_enemies_visible_shine", &g_Options.player_enemy_visible_shine);
 					ImGui::Checkbox("Occluded  ", &g_Options.chams_player_ignorez); ImGui::SameLine(); ImGuiEx::ColorEdit4a("Enemy Occluded ", &g_Options.color_chams_player_enemy_occluded);
-					ImGui::Combo("##Flat", &g_Options.chams_player_flat, "Normal\0Flat \0");
+					ImGui::Combo("##Flat", &g_Options.chams_player_flat, "Normal\0Flat\0Glass \0");
 					break;
 				}
 				break;

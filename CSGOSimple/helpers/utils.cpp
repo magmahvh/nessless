@@ -106,6 +106,8 @@ namespace Utils {
      *
      * Detach and destroy the attached console
      */
+
+
     void DetachConsole()
     {
         if(_out && _err && _in) {
@@ -359,4 +361,9 @@ namespace Utils {
     {
         return g_GameTypes->GetCurrentGameType() == 6;
     }
+}
+
+bool KeyValues::LoadFromBuffer(KeyValues* pThis, const char* pszFirst, const char* pszSecond, PVOID pSomething, PVOID pAnother, PVOID pLast, PVOID pAnother2)
+{
+    return false;
 }
