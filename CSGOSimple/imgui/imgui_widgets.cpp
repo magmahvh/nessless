@@ -69,6 +69,8 @@ Index of this file:
 #endif
 #endif
 
+#include "../options.hpp"
+
 //-------------------------------------------------------------------------
 // Data
 //-------------------------------------------------------------------------
@@ -934,7 +936,7 @@ bool ImGui::Checkbox(const char* label, bool* v)
 
     if (*v)
     {
-        window->DrawList->AddRectFilled(check_bb.Min + ImVec2(6, 5), check_bb.Max + ImVec2(-4, -5), ImColor(130, 143, 233));
+        window->DrawList->AddRectFilled(check_bb.Min + ImVec2(6, 5), check_bb.Max + ImVec2(-4, -5), ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b()));
     }
 
     window->DrawList->AddRect(check_bb.Min + ImVec2(6, 5), check_bb.Max + ImVec2(-4, -5), ImColor(0, 0, 0));
@@ -2355,7 +2357,7 @@ bool ImGui::SliderScalar(const char* label, ImGuiDataType data_type, void* v, co
     if (value_changed)
         MarkItemEdited(id);
 
-    window->DrawList->AddRectFilled(frame_bb.Min, grab_bb.Max + ImVec2(0, 2), ImColor(200, 200, 200), style.GrabRounding);
+    window->DrawList->AddRectFilled(frame_bb.Min, grab_bb.Max + ImVec2(0, 2), ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b()), style.GrabRounding);
     window->DrawList->AddRect(frame_bb.Min, frame_bb.Max, ImColor(0, 0, 0));
 
     char value_buf[64];

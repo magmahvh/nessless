@@ -6,6 +6,7 @@
 #include "helpers/input.hpp"
 #include "features/aimbot.hpp"
 #include "features/kit_parser.h"
+#include "helpers/logs.hpp"
 
 #include "hooks.hpp"
 #include "menu.hpp"
@@ -55,6 +56,8 @@ DWORD WINAPI OnDllAttach(LPVOID base)
 
         Utils::ConsolePrint("Finished.\n");
 		Utils::ConsolePrint("Built on: %s %s\n", __DATE__, __TIME__);
+
+        Logs::Get().Create("Welcome back to NessLess");
 
         while(!g_Unload)
             Sleep(1000);

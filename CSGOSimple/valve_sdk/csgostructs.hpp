@@ -255,7 +255,8 @@ public:
 
 	//NETVAR(int, m_iAccount, "DT_CSPlayer", "m_iAccount");
 
-
+	
+	NETVAR(std::string, m_iName, "DT_BaseEntity", "m_iName");
 	NETVAR(QAngle, m_angAbsAngles, "DT_BaseEntity", "m_angAbsAngles");
 	NETVAR(Vector, m_angAbsOrigin, "DT_BaseEntity", "m_angAbsOrigin");
 	NETVAR(float, m_flDuckSpeed, "DT_BaseEntity", "m_flDuckSpeed");

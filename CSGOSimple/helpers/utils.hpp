@@ -7,6 +7,7 @@
 #include "../valve_sdk/sdk.hpp"
 
 namespace Utils {
+    int epoch_time();
 	std::vector<char> HexToBytes(const std::string& hex);
 	std::string BytesToString(unsigned char* data, int len);
 	std::vector<std::string> Split(const std::string& str, const char* delim);

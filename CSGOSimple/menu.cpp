@@ -20,6 +20,7 @@
 
 const char* legit_weapons = "Pistols\0Rifles\0Deagle\0Sniper\0Other";
 const char* rage_weapons = "AWP\0Auto-Sniper\0Scout\0Deagle and R8\0Pistols\0Other";
+const char* chams_type = "Normal\0Flat\0Glass";
 
 void ReadDirectory(const std::string& name, std::vector<std::string>& v)
 {
@@ -169,7 +170,8 @@ bool Tab(const char* label, const ImVec2& size_arg, bool state)
 
 	if (it_alpha2->second > 0 || it_alpha->second > 0)
 	{
-		window->DrawList->AddRectFilled(bb.Min + ImVec2(size_arg.x / 2 - it_alpha2->second / 2, 0), bb.Min + ImVec2(it_alpha2->second, 4), ImColor(100, 120, 235, it_alpha->second), 2);
+		window->DrawList->AddRectFilled(bb.Min + ImVec2(size_arg.x / 2 - it_alpha2->second / 2, 0), bb.Min + ImVec2(it_alpha2->second, 4), 
+			ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), it_alpha->second), 2);
 		window->DrawList->AddRectFilled(bb.Min + ImVec2(0, 2), bb.Max, ImColor(25, 25, 25, it_alpha->second));
 		window->DrawList->AddRectFilled(bb.Min + ImVec2(1, 2), bb.Max - ImVec2(1, 0), ImColor(11, 11, 11, it_alpha->second));
 	}
@@ -209,7 +211,7 @@ bool subTab(const char* label, const ImVec2& size_arg, bool state)
 		it_alpha = alpha_anim.find(id);
 	}
 	if (state) {
-		if (it_alpha->second < 80)
+		if (it_alpha->second < 40)
 			it_alpha->second += 4;
 	}
 	else {
@@ -218,60 +220,22 @@ bool subTab(const char* label, const ImVec2& size_arg, bool state)
 	}
 
 
-	window->DrawList->AddRectFilledMultiColor(bb.Min, bb.Max, ImColor(40, 40, 40, 80 - it_alpha->second), ImColor(40, 40, 40, 0), ImColor(40, 40, 40, 0), ImColor(40, 40, 40, 80 - it_alpha->second));
-	window->DrawList->AddRectFilledMultiColor(bb.Min, bb.Max, ImColor(86, 93, 200, it_alpha->second), ImColor(86, 93, 200, 0), ImColor(86, 93, 200, 0), ImColor(86, 93, 200, it_alpha->second));
-	window->DrawList->AddRectFilled(bb.Min, bb.Min + ImVec2(3, size_arg.y), ImColor(86, 93, 200, it_alpha->second * 3));
+	window->DrawList->AddRectFilledMultiColor(bb.Min, bb.Max, ImColor(40, 40, 40, 40 - it_alpha->second), ImColor(40, 40, 40, 0), ImColor(40, 40, 40, 0), ImColor(40, 40, 40, 40 - it_alpha->second));
+	window->DrawList->AddRectFilledMultiColor(bb.Min, bb.Max, 
+		ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), it_alpha->second),
+		ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), 0), 
+		ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), 0), 
+		ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), it_alpha->second));
+	window->DrawList->AddRectFilled(bb.Min, bb.Min + ImVec2(3, size_arg.y), 
+		ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), it_alpha->second * 6));
 	window->DrawList->AddText(bb.Min + ImVec2(20, size_arg.y / 2 - ImGui::CalcTextSize(label).y / 2), ImColor(220, 220, 220), label);
 
 	return pressed;
-}
-void Menu::SpectatorList()
-{
-	if (!g_Options.spectator_list)
-		return;
-
-	std::string spectators;
-
-	if (g_EngineClient->IsInGame() && g_LocalPlayer)
-	{
-		for (int i = 1; i <= g_GlobalVars->maxClients; i++)
-		{
-			auto ent = C_BasePlayer::GetPlayerByIndex(i);
-
-			if (!ent || ent->IsAlive() || ent->IsDormant())
-				continue;
-
-			auto target = (C_BasePlayer*)ent->m_hObserverTarget();
-
-			if (!target || target != g_LocalPlayer)
-				continue;
-
-			if (ent == target)
-				continue;
-
-			auto info = ent->GetPlayerInfo();
-
-			spectators += std::string(info.szName) + u8"\n";
-		}
-	}
-
-	if (ImGui::Begin("Spectator List", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoBackground |( _visible ? NULL : ImGuiWindowFlags_NoMove)))
-	{
-		ImGui::PushFont(g_MenuFont);
-
-		ImGui::Text("Spectator List");
-
-		ImGui::Text(spectators.c_str());
-		ImGui::PopFont();
-
-	}
-	ImGui::End();
 }
 
 void Menu::Render()
 {
 	ImGui::GetIO().MouseDrawCursor = _visible;
-	SpectatorList();
     if(!_visible)
         return;
 	auto flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | NULL | NULL | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | NULL | NULL | NULL;
@@ -320,7 +284,7 @@ void Menu::Render()
 	Style->Colors[ImGuiCol_WindowBg] = ImColor(11, 11, 11);
 	Style->Colors[ImGuiCol_ChildBg] = ImColor(7, 7, 7);
 	Style->WindowBorderSize = 0;
-	Style->WindowRounding = 0;
+	Style->WindowRounding = 5;
 	Style->ChildRounding = 0;
 
 	ImGui::SetNextWindowSize({ x, y });
@@ -334,7 +298,7 @@ void Menu::Render()
 		ImGui::BeginChild("##Tabs", ImVec2{ x, 25 });
 		{
 			ImGui::SetCursorPos(ImVec2(0, 4 ));
-			Style->Colors[ImGuiCol_Text] = ImColor(62, 123, 234);
+			Style->Colors[ImGuiCol_Text] = ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b());
 			ImGui::Text("nessless");
 #if _DEBUG
 			ImGui::SameLine();
@@ -485,7 +449,7 @@ void Menu::Render()
 					ImGui::SameLine();
 					ImGuiEx::ColorEdit4("##color_chams_enemies_visible_shine", &g_Options.player_enemy_visible_shine);
 					ImGui::Checkbox("Occluded  ", &g_Options.chams_player_ignorez); ImGui::SameLine(); ImGuiEx::ColorEdit4a("Enemy Occluded ", &g_Options.color_chams_player_enemy_occluded);
-					ImGui::Combo("##Flat", &g_Options.chams_player_flat, "Normal\0Flat\0Glass \0");
+					ImGui::Combo("##Flat", &g_Options.chams_player_flat, chams_type);
 					break;
 				}
 				break;
@@ -495,7 +459,6 @@ void Menu::Render()
 					ImGui::Separator("General");
 
 					ImGui::Checkbox("Rank reveal", &g_Options.misc_showranks);
-					ImGui::Checkbox("Spectator list", &g_Options.spectator_list);
 					ImGui::Checkbox("Watermark##hc", &g_Options.misc_watermark);
 					ImGui::Checkbox("Velocity", &g_Options.Velocity);
 					ImGui::SameLine();
@@ -514,6 +477,9 @@ void Menu::Render()
 					ImGui::Checkbox("No flash", &g_Options.no_flash);
 					ImGui::Checkbox("No smoke", &g_Options.no_smoke);
 					ImGui::Checkbox("Sniper crosshair", &g_Options.sniper_xhair);
+					ImGui::Checkbox("Logs", &g_Options.logs);
+					if (g_Options.logs)
+						ImGui::Checkbox("Logs drawing", &g_Options.logs_drawing);
 					break;
 				case 1:
 					ImGui::Spacing();
@@ -589,6 +555,10 @@ void Menu::Render()
 							g_Options.DeleteSettings(cfgList[selected]);
 							selected = 0;
 						}
+						ImGui::Separator("Menu");
+						ImGui::Text("Color");
+						ImGui::SameLine();
+						ImGuiEx::ColorEdit4("##menucolor", &g_Options.menu_color);
 					}
 					break;
 				case 1:
@@ -962,7 +932,7 @@ void Menu::Render()
 			ImGui::SetCursorPos(ImVec2(5, 4));
 			ImGui::Text("Active user: ");
 			ImGui::SameLine();
-			ImGui::TextColored(ImColor(62, 123, 234), Cheat::Get().username.c_str());
+			ImGui::TextColored(ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b()), Cheat::Get().username.c_str());
 			ImGui::SameLine();
 			ImGui::Text("  Cheat: ");
 			ImGui::SameLine();

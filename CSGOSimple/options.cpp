@@ -235,10 +235,12 @@ void Options::SetupVisuals()
 
 void Options::SetupMisc()
 {
+	SetupValue(g_Options.logs, "Misc", "Logs");
+	SetupValue(g_Options.logs_drawing, "Misc", "Logs Drawing");
+
 	SetupValue(g_Options.autowalk, "Misc", "Walk bot");
 	SetupColor(g_Options.Velocitycol, "Velocity");
 	SetupValue(g_Options.misc_showranks, "Misc", "Rank reveal");
-	SetupValue(g_Options.spectator_list, "Misc", "Spectator list");
 	SetupValue(g_Options.misc_watermark, "Misc", "Watermark");
 	SetupValue(g_Options.Velocity, "Misc", "Velocity");
 	SetupValue(g_Options.outline, "Misc", "Outline");

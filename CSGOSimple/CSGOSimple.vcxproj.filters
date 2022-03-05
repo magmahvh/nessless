@@ -17,6 +17,9 @@
     <Filter Include="Source Files\SDK\h">
       <UniqueIdentifier>{89e1abf8-f9b7-415b-840f-d76b809d871f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\SDK\helpers">
+      <UniqueIdentifier>{ff5a8ebe-7a30-42bc-9365-06df64101f8d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -55,9 +58,6 @@
     <ClCompile Include="valve_sdk\math\Vector4D.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="helpers\vfunc_hook.cpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClCompile>
     <ClCompile Include="valve_sdk\math\VMatrix.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
@@ -83,9 +83,6 @@
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
     <ClCompile Include="valve_sdk\netvars.cpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClCompile>
-    <ClCompile Include="helpers\input.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
     <ClCompile Include="render.cpp">
@@ -124,15 +121,6 @@
     <ClCompile Include="features\skins.cpp">
       <Filter>Source Files\features</Filter>
     </ClCompile>
-    <ClCompile Include="helpers\prediction.cpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClCompile>
-    <ClCompile Include="helpers\math.cpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClCompile>
-    <ClCompile Include="helpers\utils.cpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClCompile>
     <ClCompile Include="options.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -151,8 +139,23 @@
     <ClCompile Include="features\autowalk.cpp">
       <Filter>Source Files\features</Filter>
     </ClCompile>
-    <ClCompile Include="valve_sdk\interfaces\IVModelRender.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="helpers\logs.cpp">
+      <Filter>Source Files\SDK\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="helpers\math.cpp">
+      <Filter>Source Files\SDK\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="helpers\prediction.cpp">
+      <Filter>Source Files\SDK\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="helpers\utils.cpp">
+      <Filter>Source Files\SDK\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="helpers\vfunc_hook.cpp">
+      <Filter>Source Files\SDK\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="helpers\input.cpp">
+      <Filter>Source Files\SDK\helpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -167,15 +170,6 @@
     </ClInclude>
     <ClInclude Include="features\visuals.hpp">
       <Filter>Source Files\features</Filter>
-    </ClInclude>
-    <ClInclude Include="helpers\utils.hpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="helpers\prediction.hpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="helpers\math.hpp">
-      <Filter>Source Files\SDK</Filter>
     </ClInclude>
     <ClInclude Include="valve_sdk\math\VMatrix.hpp">
       <Filter>Source Files\SDK\h</Filter>
@@ -369,12 +363,6 @@
     <ClInclude Include="valve_sdk\misc\vfunc.hpp">
       <Filter>Source Files\SDK\h</Filter>
     </ClInclude>
-    <ClInclude Include="helpers\vfunc_hook.hpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="helpers\input.hpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClInclude>
     <ClInclude Include="features\aimbot.hpp">
       <Filter>Source Files\features</Filter>
     </ClInclude>
@@ -456,11 +444,32 @@
     <ClInclude Include="features\autowalk.hpp">
       <Filter>Source Files\features</Filter>
     </ClInclude>
-    <ClInclude Include="KeyValues.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="IMaterialVar.h">
       <Filter>Source Files\features</Filter>
+    </ClInclude>
+    <ClInclude Include="helpers\logs.hpp">
+      <Filter>Source Files\SDK\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="helpers\IMaterialVar.h">
+      <Filter>Source Files\SDK\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="helpers\KeyValues.h">
+      <Filter>Source Files\SDK\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="helpers\math.hpp">
+      <Filter>Source Files\SDK\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="helpers\prediction.hpp">
+      <Filter>Source Files\SDK\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="helpers\utils.hpp">
+      <Filter>Source Files\SDK\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="helpers\vfunc_hook.hpp">
+      <Filter>Source Files\SDK\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="helpers\input.hpp">
+      <Filter>Source Files\SDK\helpers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -236,6 +236,9 @@ public:
 	int playerModelT{ 0 };
 	int playerModelCT{ 0 };
 
+	bool logs = true;
+	bool logs_drawing = true;
+
 	bool misc_showranks = false;
 	bool misc_watermark = false;
 	bool Velocity = false;
@@ -245,7 +248,6 @@ public:
 	bool autoaccept = false;
 	bool no_flash = false;
 	bool no_smoke = false;
-	bool spectator_list = false;
 	bool misc_thirdperson = false;
 	int misc_thirdperson_bind = 0;
 	float misc_thirdperson_dist = 50.f;
@@ -295,6 +297,8 @@ public:
 	Color color_chams_arms_occluded = { 0, 0, 0 };
 	Color color_watermark = { 0, 0, 0 }; // no menu config cuz its useless
 	Color player_enemy_visible_shine = { 0, 0, 0 };
+
+	Color menu_color = { 100, 120, 235 };
 
 
 protected:

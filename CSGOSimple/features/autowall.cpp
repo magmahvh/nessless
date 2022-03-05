@@ -334,9 +334,6 @@ bool SimulateFireBullet(C_BasePlayer* player, C_BaseCombatWeapon* pWeapon, Autow
 		local_filter.pSkip = g_LocalPlayer;
 		ClipTraceToPlayers(data.src, end + data.direction * 40.0f, MASK_SHOT_HULL | CONTENTS_HITBOX, &local_filter, &data.enter_trace);
 
-		g_CVar->ConsolePrintf(std::to_string(data.enter_trace.hitgroup).c_str());
-		g_CVar->ConsolePrintf("\n"); 
-
 		if (data.enter_trace.hitgroup <= HITGROUP_RIGHTLEG && data.enter_trace.hitgroup > HITGROUP_GENERIC)
 		{ 
 			data.trace_length += data.enter_trace.fraction * data.trace_length_remaining;

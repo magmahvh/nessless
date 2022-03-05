@@ -3,6 +3,7 @@
 #include <deque>
 #include <algorithm>
 #include <vector>
+#include "options.hpp"
 
 //template <class T>
 //bool ComboForSkins(const char* label, std::vector current_item, bool(*items_getter)(void* data, int idx, const char** out_text), void* data, int items_count, int popup_max_height_in_items = -1) {
@@ -557,7 +558,7 @@ void ImGui::Separator(const char* label)
 	const auto col = ImGui::GetColorU32(ImGui::GetStyleColorVec4(ImGuiCol_Text));
 	draw_list->AddText(pos, col, label);
 
-	draw_list->AddLine(ImVec2(pos.x + size.x + 5.f, cursor.y + size.y / 2), ImVec2(cursor.x + width, cursor.y + size.y / 2), ImColor(86, 93, 200));
+	draw_list->AddLine(ImVec2(pos.x + size.x + 5.f, cursor.y + size.y / 2), ImVec2(cursor.x + width, cursor.y + size.y / 2), ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b()));
 
 	ImGui::NewLine();
 }

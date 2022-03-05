@@ -113,6 +113,7 @@
     <ClCompile Include="features\skins.cpp" />
     <ClCompile Include="features\visuals.cpp" />
     <ClCompile Include="helpers\input.cpp" />
+    <ClCompile Include="helpers\logs.cpp" />
     <ClCompile Include="helpers\math.cpp" />
     <ClCompile Include="helpers\prediction.cpp" />
     <ClCompile Include="helpers\utils.cpp" />
@@ -129,7 +130,6 @@
     <ClCompile Include="render.cpp" />
     <ClCompile Include="ui.cpp" />
     <ClCompile Include="valve_sdk\csgostructs.cpp" />
-    <ClCompile Include="valve_sdk\interfaces\IVModelRender.cpp" />
     <ClCompile Include="valve_sdk\sdk.cpp" />
     <ClCompile Include="valve_sdk\math\Vector2D.cpp" />
     <ClCompile Include="valve_sdk\math\Vector4D.cpp" />
@@ -155,11 +155,13 @@
     <ClInclude Include="features\ragebot.hpp" />
     <ClInclude Include="features\resolver.hpp" />
     <ClInclude Include="features\skins.h" />
+    <ClInclude Include="helpers\IMaterialVar.h" />
+    <ClInclude Include="helpers\KeyValues.h" />
+    <ClInclude Include="helpers\logs.hpp" />
     <ClInclude Include="helpers\prediction.hpp" />
     <ClInclude Include="IMaterialVar.h" />
     <ClInclude Include="imgui\impl\imgui_impl_dx9.h" />
     <ClInclude Include="imgui\impl\imgui_impl_win32.h" />
-    <ClInclude Include="KeyValues.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="user.hpp" />
     <ClInclude Include="valve_sdk\interfaces\IGameTypes.hpp" />

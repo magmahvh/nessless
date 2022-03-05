@@ -9,6 +9,7 @@
 #include "../valve_sdk/csgostructs.hpp"
 #include "Math.hpp"
 #include <map>
+#include <thread>
 
 
 HANDLE _out = NULL, _old_out = NULL;
@@ -17,6 +18,11 @@ HANDLE _in = NULL, _old_in = NULL;
 std::map<const char*, HMODULE> modules;
 
 namespace Utils {
+    int epoch_time()
+    {
+        return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    }
+
 	std::vector<char> HexToBytes(const std::string& hex) {
 		std::vector<char> res;
 
