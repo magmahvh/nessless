@@ -9,16 +9,15 @@
 class Logs : public Singleton<Logs>
 {
 public:
-	void Create(const char* text);
+	void Create(std::string text);
 	void Draw();
 private:
 	struct loginfo_t
 	{
-		loginfo_t(float log_time, std::string message, const Color& color)  //-V818
+		loginfo_t(float log_time, std::string message)  //-V818
 		{
 			this->log_time = log_time;
 			this->message = message; //-V820
-			this->color = color;
 
 			x = 6.0f;
 			y = 0.0f;
@@ -26,7 +25,6 @@ private:
 
 		float log_time;
 		std::string message;
-		Color color;
 		float x, y;
 	};
 

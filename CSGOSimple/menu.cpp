@@ -17,6 +17,7 @@
 #include "features/kit_parser.h"
 #include "features/skins.h"
 #include "render.hpp"
+#include "lua/CLua.h"
 
 const char* legit_weapons = "Pistols\0Rifles\0Deagle\0Sniper\0Other";
 const char* rage_weapons = "AWP\0Auto-Sniper\0Scout\0Deagle and R8\0Pistols\0Other";
@@ -911,7 +912,24 @@ void Menu::Render()
 					}
 					break;
 				case 1:
+					if (ImGui::Button("Refresh scripts"))
+						Lua::Get().refresh_scripts();
+					if (ImGui::Button("Reload active scripts"))
+						Lua::Get().reload_all_scripts();
+					if (ImGui::Button("Unload all"))
+						Lua::Get().unload_all_scripts();
 
+					for (auto s : Lua::Get().scripts)
+					{
+						if (ImGui::Selectable(s.c_str(), Lua::Get().loaded.at(Lua::Get().get_script_id(s)), NULL, ImVec2(0, 0))) {
+							auto scriptId = Lua::Get().get_script_id(s);
+
+							if (Lua::Get().loaded.at(scriptId))
+								Lua::Get().unload_script(scriptId);
+							else
+								Lua::Get().load_script(scriptId);
+						}
+					}
 					break;
 				}
 				break;

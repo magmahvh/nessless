@@ -1,17 +1,15 @@
 #include "logs.hpp"
 #include "../render.hpp"
 
-void Logs::Create(const char* text)
+void Logs::Create(std::string text)
 {
 	if (!g_Options.logs)
 		return;
 
-	logs.emplace_front(loginfo_t(Utils::epoch_time(), text, g_Options.menu_color));
+	logs.emplace_front(loginfo_t(Utils::epoch_time(), text));
 
-	g_CVar->ConsoleColorPrintf(Color::White, "[");
-	g_CVar->ConsoleColorPrintf(Color(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b()), "nessless");
-	g_CVar->ConsoleColorPrintf(Color::White, "] ");
-	g_CVar->ConsoleColorPrintf(Color::White, text);
+	g_CVar->ConsolePrintf("[nessless] "); 
+	g_CVar->ConsolePrintf(text.c_str());
 	g_CVar->ConsolePrintf("\n");
 }
 
@@ -45,14 +43,13 @@ void Logs::Draw()
 				continue;
 			}
 
-			log.color = Color(log.color.r(), log.color.g(), log.color.b(), opacity);
 			log.y -= factor * 1.25f;
 		}
 
 		last_y -= 14;
 
 		auto logs_size_inverted = 10 - logs.size();
-		Render::Get().RenderText("*", log.x, last_y + log.y - logs_size_inverted * 14, 14.f, log.color, false, true, g_MenuFont);
-		Render::Get().RenderText(log.message.c_str(), log.x + 4, last_y + log.y - logs_size_inverted * 14, 14.f, Color::White, false, true, g_MenuFont);
+		Render::Get().RenderText("*", log.x, last_y + log.y - logs_size_inverted * 14, 14.f, g_Options.menu_color, false, false, g_MenuFont);
+		Render::Get().RenderText(log.message.c_str(), log.x + 8, last_y + log.y - logs_size_inverted * 14, 14.f, Color::White, false, false, g_MenuFont);
 	}
 }

@@ -7,6 +7,7 @@
 #include "features/aimbot.hpp"
 #include "features/kit_parser.h"
 #include "helpers/logs.hpp"
+#include "lua/CLua.h"
 
 #include "hooks.hpp"
 #include "menu.hpp"
@@ -32,6 +33,8 @@ DWORD WINAPI OnDllAttach(LPVOID base)
         InputSys::Get().Initialize();
 		Render::Get().Initialize();
         Menu::Get().Initialize();
+        Lua::Get().Initialize();
+
         g_Legitbot = new CLegitbot();
         g_Ragebot = new CRagebot();
         g_Options.Initialize();

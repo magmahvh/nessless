@@ -211,8 +211,10 @@ void CRagebot::AutoStop(CUserCmd* cmd, CCSWeaponInfo* weapon_data) {
 
 void Attack(CUserCmd* cmd, C_BasePlayer* target, int bone) {
 	cmd->buttons |= IN_ATTACK;
-	const char* name = target->m_iName().c_str();
-	Logs::Get().Create("Shot fired at " + *name + *" in hitbox " + *std::to_string(bone).c_str());
+	std::stringstream log;
+	log << "Shot fired at ";
+	log << target->m_iName();
+	Logs::Get().Create(log.str());
 }
 
 void CRagebot::Run(CUserCmd* cmd)
@@ -249,8 +251,9 @@ void CRagebot::Run(CUserCmd* cmd)
 
 		if (Hitchance(g_Options.ragebot[wpnGroupRage(weapon)].hitchance, weapon)) {
 
-			if (g_Options.ragebot[wpnGroupRage(weapon)].autoshot)
-				Attack(cmd, target, bestBone);
+			if (weapon->CanFire())
+				if (g_Options.ragebot[wpnGroupRage(weapon)].autoshot)
+					Attack(cmd, target, bestBone);
 
 		}
 
@@ -275,7 +278,8 @@ void CRagebot::Run(CUserCmd* cmd)
 		const float server_time = g_LocalPlayer->m_nTickBase() * g_GlobalVars->interval_per_tick;
 		const float next_shot = g_LocalPlayer->m_hActiveWeapon()->m_flNextPrimaryAttack() - server_time;
 
-		if (next_shot > 0)
-			Attack(cmd, target, bestBone);
+		if (weapon->CanFire())
+			if (next_shot > 0)
+				Attack(cmd, target, bestBone);
 	}
 }

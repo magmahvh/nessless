@@ -1,10 +1,182 @@
-﻿  autowalk.cpp
+﻿  aimbot.cpp
+  antiaim.cpp
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\features\antiaim.cpp(39,9): warning C4552: "!=": результат выражения не используется
+  autowalk.cpp
+  autowall.cpp
+  bhop.cpp
+  chams.cpp
+  glow.cpp
+  item_definitions.cpp
+  kit_parser.cpp
+  misc.cpp
+  parser.cpp
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\features\parser.h(54,22): warning C4244: аргумент: преобразование "char32_t" в "_Ty", возможна потеря данных
+          with
+          [
+              _Ty=char16_t
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\include\xstring(2575,23): warning C4244: аргумент: преобразование "char16_t" в "const _Elem", возможна потеря данных
+          with
+          [
+              _Elem=char
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\include\xstring(2586): message : выполняется компиляция ссылки на экземпляр шаблон функции "void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct<char16_t*>(_Iter,const _Iter,std::input_iterator_tag)"
+          with
+          [
+              _Iter=char16_t *
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\include\xstring(2586): message : выполняется компиляция ссылки на экземпляр шаблон функции "void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct<char16_t*>(_Iter,const _Iter,std::input_iterator_tag)"
+          with
+          [
+              _Iter=char16_t *
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\include\xstring(2566): message : выполняется компиляция ссылки на экземпляр шаблон функции "void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct<char16_t*>(const _Iter,const _Iter,std::forward_iterator_tag)"
+          with
+          [
+              _Iter=char16_t *
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\include\xstring(2566): message : выполняется компиляция ссылки на экземпляр шаблон функции "void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct<char16_t*>(const _Iter,const _Iter,std::forward_iterator_tag)"
+          with
+          [
+              _Iter=char16_t *
+          ]
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\features\parser.h(67): message : выполняется компиляция ссылки на экземпляр шаблон функции "std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Elem>>>,0>(_Iter,_Iter,const _Alloc &)"
+          with
+          [
+              _Elem=char16_t,
+              _Iter=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<char16_t>>>,
+              _Alloc=std::allocator<char>
+          ]
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\features\parser.h(67): message : выполняется компиляция ссылки на экземпляр шаблон функции "std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Elem>>>,0>(_Iter,_Iter,const _Alloc &)"
+          with
+          [
+              _Elem=char16_t,
+              _Iter=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<char16_t>>>,
+              _Alloc=std::allocator<char>
+          ]
+  ragebot.cpp
+  resolver.cpp
+  skins.cpp
+  visuals.cpp
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(95,49): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
+          with
+          [
+              T=LONG
+          ]
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(98): message : выполняется компиляция ссылки на экземпляр шаблон функции "void Render::RenderBox<LONG>(T,T,T,T,Color,float,float)"
+          with
+          [
+              T=LONG
+          ]
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(95,45): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
+          with
+          [
+              T=LONG
+          ]
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(95,33): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
+          with
+          [
+              T=LONG
+          ]
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(95,29): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
+          with
+          [
+              T=LONG
+          ]
+  input.cpp
+  logs.cpp
+  math.cpp
+  prediction.cpp
+  utils.cpp
+  Компиляция...
+  vfunc_hook.cpp
+  hooks.cpp
+  imgui.cpp
+  imgui_draw.cpp
+  imgui_widgets.cpp
+  imgui_impl_dx9.cpp
+  imgui_impl_win32.cpp
+  CLua.cpp
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\lua\CLua.cpp(150,22): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\lua\CLua.cpp(167,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\lua\CLua.cpp(176,20): warning C4018: <: несоответствие типов со знаком и без знака
+  CLuaHook.cpp
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\lua\sol.hpp(19897,44): warning C4996: 'std::iterator<std::input_iterator_tag,std::pair<sol::object,sol::object>,ptrdiff_t,std::pair<sol::object,sol::object> *,std::pair<sol::object,sol::object> &>': warning STL4015: The std::iterator class template (used as a base class to provide typedefs) is deprecated in C++17. (The <iterator> header is NOT deprecated.) The C++ Standard has never required user-defined iterators to derive from std::iterator. To fix this warning, stop deriving from std::iterator and start providing publicly accessible typedefs named iterator_category, value_type, difference_type, pointer, and reference. Note that value_type is required to be non-const, even for constant iterators. You can define _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING or _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS to acknowledge that you have received this warning.
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\include\xutility(5905,54): message : см. объявление "std::iterator"
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\lua\sol.hpp(19980): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "sol::basic_table_iterator<reference_type>"
+  main.cpp
   menu.cpp
-C:\Users\User\Documents\GitHub\nessless\CSGOSimple\menu.cpp(80,50): warning C4806: |: небезопасная операция: значение типа "bool", приведенное к типу "ImGuiColorEditFlags_", не может равняться данной константе
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\menu.cpp(81,50): warning C4806: |: небезопасная операция: значение типа "bool", приведенное к типу "ImGuiColorEditFlags_", не может равняться данной константе
   options.cpp
-  Создание кода
-  10 of 4502 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
-    6 functions were new in current compilation
-    34 functions had inline decision re-evaluated but remain unchanged
-  Создание кода завершено
-  CSGOSimple.vcxproj -> C:\Users\User\Documents\GitHub\nessless\bin\Release\nessless.dll
+  render.cpp
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(95,49): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
+          with
+          [
+              T=LONG
+          ]
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(98): message : выполняется компиляция ссылки на экземпляр шаблон функции "void Render::RenderBox<LONG>(T,T,T,T,Color,float,float)"
+          with
+          [
+              T=LONG
+          ]
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(95,45): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
+          with
+          [
+              T=LONG
+          ]
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(95,33): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
+          with
+          [
+              T=LONG
+          ]
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(95,29): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
+          with
+          [
+              T=LONG
+          ]
+  ui.cpp
+  csgostructs.cpp
+  sdk.cpp
+  Vector2D.cpp
+  Vector4D.cpp
+  VMatrix.cpp
+  characterset.cpp
+  Компиляция...
+  checksum_crc.cpp
+  checksum_md5.cpp
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\valve_sdk\misc\checksum_md5.cpp(27,14): warning C5033: "register" больше не является поддерживаемым классом хранения.
+  Color.cpp
+  Convar.cpp
+  UtlBuffer.cpp
+  UtlString.cpp
+  netvars.cpp
+LINK : warning LNK4098: библиотека по умолчанию "MSVCRT" конфликтует с использованием других библиотек; используйте /NODEFAULTLIB:library
+Lua.lib(lauxlib.obj) : error LNK2001: неразрешенный внешний символ __imp__feof.
+Lua.lib(lauxlib.obj) : error LNK2001: неразрешенный внешний символ __imp__ferror.
+Lua.lib(liolib.obj) : error LNK2001: неразрешенный внешний символ __imp__ferror.
+Lua.lib(lauxlib.obj) : error LNK2001: неразрешенный внешний символ __imp__freopen.
+Lua.lib(lauxlib.obj) : error LNK2001: неразрешенный внешний символ __imp__strerror.
+Lua.lib(liolib.obj) : error LNK2001: неразрешенный внешний символ __imp__strerror.
+Lua.lib(ltablib.obj) : error LNK2001: неразрешенный внешний символ __imp__clock.
+Lua.lib(loslib.obj) : error LNK2001: неразрешенный внешний символ __imp__clock.
+Lua.lib(ltablib.obj) : error LNK2001: неразрешенный внешний символ __imp___time64.
+Lua.lib(loslib.obj) : error LNK2001: неразрешенный внешний символ __imp___time64.
+Lua.lib(lstate.obj) : error LNK2001: неразрешенный внешний символ __imp___time64.
+Lua.lib(lbaselib.obj) : error LNK2001: неразрешенный внешний символ __imp__strspn.
+Lua.lib(liolib.obj) : error LNK2001: неразрешенный внешний символ __imp__strspn.
+Lua.lib(lobject.obj) : error LNK2001: неразрешенный внешний символ __imp__strspn.
+Lua.lib(loslib.obj) : error LNK2001: неразрешенный внешний символ __imp__system.
+Lua.lib(loslib.obj) : error LNK2001: неразрешенный внешний символ __imp___difftime64.
+Lua.lib(loslib.obj) : error LNK2001: неразрешенный внешний символ __imp___gmtime64.
+Lua.lib(loslib.obj) : error LNK2001: неразрешенный внешний символ __imp___localtime64.
+Lua.lib(loslib.obj) : error LNK2001: неразрешенный внешний символ __imp___mktime64.
+Lua.lib(loslib.obj) : error LNK2001: неразрешенный внешний символ __imp__rename.
+Lua.lib(loslib.obj) : error LNK2001: неразрешенный внешний символ __imp__tmpnam.
+Lua.lib(liolib.obj) : error LNK2001: неразрешенный внешний символ __imp__clearerr.
+Lua.lib(liolib.obj) : error LNK2001: неразрешенный внешний символ __imp___pclose.
+Lua.lib(liolib.obj) : error LNK2001: неразрешенный внешний символ __imp___popen.
+Lua.lib(liolib.obj) : error LNK2001: неразрешенный внешний символ __imp__tmpfile.
+Lua.lib(ldblib.obj) : error LNK2001: неразрешенный внешний символ __imp__fgets.
+Lua.lib(lvm.obj) : error LNK2001: неразрешенный внешний символ __imp__strcoll.
+MSVCRT.lib(chandler4gs.obj) : error LNK2001: неразрешенный внешний символ __except_handler4_common.
+C:\Users\User\Documents\GitHub\nessless\bin\Release\nessless.dll : fatal error LNK1120: неразрешенных внешних элементов: 21

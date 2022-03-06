@@ -268,7 +268,7 @@ void Options::Initialize()
 {
 	CHAR my_documents[MAX_PATH];
 	SHGetFolderPathA(nullptr, CSIDL_PERSONAL, nullptr, SHGFP_TYPE_CURRENT, my_documents);
-	folder = my_documents + std::string("\\hydraware\\");
+	folder = my_documents + std::string("\\nessless\\");
 	CreateDirectoryA(folder.c_str(), nullptr);
 	SetupWeapons();
 	SetupVisuals();

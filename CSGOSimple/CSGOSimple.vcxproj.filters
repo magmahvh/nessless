@@ -20,6 +20,9 @@
     <Filter Include="Source Files\SDK\helpers">
       <UniqueIdentifier>{ff5a8ebe-7a30-42bc-9365-06df64101f8d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\lua">
+      <UniqueIdentifier>{ff575ab9-a171-430c-8bd7-062027364599}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -156,6 +159,12 @@
     </ClCompile>
     <ClCompile Include="helpers\input.cpp">
       <Filter>Source Files\SDK\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\CLuaHook.cpp">
+      <Filter>Source Files\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\CLua.cpp">
+      <Filter>Source Files\lua</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -471,5 +480,37 @@
     <ClInclude Include="helpers\input.hpp">
       <Filter>Source Files\SDK\helpers</Filter>
     </ClInclude>
+    <ClInclude Include="lua\CLuaHook.h">
+      <Filter>Source Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\lauxlib.h">
+      <Filter>Source Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\lua.h">
+      <Filter>Source Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\lua.hpp">
+      <Filter>Source Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\luaconf.h">
+      <Filter>Source Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\lualib.h">
+      <Filter>Source Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\sol.hpp">
+      <Filter>Source Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\CLua.h">
+      <Filter>Source Files\lua</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\Lua.lib">
+      <Filter>Source Files</Filter>
+    </Library>
+    <Library Include="..\lua53.lib">
+      <Filter>Source Files</Filter>
+    </Library>
   </ItemGroup>
 </Project>

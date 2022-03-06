@@ -9,51 +9,6 @@ C:\Users\User\Documents\GitHub\nessless\CSGOSimple\features\antiaim.cpp(39,9): w
   item_definitions.cpp
   kit_parser.cpp
   misc.cpp
-  parser.cpp
-C:\Users\User\Documents\GitHub\nessless\CSGOSimple\features\parser.h(54,22): warning C4244: аргумент: преобразование "char32_t" в "_Ty", возможна потеря данных
-          with
-          [
-              _Ty=char16_t
-          ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\include\xstring(2575,23): warning C4244: аргумент: преобразование "char16_t" в "const _Elem", возможна потеря данных
-          with
-          [
-              _Elem=char
-          ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\include\xstring(2586): message : выполняется компиляция ссылки на экземпляр шаблон функции "void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct<char16_t*>(_Iter,const _Iter,std::input_iterator_tag)"
-          with
-          [
-              _Iter=char16_t *
-          ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\include\xstring(2586): message : выполняется компиляция ссылки на экземпляр шаблон функции "void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct<char16_t*>(_Iter,const _Iter,std::input_iterator_tag)"
-          with
-          [
-              _Iter=char16_t *
-          ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\include\xstring(2566): message : выполняется компиляция ссылки на экземпляр шаблон функции "void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct<char16_t*>(const _Iter,const _Iter,std::forward_iterator_tag)"
-          with
-          [
-              _Iter=char16_t *
-          ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\include\xstring(2566): message : выполняется компиляция ссылки на экземпляр шаблон функции "void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct<char16_t*>(const _Iter,const _Iter,std::forward_iterator_tag)"
-          with
-          [
-              _Iter=char16_t *
-          ]
-C:\Users\User\Documents\GitHub\nessless\CSGOSimple\features\parser.h(67): message : выполняется компиляция ссылки на экземпляр шаблон функции "std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Elem>>>,0>(_Iter,_Iter,const _Alloc &)"
-          with
-          [
-              _Elem=char16_t,
-              _Iter=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<char16_t>>>,
-              _Alloc=std::allocator<char>
-          ]
-C:\Users\User\Documents\GitHub\nessless\CSGOSimple\features\parser.h(67): message : выполняется компиляция ссылки на экземпляр шаблон функции "std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Elem>>>,0>(_Iter,_Iter,const _Alloc &)"
-          with
-          [
-              _Elem=char16_t,
-              _Iter=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<char16_t>>>,
-              _Alloc=std::allocator<char>
-          ]
   ragebot.cpp
   resolver.cpp
   skins.cpp
@@ -84,18 +39,14 @@ C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(95,29): warning C4
               T=LONG
           ]
   input.cpp
+  logs.cpp
   math.cpp
   prediction.cpp
   utils.cpp
-  vfunc_hook.cpp
+  hooks.cpp
   Создание кода...
   Компиляция...
-  hooks.cpp
-  imgui.cpp
-  imgui_draw.cpp
   imgui_widgets.cpp
-  imgui_impl_dx9.cpp
-  imgui_impl_win32.cpp
   main.cpp
   menu.cpp
 C:\Users\User\Documents\GitHub\nessless\CSGOSimple\menu.cpp(80,50): warning C4806: |: небезопасная операция: значение типа "bool", приведенное к типу "ImGuiColorEditFlags_", не может равняться данной константе
@@ -127,23 +78,11 @@ C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(95,29): warning C4
               T=LONG
           ]
   ui.cpp
-C:\Users\User\Documents\GitHub\nessless\CSGOSimple\ui.cpp(503,3): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\User\Documents\GitHub\nessless\CSGOSimple\ui.cpp(506,3): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\ui.cpp(504,3): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\ui.cpp(507,3): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   csgostructs.cpp
   sdk.cpp
-  Vector2D.cpp
-  Vector4D.cpp
-  VMatrix.cpp
-  characterset.cpp
-  checksum_crc.cpp
-  checksum_md5.cpp
-C:\Users\User\Documents\GitHub\nessless\CSGOSimple\valve_sdk\misc\checksum_md5.cpp(27,14): warning C5033: "register" больше не является поддерживаемым классом хранения.
-  Color.cpp
-  Создание кода...
-  Компиляция...
   Convar.cpp
-  UtlBuffer.cpp
-  UtlString.cpp
   netvars.cpp
   Создание кода...
   CSGOSimple.vcxproj -> C:\Users\User\Documents\GitHub\nessless\bin\Debug\csgosimple.dll
