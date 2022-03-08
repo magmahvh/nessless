@@ -215,6 +215,8 @@ public:
 	//
 	bool chams_player_enabled = false;
 	bool player_enemies_shine = false;
+	bool player_enemies_flat = false;
+
 
 	bool chams_player_enemies_only = false;
 	bool chams_player_wireframe = false;
@@ -297,6 +299,7 @@ public:
 	Color color_chams_arms_occluded = { 0, 0, 0 };
 	Color color_watermark = { 0, 0, 0 }; // no menu config cuz its useless
 	Color player_enemy_visible_shine = { 0, 0, 0 };
+	Color player_enemy_flat = { 0, 0, 0 };
 
 	Color menu_color = { 100, 120, 235 };
 

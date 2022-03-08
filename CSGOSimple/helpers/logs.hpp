@@ -1,3 +1,4 @@
+/*
 #pragma once
 
 #include "..//options.hpp"
@@ -30,3 +31,4 @@ private:
 
 	std::deque <loginfo_t> logs;
 };
+*/

@@ -6,82 +6,58 @@
 #include "../hooks.hpp"
 #include "../helpers/input.hpp"
 
+
+/*
+case 2:
+	player_enemies_type = g_MatSystem->FindMaterial("models/inventory_items/trophy_majors/gloss", TEXTURE_GROUP_OTHER);
+	break;
+
+case 3:
+	player_enemies_type = g_MatSystem->FindMaterial("glowOverlay", "Overlay");
+	break;
+	*/
+
 Chams::Chams() {
-	KeyValues* Overlay = new KeyValues("Overlay");
-	KeyValues* Animated = new KeyValues("Animated");
-	Overlay->LoadFromBuffer(Overlay, "Overlay", R"#("VertexLitGeneric" {
+	std::ofstream("csgo/materials/glowOverlay.vmt") << R"#("VertexLitGeneric" {
  
-	"$additive" "1"
-	"$envmap" "models/effects/cube_white"
-	"$envmaptint" "[1 1 1]"
-	"$envmapfresnel" "1"
-	"$envmapfresnelminmaxexp" "[0 1 2]"
-	"$alpha" "0.6"
-	})#");
-	Animated->LoadFromBuffer(Animated, "Animated", R"#("VertexLitGeneric" {
-    "$basetexture" "VGUI/white_additive"
-    "$bumpmap" "de_nuke/hr_nuke/pool_water_normals_002"
-    "$bumptransform" "center 0.5 0.5 scale 0.25 0.25 rotate 0.0 translate 0.0 0.0"
-	"$ignorez" "0"
-	"$nofog" "1"
-	"$model" "1"
-	"$color2" "[1.0, 1.0, 1.0]"
-	"$halflambert" "1"
-	"$envmap" "env_cubemap"
-	"$envmaptint" "[1 1 1]"
-	"$envmapfresnel" "1.0"
-	"$envmapfresnelminmaxexp" "[1.0, 1.0, 1.0]"
-	"$phong" "1"
-	"$phongexponent" "1024"
-	"$phongboost" "4.0"
-	"$phongfresnelranges" "[1.0, 1.0, 1.0]"
-	"$rimlight" "1"
-	"$rimlightexponent" "4.0"
-	"$rimlightboost" "2.0"
-	"Proxies"
-        {
-            "TextureScroll"
-            {
-                "textureScrollVar" "$bumptransform"
-                "textureScrollRate" "0.25"
-                "textureScrollAngle" "0.0"
-            }
-        }
-	})#");
-	materialRegular = g_MatSystem->FindMaterial("debug/debugambientcube", "Model textures");
-	materialFlat = g_MatSystem->FindMaterial("debug/debugdrawflat", "Model textures");
-	materialGlass = g_MatSystem->FindMaterial("models/inventory_items/cologne_prediction/cologne_prediction_glass", "Model textures");
-	materialGlow = g_MatSystem->FindMaterial("dev/glow_armsrace", "Model textures");
-	materialOverlay = g_MatSystem->CreateMaterial("Overlay", Overlay);
-	materialOverlay->IncrementReferenceCount();
-	materialAnimated = g_MatSystem->CreateMaterial("Animated", Animated);
-	materialAnimated->IncrementReferenceCount();
+    "$additive" "1"
+    "$envmap" "models/effects/cube_white"
+    "$envmaptint" "[0 0.5 1]"
+    "$envmapfresnel" "1"
+    "$envmapfresnelminmaxexp" "[0 1 2]"
+    "$alpha" "0.8"
+})#";
+
 }
 
 Chams::~Chams() {
 }
 
-void Chams::OverrideMaterial(bool ignorez, int type, const Color& rgba)
-{
+void Chams::OverrideMaterial(int type, bool ignoreZ, const Color& rgba) {
 	IMaterial* material = nullptr;
-	switch (type)
-	{
-	case 0: material = materialRegular; break;
-	case 1: material = materialFlat; break;
-	case 2: material = materialGlass; break;
-	case 3: material = materialGlow; break;
-	case 4: material = materialOverlay; break;
-	case 5: material = materialAnimated; break;
+
+	switch (type) {
+	case 0:
+		material = materialFlat;
+		break;
+	case 1:
+		material = materialRegular;
+		break;
+	case 2:
+		material = materialGlass;
+		break;
+	case 3:
+		material = materialGlow;
+		break;
 	}
-	bool bFound = false;
-	IMaterialVar* pMatVar = material->FindVar("$envmaptint", &bFound);
-	if (bFound)
-	//	pMatVar->SetVecValue(rgba.r() / 255.f, rgba.g() / 255.f, rgba.b() / 255.f);
-	material->SetMaterialVarFlag(MATERIAL_VAR_IGNOREZ, ignorez);
+
+	material->SetMaterialVarFlag(MATERIAL_VAR_IGNOREZ, ignoreZ);
+
 	material->ColorModulate(
 		rgba.r() / 255.0f,
 		rgba.g() / 255.0f,
 		rgba.b() / 255.0f);
+
 	g_MdlRender->ForcedMaterialOverride(material);
 }
 
@@ -107,104 +83,7 @@ void modulate(const Color color, IMaterial* material)
 
 void Chams::OnDrawModelExecute(void* pResults, DrawModelInfo_t* pInfo, matrix3x4_t* pBoneToWorld, float* flpFlexWeights, float* flpFlexDelayedWeights, Vector& vrModelOrigin, int32_t iFlags)
 {
-	/*static auto fnDME = Hooks::mdlrender_hook.get_original<decltype(&Hooks::hkDrawModelExecute)>(index::DrawModelExecute);
 
-	if (!g_LocalPlayer)
-		return;
-	const auto mdl = info.pModel;
-	bool is_player = strstr(mdl->szName, "models/player") != nullptr;
-	static IMaterial* shine = g_MatSystem->FindMaterial("models/inventory_items/trophy_majors/gloss", TEXTURE_GROUP_OTHER);
-	if (is_player) {
-		// 
-		// Draw player Chams.
-		// 
-		auto ent = C_BasePlayer::GetPlayerByIndex(info.entity_index);
-
-		if (ent && ent->IsAlive()) {
-			const auto enemy = ent->IsEnemy();
-			if (enemy)
-			{
-				if (!g_Options.chams_player_enabled && !g_Options.chams_player_ignorez)
-				{
-					return;
-				}
-				else
-				{
-					static IMaterial* player_enemies_type = nullptr;
-					switch (g_Options.chams_player_flat)
-					{
-					case 0:
-						player_enemies_type = g_MatSystem->FindMaterial("debug/debugambientcube", TEXTURE_GROUP_MODEL);
-						break;
-
-					case 1:
-						player_enemies_type = g_MatSystem->FindMaterial("debug/debugdrawflat", TEXTURE_GROUP_MODEL);
-						break;
-
-					case 2:
-						player_enemies_type = g_MatSystem->FindMaterial("models/inventory_items/trophy_majors/gloss", TEXTURE_GROUP_OTHER);
-						break;
-
-					case 3:
-						player_enemies_type = g_MatSystem->FindMaterial("glowOverlay", TEXTURE_GROUP_MODEL);
-						break;
-					}
-					static IMaterial* player_enemies_occluded_type = nullptr;
-					switch (g_Options.chams_player_flat)
-					{
-					case 0:
-						player_enemies_occluded_type = g_MatSystem->FindMaterial("debug/debugambientcube", TEXTURE_GROUP_MODEL);
-						break;
-
-					case 1:
-						player_enemies_occluded_type = g_MatSystem->FindMaterial("debug/debugdrawflat", TEXTURE_GROUP_MODEL);
-						break;
-
-					case 2:
-						player_enemies_occluded_type = g_MatSystem->FindMaterial("models/inventory_items/trophy_majors/gloss", TEXTURE_GROUP_OTHER);
-						break;
-
-					case 3:
-						player_enemies_occluded_type = g_MatSystem->FindMaterial("glowOverlay", TEXTURE_GROUP_MODEL);
-						break;
-					}
-					if (player_enemies_type != nullptr && player_enemies_occluded_type != nullptr && shine != nullptr)
-					{
-						if (g_Options.chams_player_ignorez)
-						{
-							player_enemies_occluded_type->SetMaterialVarFlag(MATERIAL_VAR_IGNOREZ, true);
-							modulate(g_Options.color_chams_player_enemy_occluded, player_enemies_occluded_type);
-							g_MdlRender->ForcedMaterialOverride(player_enemies_occluded_type);
-							fnDME(g_MdlRender, 0, ctx, state, info, matrix);
-						}
-						if (g_Options.chams_player_enabled)
-						{
-							player_enemies_type->SetMaterialVarFlag(MATERIAL_VAR_IGNOREZ, false);
-							modulate(g_Options.color_chams_player_enemy_visible, player_enemies_type);
-							g_MdlRender->ForcedMaterialOverride(player_enemies_type);
-							fnDME(g_MdlRender, 0, ctx, state, info, matrix);
-							if (g_Options.player_enemies_shine)
-							{
-								shine->SetMaterialVarFlag(MATERIAL_VAR_IGNOREZ, false);
-								shine->AlphaModulate(g_Options.player_enemy_visible_shine[3] / 255.f);
-								bool bFound = false;
-								auto pVar = shine->FindVar("$envmaptint", &bFound);
-								if (bFound)
-								{
-									(*(void(__thiscall**)(int, float, float, float))(*(DWORD*)pVar + 44))((uintptr_t)pVar, g_Options.player_enemy_visible_shine[0] / 255.f, g_Options.player_enemy_visible_shine[1] / 255.f, g_Options.player_enemy_visible_shine[2] / 255.f);
-								}
-								g_MdlRender->ForcedMaterialOverride(shine);
-							}
-						}
-					}
-					else
-					{
-						return;
-					}
-				}
-			}
-		}
-	}*/
 
 	static auto fnDME = Hooks::stdrender_hook.get_original<decltype(&Hooks::hkDrawModelExecute2)>(index::DrawModelExecute2);
 
@@ -248,8 +127,9 @@ void Chams::OnDrawModelExecute(void* pResults, DrawModelInfo_t* pInfo, matrix3x4
 						break;
 
 					case 3:
-						player_enemies_type = g_MatSystem->FindMaterial("glowOverlay", TEXTURE_GROUP_MODEL);
+						player_enemies_type = g_MatSystem->FindMaterial("glowOverlay", "dev/glow_armsrace");
 						break;
+					;
 					}
 					static IMaterial* player_enemies_occluded_type = nullptr;
 					switch (g_Options.chams_player_flat)
@@ -267,8 +147,10 @@ void Chams::OnDrawModelExecute(void* pResults, DrawModelInfo_t* pInfo, matrix3x4
 						break;
 
 					case 3:
-						player_enemies_occluded_type = g_MatSystem->FindMaterial("glowOverlay", TEXTURE_GROUP_MODEL);
+						player_enemies_occluded_type = g_MatSystem->FindMaterial("glowOverlay", "dev/glow_armsrace");
 						break;
+					
+
 					}
 					if (player_enemies_type != nullptr && player_enemies_occluded_type != nullptr && shine != nullptr)
 					{
@@ -297,7 +179,17 @@ void Chams::OnDrawModelExecute(void* pResults, DrawModelInfo_t* pInfo, matrix3x4
 								}
 								g_MdlRender->ForcedMaterialOverride(shine);
 							}
+							shine->SetMaterialVarFlag(MATERIAL_VAR_IGNOREZ, false);
+							shine->AlphaModulate(g_Options.player_enemy_flat[1] / 255.f);
+							bool bFound = false;
+							auto pVar = shine->FindVar("debug/debugdrawflat", &bFound);
+							if (bFound)
+							{
+								(*(void(__thiscall**)(int, float, float, float))(*(DWORD*)pVar + 44))((uintptr_t)pVar, g_Options.player_enemy_visible_shine[0] / 255.f, g_Options.player_enemy_visible_shine[1] / 255.f, g_Options.player_enemy_visible_shine[2] / 255.f);
+							}
+							g_MdlRender->ForcedMaterialOverride(shine);
 						}
+
 					}
 					else
 					{
