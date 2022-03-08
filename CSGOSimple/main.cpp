@@ -60,7 +60,7 @@ DWORD WINAPI OnDllAttach(LPVOID base)
         Utils::ConsolePrint("Finished.\n");
 		Utils::ConsolePrint("Built on: %s %s\n", __DATE__, __TIME__);
 
-        //Logs::Get().Create("Welcome back to NessLess");
+        Logs::Get().Create("Welcome back to NessLess");
 
         while(!g_Unload)
             Sleep(1000);

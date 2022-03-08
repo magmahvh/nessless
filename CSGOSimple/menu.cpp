@@ -21,7 +21,7 @@
 
 const char* legit_weapons = "Pistols\0Rifles\0Deagle\0Sniper\0Other";
 const char* rage_weapons = "AWP\0Auto-Sniper\0Scout\0Deagle and R8\0Pistols\0Other";
-const char* chams_type = "Normal\0Flat\0Glass\0glow\0";
+const char* chams_type = "Normal\0Flat\0Glass\0Glow";
 
 void ReadDirectory(const std::string& name, std::vector<std::string>& v)
 {
