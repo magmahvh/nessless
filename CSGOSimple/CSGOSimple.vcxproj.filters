@@ -483,7 +483,7 @@
     <ClInclude Include="lua\CLuaHook.h">
       <Filter>Source Files\lua</Filter>
     </ClInclude>
-    <ClInclude Include="lua\lauxlib.h">
+    <ClInclude Include="lua\CLua.h">
       <Filter>Source Files\lua</Filter>
     </ClInclude>
     <ClInclude Include="lua\lua.h">
@@ -501,16 +501,8 @@
     <ClInclude Include="lua\sol.hpp">
       <Filter>Source Files\lua</Filter>
     </ClInclude>
-    <ClInclude Include="lua\CLua.h">
+    <ClInclude Include="lua\lauxlib.h">
       <Filter>Source Files\lua</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\Lua.lib">
-      <Filter>Source Files</Filter>
-    </Library>
-    <Library Include="..\lua53.lib">
-      <Filter>Source Files</Filter>
-    </Library>
   </ItemGroup>
 </Project>
