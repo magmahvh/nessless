@@ -915,7 +915,7 @@ void Menu::Render()
 					/*
 					break;
 				case 1:
-					if (ImGui::Button("Refresh scripts"))
+					/*if (ImGui::Button("Refresh scripts"))
 						Lua::Get().refresh_scripts();
 					if (ImGui::Button("Reload active scripts"))
 						Lua::Get().reload_all_scripts();
@@ -932,7 +932,7 @@ void Menu::Render()
 							else
 								Lua::Get().load_script(scriptId);
 						}
-					}
+					}*/
 					break;
 				}
 				break;
