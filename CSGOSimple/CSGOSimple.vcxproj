@@ -97,6 +97,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Clantag.cpp" />
     <ClCompile Include="features\aimbot.cpp" />
     <ClCompile Include="features\antiaim.cpp" />
     <ClCompile Include="features\autowalk.cpp" />
@@ -146,6 +147,7 @@
     <ClCompile Include="valve_sdk\netvars.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Clantag.h" />
     <ClInclude Include="features\aimbot.hpp" />
     <ClInclude Include="features\antiaim.hpp" />
     <ClInclude Include="features\autowalk.hpp" />

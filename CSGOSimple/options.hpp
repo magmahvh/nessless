@@ -241,6 +241,8 @@ public:
 	bool logs = true;
 	bool logs_drawing = true;
 
+	int misc_combo_clantag = 0;
+
 	bool misc_showranks = false;
 	bool misc_watermark = false;
 	bool Velocity = false;

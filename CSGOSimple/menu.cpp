@@ -479,6 +479,7 @@ void Menu::Render()
 					ImGui::Checkbox("No smoke", &g_Options.no_smoke);
 					ImGui::Checkbox("Sniper crosshair", &g_Options.sniper_xhair);
 					ImGui::Checkbox("Logs", &g_Options.logs);
+					ImGui::Combo("Clantags", &g_Options.misc_combo_clantag, "None\0Nessles\0\0");
 					if (g_Options.logs)
 						ImGui::Checkbox("Logs drawing", &g_Options.logs_drawing);
 					break;
@@ -909,7 +910,9 @@ void Menu::Render()
 					{
 						if (strlen(cfgName))
 							g_Options.SaveSettings(cfgName + std::string(".ini"));
+				
 					}
+					/*
 					break;
 				case 1:
 					if (ImGui::Button("Refresh scripts"))
@@ -941,6 +944,7 @@ void Menu::Render()
 				}
 				break;
 			}
+			*/
 		}
 		ImGui::EndChild();
 
@@ -962,6 +966,7 @@ void Menu::Render()
 	ImGui::PopFont();
 }
 
+/*
 void Menu::Toggle()
 {
     _visible = !_visible;
@@ -1025,4 +1030,5 @@ void Menu::CreateStyle()
 	ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, { 0.500000f,0.500000f });
 	ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, { 0.500000f,0.500000f });
 }
-
+*/
+}

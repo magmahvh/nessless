@@ -166,6 +166,9 @@
     <ClCompile Include="lua\CLua.cpp">
       <Filter>Source Files\lua</Filter>
     </ClCompile>
+    <ClCompile Include="Clantag.cpp">
+      <Filter>Source Files\features</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="features\bhop.hpp">
@@ -503,6 +506,9 @@
     </ClInclude>
     <ClInclude Include="lua\CLua.h">
       <Filter>Source Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Clantag.h">
+      <Filter>Source Files\features</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
