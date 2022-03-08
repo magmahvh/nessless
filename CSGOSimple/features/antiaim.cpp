@@ -33,10 +33,11 @@ void Antiaim::Run(CUserCmd* pCmd, bool& bSendPacket)
 			else
 				yFlip ? pCmd->viewangles.yaw -= 90.f : pCmd->viewangles.yaw += 90.f;
 
-			pCmd->viewangles.roll = 180.f;
 			ChokedPackets = -1;
 		}
 		yFlip != yFlip;
 
+		pCmd->viewangles.pitch = -89;
+		pCmd->viewangles.yaw += 180;
 	}
 }

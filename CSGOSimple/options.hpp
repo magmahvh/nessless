@@ -234,6 +234,7 @@ public:
 	//
 	bool autowalk = false;
 
+	bool misc_autostrafe = false;
 	bool misc_bhop = false;
 	int playerModelT{ 0 };
 	int playerModelCT{ 0 };

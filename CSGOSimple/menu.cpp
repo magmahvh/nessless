@@ -696,6 +696,7 @@ void Menu::Render()
 					ImGui::Separator("Movement");
 
 					ImGui::Checkbox("Bunny hop", &g_Options.misc_bhop);
+					ImGui::Checkbox("Auto strafe", &g_Options.misc_autostrafe);
 					ImGui::Checkbox("Edge bug", &g_Options.edge_bug); ImGui::SameLine(); ImGui::Hotkey("  ", &g_Options.edge_bug_key);
 					ImGui::Checkbox("Edge jump", &g_Options.edgejump.enabled); ImGui::SameLine(); ImGui::Hotkey("    ", &g_Options.edgejump.hotkey);
 					ImGui::Checkbox("Duck in Air", &g_Options.edgejump.edge_jump_duck_in_air);

@@ -6,6 +6,6 @@ class CUserCmd;
 namespace BunnyHop
 {
     void OnCreateMove(CUserCmd* cmd);
-    void AutoStafe(CUserCmd* cmd);
+    void AutoStrafe(CUserCmd* cmd);
 
 }

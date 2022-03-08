@@ -199,6 +199,9 @@ namespace Hooks {
 		if (g_Options.misc_bhop)
 			BunnyHop::OnCreateMove(cmd);
 
+		if (g_Options.misc_autostrafe)
+			BunnyHop::AutoStrafe(cmd);
+
 		static auto prediction = new PredictionSystem();
 		auto flags = g_LocalPlayer->m_fFlags();
 

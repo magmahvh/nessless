@@ -150,6 +150,7 @@
     <ClInclude Include="features\antiaim.hpp" />
     <ClInclude Include="features\autowalk.hpp" />
     <ClInclude Include="features\autowall.hpp" />
+    <ClInclude Include="features\bhopStrafe.hpp" />
     <ClInclude Include="features\item_definitions.h" />
     <ClInclude Include="features\kit_parser.h" />
     <ClInclude Include="features\misc.hpp" />

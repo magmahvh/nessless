@@ -504,5 +504,8 @@
     <ClInclude Include="lua\lauxlib.h">
       <Filter>Source Files\lua</Filter>
     </ClInclude>
+    <ClInclude Include="features\bhopStrafe.hpp">
+      <Filter>Source Files\features</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

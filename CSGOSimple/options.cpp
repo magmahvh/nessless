@@ -250,6 +250,7 @@ void Options::SetupMisc()
 	SetupValue(g_Options.autoaccept, "Misc", "Auto accept");
 	SetupValue(g_Options.no_flash, "Misc", "No flash");
 	SetupValue(g_Options.no_smoke, "Misc", "No smoke");
+	SetupValue(g_Options.misc_autostrafe, "Misc", "Auto strafe");
 	SetupValue(g_Options.misc_bhop, "Misc", "Bunny hop");
 	SetupValue(g_Options.edge_bug, "Misc", "Edge bug");
 	SetupValue(g_Options.edge_bug_key, "Misc", "edge_bug_key");

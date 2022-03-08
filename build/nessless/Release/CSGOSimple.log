@@ -1,11 +1,8 @@
-﻿  CLua.cpp
-  CLuaHook.cpp
-  main.cpp
-  menu.cpp
-C:\Users\User\Documents\GitHub\nessless\CSGOSimple\menu.cpp(81,50): warning C4806: |: небезопасная операция: значение типа "bool", приведенное к типу "ImGuiColorEditFlags_", не может равняться данной константе
+﻿  bhop.cpp
+  hooks.cpp
   Создание кода
-  444 of 4572 functions ( 9.7%) were compiled, the rest were copied from previous compilation.
-    3 functions were new in current compilation
-    128 functions had inline decision re-evaluated but remain unchanged
+  113 of 4584 functions ( 2.5%) were compiled, the rest were copied from previous compilation.
+    10 functions were new in current compilation
+    50 functions had inline decision re-evaluated but remain unchanged
   Создание кода завершено
   CSGOSimple.vcxproj -> C:\Users\User\Documents\GitHub\nessless\bin\Release\nessless.dll
