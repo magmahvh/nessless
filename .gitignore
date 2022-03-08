@@ -1,5 +1,3 @@
 .vs
 dll
-*.obj
-*.obj
-build/nessless/Release/checksum_md5.obj
+.obj
