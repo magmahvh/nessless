@@ -20,7 +20,7 @@
 
 const char* legit_weapons = "Pistols\0Rifles\0Deagle\0Sniper\0Other";
 const char* rage_weapons = "AWP\0Auto-Sniper\0Scout\0Deagle and R8\0Pistols\0Other";
-const char* chams_type = "Normal\0Flat\0Glass";
+const char* chams_type = "Normal\0Flat\0Glass\0glow\0";
 
 void ReadDirectory(const std::string& name, std::vector<std::string>& v)
 {
@@ -446,7 +446,7 @@ void Menu::Render()
 					ImGui::Separator("Chams");
 					ImGui::Checkbox("Enabled ", &g_Options.chams_player_enabled); ImGui::SameLine(); ImGuiEx::ColorEdit4a("Enemy Visible ", &g_Options.color_chams_player_enemy_visible);
 					ImGui::Checkbox("Visible shine##chams_enemies_visible_shine", &g_Options.player_enemies_shine);
-					ImGui::SameLine();
+					ImGui::SameLine(); 
 					ImGuiEx::ColorEdit4("##color_chams_enemies_visible_shine", &g_Options.player_enemy_visible_shine);
 					ImGui::Checkbox("Occluded  ", &g_Options.chams_player_ignorez); ImGui::SameLine(); ImGuiEx::ColorEdit4a("Enemy Occluded ", &g_Options.color_chams_player_enemy_occluded);
 					ImGui::Combo("##Flat", &g_Options.chams_player_flat, chams_type);

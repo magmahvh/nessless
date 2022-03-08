@@ -72,7 +72,7 @@ void Render::BeginScene() {
 	draw_list->Clear();
 	draw_list->PushClipRectFullScreen();
 
-	Logs::Get().Draw();
+	//Logs::Get().Draw();
 
 	if (g_Options.misc_watermark)
 		Render::Get().RenderText("nessless", 10, 5, 18.f, Color::White, false, true, g_VeloFont);

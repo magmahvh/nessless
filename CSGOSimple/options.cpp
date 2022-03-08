@@ -225,6 +225,7 @@ void Options::SetupVisuals()
 	SetupValue(g_Options.chams_player_flat, "ESP", "Flat");
 	SetupValue(g_Options.player_enemies_shine, "ESP", "Visible shine");
 	SetupColor(g_Options.player_enemy_visible_shine, "color Visible");
+	SetupColor(g_Options.player_enemy_flat, "color Visible");
 	SetupColor(g_Options.color_esp_enemy_visible, "Enemies Visible");
 	SetupColor(g_Options.color_esp_enemy_occluded, "Enemies Occluded");
 	SetupColor(g_Options.color_chams_player_enemy_visible, "Enemy Visible ch");

@@ -212,7 +212,7 @@ void CRagebot::AutoStop(CUserCmd* cmd, CCSWeaponInfo* weapon_data) {
 void Attack(CUserCmd* cmd, C_BasePlayer* target, int bone) {
 	cmd->buttons |= IN_ATTACK;
 	const char* name = target->m_iName().c_str();
-	Logs::Get().Create("Shot fired at " + *name + *" in hitbox " + *std::to_string(bone).c_str());
+	//Logs::Get().Create("Shot fired at " + *name + *" in hitbox " + *std::to_string(bone).c_str());
 }
 
 void CRagebot::Run(CUserCmd* cmd)

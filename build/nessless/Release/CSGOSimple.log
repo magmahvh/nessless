@@ -1,10 +1,1 @@
-﻿  autowalk.cpp
-  menu.cpp
-C:\Users\User\Documents\GitHub\nessless\CSGOSimple\menu.cpp(80,50): warning C4806: |: небезопасная операция: значение типа "bool", приведенное к типу "ImGuiColorEditFlags_", не может равняться данной константе
-  options.cpp
-  Создание кода
-  10 of 4502 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
-    6 functions were new in current compilation
-    34 functions had inline decision re-evaluated but remain unchanged
-  Создание кода завершено
-  CSGOSimple.vcxproj -> C:\Users\User\Documents\GitHub\nessless\bin\Release\nessless.dll
+﻿LINK : fatal error LNK1104: не удается открыть файл "C:\Users\Страдивариус\Documents\github\Raitoningu.xyz\nessless\bin\Release\nessless.dll"

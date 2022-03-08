@@ -1,3 +1,4 @@
+/*
 #include "logs.hpp"
 #include "../render.hpp"
 
@@ -56,3 +57,4 @@ void Logs::Draw()
 		Render::Get().RenderText(log.message.c_str(), log.x + 4, last_y + log.y - logs_size_inverted * 14, 14.f, Color::White, false, true, g_MenuFont);
 	}
 }
+*/
