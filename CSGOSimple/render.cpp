@@ -9,10 +9,12 @@
 #include "options.hpp"
 #include "helpers/math.hpp"
 #include "helpers/logs.hpp"
+#include "bytes.hpp"
 
 ImFont* g_pDefaultFont;
 ImFont* g_VeloFont;
 ImFont* g_MenuFont;
+ImFont* g_WeaponFont;
 
 ImDrawListSharedData _data;
 
@@ -51,14 +53,9 @@ void Render::GetFonts() {
 	};
 	ImGuiIO& io = ImGui::GetIO();
 	g_MenuFont = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\verdana.ttf", 14.0f, &font_config, ranges);
-
-
-	// esp font
-	g_pDefaultFont = ImGui::GetIO().Fonts->AddFontFromFileTTF(u8"C:\\Windows\\Fonts\\verdana.ttf", 25.f, NULL, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
-	
-
-	// font for watermark; just example
-	g_VeloFont = ImGui::GetIO().Fonts->AddFontFromFileTTF(u8"C:\\Windows\\Fonts\\verdana.ttf", 30.f, NULL, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
+	g_WeaponFont = io.Fonts->AddFontFromMemoryTTF((void*)weaponbytes, sizeof(weaponbytes), 20.0f, &font_config, ranges);
+	g_pDefaultFont = io.Fonts->AddFontFromFileTTF(u8"C:\\Windows\\Fonts\\verdana.ttf", 25.f, NULL, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
+	g_VeloFont = io.Fonts->AddFontFromFileTTF(u8"C:\\Windows\\Fonts\\verdana.ttf", 30.f, NULL, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
 
 }
 

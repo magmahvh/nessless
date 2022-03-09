@@ -52,27 +52,12 @@ static vec_t Normalize_y(vec_t ang)
 
 void BunnyHop::AutoStrafe(CUserCmd* cmd)
 {
-	if (cmd->sidemove != 0.0f || cmd->forwardmove != 0.0f || cmd->mousedx > 2) {
+	if (cmd->mousedx <= 1 && cmd->mousedx >= -1)
 		return;
-	}
 
-	auto redian_to_degrees = [](float ang) -> float {
-		return (ang * 180.0f) / M_PI;
-	};
+	if (g_LocalPlayer->m_fFlags() & static_cast<int>(EntityFlags::FL_ONGROUND))
+		return;
 
-	auto normalize_ang = [](float ang) -> float {
-		while (ang < -180.0f) ang += 360.0f;
-		while (ang > 180.0f) ang -= 360.0f;
-
-		return ang;
-	};
-
-	const auto vel = g_LocalPlayer->m_vecVelocity();
-	const float y_vel = redian_to_degrees(atan2(vel.y, vel.x));
-	const float diff_ang = normalize_ang(cmd->viewangles.yaw - y_vel);
-
-	// Note that sidemove should be 400 for most Source games. CS:GO is an exclusion, we have it as 450!
-	static float cl_sidespeed = g_CVar->FindVar("cl_sidespeed")->GetFloat();
-	cmd->sidemove = (diff_ang > 0.0) ? -cl_sidespeed : cl_sidespeed;
-	cmd->viewangles.yaw = normalize_ang(cmd->viewangles.yaw - diff_ang);
+	if (cmd->buttons & IN_JUMP)
+		cmd->sidemove = cmd->mousedx < 0 ? -450.f : 450.f;
 }

@@ -19,8 +19,22 @@
 #include "render.hpp"
 #include "lua/CLua.h"
 
-const char* legit_weapons = "Pistols\0Rifles\0Deagle\0Sniper\0Other";
-const char* rage_weapons = "AWP\0Auto-Sniper\0Scout\0Deagle and R8\0Pistols\0Other";
+const char* legit_weapons[] = {
+	"C", //pistols
+	"W", //rifles
+	"A", //deagle
+	"a", //sniper
+	"N", //other
+};
+
+const char* rage_weapons[] = { 
+	"Z", //awp
+	"Y", //autosnipers
+	"a", //scout
+	"A", //deagle and revolver
+	"C", //pistols
+	"N", //other
+};
 const char* chams_type = "Normal\0Flat\0Glass\0Glow";
 
 void ReadDirectory(const std::string& name, std::vector<std::string>& v)
@@ -213,16 +227,16 @@ bool subTab(const char* label, const ImVec2& size_arg, bool state)
 	}
 	if (state) {
 		if (it_alpha->second < 40)
-			it_alpha->second += 4;
+			it_alpha->second += 2;
 	}
 	else {
 		if (it_alpha->second > 0)
-			it_alpha->second -= 4;
+			it_alpha->second -= 2;
 	}
 
 
 	window->DrawList->AddRectFilledMultiColor(bb.Min, bb.Max, ImColor(40, 40, 40, 40 - it_alpha->second), ImColor(40, 40, 40, 0), ImColor(40, 40, 40, 0), ImColor(40, 40, 40, 40 - it_alpha->second));
-	window->DrawList->AddRectFilledMultiColor(bb.Min, bb.Max, 
+	window->DrawList->AddRectFilledMultiColor(bb.Min, bb.Max,
 		ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), it_alpha->second),
 		ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), 0), 
 		ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), 0), 
@@ -330,12 +344,30 @@ void Menu::Render()
 					if (subTab(subtabs_rage[i], ImVec2(120, 25), subtab[0] == i))
 						subtab[0] = i;
 				}
+
+				if (subtab[0] == 1) {
+					ImGui::PushFont(g_WeaponFont);
+					for (int d = 0; d < 6; d++) {
+						ImGui::SetCursorPos(ImVec2(0, 25 * 3 + 35 * d));
+						if (subTab(rage_weapons[d], ImVec2(120, 35), g_Options.ragebot_weapon == d))
+							g_Options.ragebot_weapon = d;
+					}
+					ImGui::PopFont();
+				}
 				break;
 			case 1:
 				for (int i = 0; i < 2; i++) {
 					ImGui::SetCursorPos(ImVec2(0, 25 * i));
 					if (subTab(subtabs_legit[i], ImVec2(120, 25), subtab[1] == i))
 						subtab[1] = i;
+
+					ImGui::PushFont(g_WeaponFont);
+					for (int d = 0; d < 5; d++) {
+						ImGui::SetCursorPos(ImVec2(0, 25 * 3 + 35 * d));
+						if (subTab(legit_weapons[d], ImVec2(120, 35), g_Options.legitbot_weapon == d))
+							g_Options.legitbot_weapon = d;
+					}
+					ImGui::PopFont();
 				}
 				break;
 			case 2:
@@ -390,7 +422,6 @@ void Menu::Render()
 					break;
 				case 1:
 					ImGui::Separator("Weapons");
-					ImGui::Combo("Weapon", &g_Options.ragebot_weapon, rage_weapons);
 					ImGui::Checkbox("Enabled Weapon", &ragebot->enabled); 
 					ImGui::Checkbox("Auto shot", &ragebot->autoshot);
 					ImGui::Checkbox("Auto accuracy", &ragebot->autostop);
@@ -407,7 +438,6 @@ void Menu::Render()
 					if (g_Options.legit_enabled) {
 						g_Options.rage_enabled = false;
 					}
-					ImGui::Combo("Weapon", &g_Options.legitbot_weapon, legit_weapons);
 					ImGui::Checkbox("Enabled Weapon", &legitbot->enabled);
 					//ImGui::Checkbox("Friendly fire", &settings->deathmatch);
 					ImGui::Checkbox("Silent", &legitbot->silent);

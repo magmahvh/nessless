@@ -147,6 +147,7 @@
     <ClCompile Include="valve_sdk\netvars.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bytes.hpp" />
     <ClInclude Include="Clantag.h" />
     <ClInclude Include="features\aimbot.hpp" />
     <ClInclude Include="features\antiaim.hpp" />

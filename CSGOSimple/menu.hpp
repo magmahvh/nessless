@@ -10,6 +10,8 @@ class Menu
     : public Singleton<Menu>
 {
 public:
+    ImFont* weaponfont;
+
     void Initialize();
     void Shutdown();
 
