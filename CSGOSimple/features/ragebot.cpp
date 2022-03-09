@@ -26,7 +26,7 @@ int wpnGroupRage(CHandle<C_BaseCombatWeapon> pWeapon) {
 
 bool Hitchance(float hitchance, C_BaseCombatWeapon* pWeapon)
 {
-	if (hitchance >= pWeapon->GetInaccuracy() * 1000) //1000 потому  что так надо =D Magma techonology
+	if (hitchance <= pWeapon->GetInaccuracy() * 1000) //1000 потому  что так надо =D Magma techonology
 		return true;
 	else return false;
 }
@@ -156,7 +156,9 @@ C_BasePlayer* CRagebot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& be
 			Math::VectorAngles(hitboxPos - eyePos, ang);
 			const float fov = GetFovToPlayer(cmd->viewangles + last_punch * 2.f, ang);
 			
-			const auto damage = Autowall::Get().GetDamage(player, hitboxPos);
+			auto damage = 0.f;
+			C_AutoWall::Get().PenetrateWall(g_LocalPlayer, g_LocalPlayer->m_hActiveWeapon(), hitboxPos, damage);
+			g_CVar->ConsolePrintf(std::to_string(damage).c_str());
 
 			if (!g_LocalPlayer->CanSeePlayer(player, hitboxPos))
 			{
@@ -164,6 +166,9 @@ C_BasePlayer* CRagebot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& be
 					continue;
 			}
 
+			if (damage < g_Options.ragebot[wpnGroupRage(weapon)].damage)
+				continue;
+				
 			if (bestFov > fov)
 			{
 				bestBone = hitbox;
@@ -238,6 +243,10 @@ void CRagebot::Run(CUserCmd* cmd)
 	if (!weapon_data)
 		return;
 
+	auto weapon_canfire = weapon->CanFire();
+	if (!weapon_canfire)
+		return;
+
 	auto angles = cmd->viewangles;
 	const auto current = angles;
 
@@ -251,9 +260,8 @@ void CRagebot::Run(CUserCmd* cmd)
 
 		if (Hitchance(g_Options.ragebot[wpnGroupRage(weapon)].hitchance, weapon)) {
 
-			if (weapon->CanFire())
-				if (g_Options.ragebot[wpnGroupRage(weapon)].autoshot)
-					Attack(cmd, target, bestBone);
+			if (g_Options.ragebot[wpnGroupRage(weapon)].autoshot)
+				Attack(cmd, target, bestBone);
 
 		}
 
@@ -278,8 +286,7 @@ void CRagebot::Run(CUserCmd* cmd)
 		const float server_time = g_LocalPlayer->m_nTickBase() * g_GlobalVars->interval_per_tick;
 		const float next_shot = g_LocalPlayer->m_hActiveWeapon()->m_flNextPrimaryAttack() - server_time;
 
-		if (weapon->CanFire())
-			if (next_shot > 0)
-				Attack(cmd, target, bestBone);
+		if (next_shot > 0)
+			Attack(cmd, target, bestBone);
 	}
 }

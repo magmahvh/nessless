@@ -4,6 +4,13 @@
 
 namespace Math
 {
+    void NormalizeAnglesvec(Vector& angles)
+    {
+        for (auto i = 0; i < 3; i++) {
+            while (angles[i] < -180.0f) angles[i] += 360.0f;
+            while (angles[i] > 180.0f) angles[i] -= 360.0f;
+        }
+    }
     void NormalizeAngles(QAngle& angles)
     {
         for (auto i = 0; i < 3; i++) {

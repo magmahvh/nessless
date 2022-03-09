@@ -1,8 +1,7 @@
-﻿  bhop.cpp
-  hooks.cpp
+﻿  ragebot.cpp
   Создание кода
-  113 of 4584 functions ( 2.5%) were compiled, the rest were copied from previous compilation.
-    10 functions were new in current compilation
-    50 functions had inline decision re-evaluated but remain unchanged
+  2 of 4580 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    26 functions had inline decision re-evaluated but remain unchanged
   Создание кода завершено
   CSGOSimple.vcxproj -> C:\Users\User\Documents\GitHub\nessless\bin\Release\nessless.dll

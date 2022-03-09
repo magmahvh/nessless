@@ -945,7 +945,6 @@ void Menu::Render()
 				}
 				break;
 			}
-			*/
 		}
 		ImGui::EndChild();
 
@@ -967,7 +966,6 @@ void Menu::Render()
 	ImGui::PopFont();
 }
 
-/*
 void Menu::Toggle()
 {
     _visible = !_visible;
@@ -1030,6 +1028,4 @@ void Menu::CreateStyle()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowTitleAlign, { 0.000000f,0.500000f });
 	ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, { 0.500000f,0.500000f });
 	ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, { 0.500000f,0.500000f });
-}
-*/
 }

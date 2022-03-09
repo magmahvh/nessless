@@ -33,7 +33,7 @@ DWORD WINAPI OnDllAttach(LPVOID base)
         InputSys::Get().Initialize();
 		Render::Get().Initialize();
         Menu::Get().Initialize();
-       // Lua::Get().Initialize();
+        //Lua::Get().Initialize();
 
         g_Legitbot = new CLegitbot();
         g_Ragebot = new CRagebot();

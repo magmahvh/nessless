@@ -20,6 +20,7 @@ namespace Math
 		i >>= 1;
 		return *(float*)&i;
 	}
+	void NormalizeAnglesvec(Vector& angles);
 	void NormalizeAngles(QAngle& angles);
 	float VectorDistance(const Vector& v1, const Vector& v2);
 	QAngle CalcAngle(const Vector& src, const Vector& dst);

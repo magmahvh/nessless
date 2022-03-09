@@ -37,7 +37,7 @@ void Antiaim::Run(CUserCmd* pCmd, bool& bSendPacket)
 		}
 		yFlip != yFlip;
 
-		pCmd->viewangles.pitch = -89;
+		pCmd->viewangles.pitch = 89;
 		pCmd->viewangles.yaw += 180;
 	}
 }
