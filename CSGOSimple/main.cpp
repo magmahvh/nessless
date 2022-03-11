@@ -45,12 +45,7 @@ DWORD WINAPI OnDllAttach(LPVOID base)
         // Register some hotkeys.
         // - Note:  The function that is called when the hotkey is pressed
         //          is called from the WndProc thread, not this thread.
-        // 
-
-        // Panic button
-      /*  InputSys::Get().RegisterHotkey(VK_DELETE, [base]() {
-            g_Unload = true;
-        });*/
+        //
 
         // Menu Toggle
         InputSys::Get().RegisterHotkey(VK_INSERT, [base]() {

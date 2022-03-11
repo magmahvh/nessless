@@ -16,7 +16,7 @@
 #include "features/resolver.hpp"
 #include "features/autowalk.hpp"
 
-#pragma intrinsic(_ReturnAddress)  
+#pragma intrinsic(_ReturnAddress) 
 
 namespace Hooks {
 

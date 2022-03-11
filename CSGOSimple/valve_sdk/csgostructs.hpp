@@ -1,8 +1,9 @@
 #pragma once
 
 #include "sdk.hpp"
-#include <array>
 #include "../helpers/utils.hpp"
+#include <array>
+#include "../helpers/math.hpp"
 
 #define NETVAR(type, name, table, netvar)                           \
     type& name##() const {                                          \

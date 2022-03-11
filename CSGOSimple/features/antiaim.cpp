@@ -18,26 +18,18 @@ void Antiaim::Run(CUserCmd* pCmd, bool& bSendPacket)
 
 	if ((!pCmd->buttons & IN_ATTACK))
 	{
-		static int ChokedPackets = -1;
-		static bool yFlip;
-		if (ChokedPackets < 0)
-		{
-			bSendPacket = true;
-			ChokedPackets = 1;
+		if (!bSendPacket) {
+			pCmd->viewangles.yaw += invert ? 59 : -59;
+			if (std::abs(pCmd->sidemove) < 5.0f) {
+				if (pCmd->buttons & IN_DUCK) 
+					pCmd->sidemove = pCmd->tick_count & 1 ? 3.25f : -3.25f;
+				else
+					pCmd->sidemove = pCmd->tick_count & 1 ? 1.1f : -1.1f;
+			}
 		}
-		else
-		{
-			bSendPacket = false;
-			if (invert)
-				yFlip ? pCmd->viewangles.yaw += 90.f : pCmd->viewangles.yaw -= 90.f;
-			else
-				yFlip ? pCmd->viewangles.yaw -= 90.f : pCmd->viewangles.yaw += 90.f;
-
-			ChokedPackets = -1;
-		}
-		yFlip != yFlip;
 
 		pCmd->viewangles.pitch = 89;
 		pCmd->viewangles.yaw += 180;
+
 	}
 }

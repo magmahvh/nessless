@@ -187,7 +187,7 @@ C_BasePlayer* CLegitbot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& b
 
 				//const auto damage = c_autowall::get()->autowall(g_LocalPlayer->GetEyePos(), hitboxPos, g_LocalPlayer, player).damage;
 				auto damage = 0.f;
-				C_AutoWall::Get().PenetrateWall(g_LocalPlayer, g_LocalPlayer->m_hActiveWeapon(), hitboxPos, damage);
+				//C_AutoWall::Get().PenetrateWall(g_LocalPlayer, g_LocalPlayer->m_hActiveWeapon(), hitboxPos, damage);
 
 				if (damage < g_Options.legitbot[wpnGroupLegit(weapon)].autowall.min_damage)
 					continue;

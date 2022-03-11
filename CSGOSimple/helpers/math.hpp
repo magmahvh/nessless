@@ -20,6 +20,17 @@ namespace Math
 		i >>= 1;
 		return *(float*)&i;
 	}
+	template<class T, class U>
+	static T clamp(const T& in, const U& low, const U& high)
+	{
+		if (in <= low)
+			return low;
+
+		if (in >= high)
+			return high;
+
+		return in;
+	}
 	void NormalizeAnglesvec(Vector& angles);
 	void NormalizeAngles(QAngle& angles);
 	float VectorDistance(const Vector& v1, const Vector& v2);

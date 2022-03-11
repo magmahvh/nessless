@@ -26,7 +26,7 @@ int wpnGroupRage(CHandle<C_BaseCombatWeapon> pWeapon) {
 
 bool Hitchance(float hitchance, C_BaseCombatWeapon* pWeapon)
 {
-	if (hitchance <= pWeapon->GetInaccuracy() * 1000) //1000 потому  что так надо =D Magma techonology
+	if (hitchance >= pWeapon->GetInaccuracy() * 1000) //1000 потому  что так надо =D Magma techonology
 		return true;
 	else return false;
 }
@@ -157,17 +157,12 @@ C_BasePlayer* CRagebot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& be
 			const float fov = GetFovToPlayer(cmd->viewangles + last_punch * 2.f, ang);
 			
 			auto damage = 0.f;
-			C_AutoWall::Get().PenetrateWall(g_LocalPlayer, g_LocalPlayer->m_hActiveWeapon(), hitboxPos, damage);
-			g_CVar->ConsolePrintf(std::to_string(damage).c_str());
 
 			if (!g_LocalPlayer->CanSeePlayer(player, hitboxPos))
 			{
 				if (!g_Options.ragebot[wpnGroupRage(weapon)].autowall)
 					continue;
 			}
-
-			if (damage < g_Options.ragebot[wpnGroupRage(weapon)].damage)
-				continue;
 				
 			if (bestFov > fov)
 			{

@@ -93,6 +93,7 @@ void Chams::OnDrawModelExecute(void* pResults, DrawModelInfo_t* pInfo, matrix3x4
 	const auto mdl = pInfo->m_pClientEntity->GetModel();
 	bool is_player = strstr(mdl->szName, "models/player") != nullptr;
 	static IMaterial* shine = g_MatSystem->FindMaterial("models/inventory_items/trophy_majors/gloss", TEXTURE_GROUP_OTHER);
+
 	if (is_player) {
 		// 
 		// Draw player Chams.

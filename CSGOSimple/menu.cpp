@@ -18,6 +18,7 @@
 #include "features/skins.h"
 #include "render.hpp"
 #include "lua/CLua.h"
+#include "helpers/math.hpp"
 
 const char* legit_weapons[] = {
 	"C", //pistols
@@ -100,9 +101,174 @@ namespace ImGuiEx
 	}
 
 	inline bool ColorEdit3(const char* label, Color* v)
-    {
-        return ColorEdit4(label, v, false);
-    }
+	{
+		return ColorEdit4(label, v, false);
+	}
+}
+namespace ImGui
+{
+
+	bool Tab(const char* label, const ImVec2& size_arg, bool state)
+	{
+		ImGuiWindow* window = ImGui::GetCurrentWindow();
+		if (window->SkipItems)
+			return false;
+
+		ImGuiContext& g = *GImGui;
+		const ImGuiStyle& style = g.Style;
+		const ImGuiID id = window->GetID(label);
+		const ImVec2 label_size = ImGui::CalcTextSize(label, NULL, true);
+
+		ImVec2 pos = window->DC.CursorPos;
+		ImVec2 size = ImGui::CalcItemSize(size_arg, label_size.x + style.FramePadding.x * 2.0f, label_size.y + style.FramePadding.y * 2.0f);
+
+		const ImRect bb(pos, pos + size);
+		ImGui::ItemSize(size, style.FramePadding.y);
+		if (!ImGui::ItemAdd(bb, id))
+			return false;
+		bool hovered, held;
+		bool pressed = ImGui::ButtonBehavior(bb, id, &hovered, &held, NULL);
+		if (pressed)
+			ImGui::MarkItemEdited(id);
+
+		static std::map<ImGuiID, int> alpha_anim;
+		auto it_alpha = alpha_anim.find(id);
+		if (it_alpha == alpha_anim.end())
+		{
+			alpha_anim.insert({ id, 0 });
+			it_alpha = alpha_anim.find(id);
+		}
+		if (state) {
+			if (it_alpha->second < 250)
+				it_alpha->second += 10;
+		}
+		else {
+			if (it_alpha->second > 0)
+				it_alpha->second -= 10;
+		}
+
+		static std::map<ImGuiID, int> alpha_anim2;
+		auto it_alpha2 = alpha_anim2.find(id);
+		if (it_alpha2 == alpha_anim2.end())
+		{
+			alpha_anim2.insert({ id, 0 });
+			it_alpha2 = alpha_anim2.find(id);
+		}
+		if (state) {
+			if (it_alpha2->second < size_arg.x)
+				it_alpha2->second += 2;
+		}
+		else {
+			if (it_alpha2->second > 0)
+				it_alpha2->second -= 2;
+		}
+
+		if (it_alpha2->second > 0 || it_alpha->second > 0)
+		{
+			window->DrawList->AddRectFilled(bb.Min + ImVec2(size_arg.x / 2 - it_alpha2->second / 2, 0), bb.Min + ImVec2(it_alpha2->second, 4),
+				ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), int(it_alpha->second * Menu::Get().public_alpha)), 2);
+			window->DrawList->AddRectFilled(bb.Min + ImVec2(0, 2), bb.Max, ImColor(25, 25, 25, int(it_alpha->second * Menu::Get().public_alpha)));
+			window->DrawList->AddRectFilled(bb.Min + ImVec2(1, 2), bb.Max - ImVec2(1, 0), ImColor(11, 11, 11, int(it_alpha->second * Menu::Get().public_alpha)));
+		}
+
+		ImGui::RenderTextClipped(bb.Min + style.FramePadding, bb.Max - style.FramePadding, label, NULL, &label_size, style.ButtonTextAlign, &bb);
+
+		return pressed;
+	}
+	bool subTab(const char* label, const ImVec2& size_arg, bool state)
+	{
+		ImGuiWindow* window = ImGui::GetCurrentWindow();
+		if (window->SkipItems)
+			return false;
+
+		ImGuiContext& g = *GImGui;
+		const ImGuiStyle& style = g.Style;
+		const ImGuiID id = window->GetID(label);
+		const ImVec2 label_size = ImGui::CalcTextSize(label, NULL, true);
+
+		ImVec2 pos = window->DC.CursorPos;
+		ImVec2 size = ImGui::CalcItemSize(size_arg, label_size.x + style.FramePadding.x * 2.0f, label_size.y + style.FramePadding.y * 2.0f);
+
+		const ImRect bb(pos, pos + size);
+		ImGui::ItemSize(size, style.FramePadding.y);
+		if (!ImGui::ItemAdd(bb, id))
+			return false;
+		bool hovered, held;
+		bool pressed = ImGui::ButtonBehavior(bb, id, &hovered, &held, NULL);
+		if (pressed)
+			ImGui::MarkItemEdited(id);
+
+		static std::map<ImGuiID, int> alpha_anim;
+		auto it_alpha = alpha_anim.find(id);
+		if (it_alpha == alpha_anim.end())
+		{
+			alpha_anim.insert({ id, 0 });
+			it_alpha = alpha_anim.find(id);
+		}
+		if (state) {
+			if (it_alpha->second < 40)
+				it_alpha->second += 2;
+		}
+		else {
+			if (it_alpha->second > 0)
+				it_alpha->second -= 2;
+		}
+
+
+		window->DrawList->AddRectFilledMultiColor(bb.Min, bb.Max, ImColor(40, 40, 40, 40 - it_alpha->second), ImColor(40, 40, 40, 0), ImColor(40, 40, 40, 0), ImColor(40, 40, 40, 40 - it_alpha->second));
+		window->DrawList->AddRectFilledMultiColor(bb.Min, bb.Max,
+			ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), int(it_alpha->second * Menu::Get().public_alpha)),
+			ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), 0),
+			ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), 0),
+			ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), int(it_alpha->second * Menu::Get().public_alpha)));
+		window->DrawList->AddRectFilled(bb.Min, bb.Min + ImVec2(3, size_arg.y),
+			ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), int(it_alpha->second * 6 * Menu::Get().public_alpha)));
+		window->DrawList->AddText(bb.Min + ImVec2(20, size_arg.y / 2 - ImGui::CalcTextSize(label).y / 2), ImColor(220, 220, 220, int(255 * Menu::Get().public_alpha)), label);
+
+		return pressed;
+	}
+	void promptList(const char* label, const char* text) {
+		ImGuiWindow* window = ImGui::GetCurrentWindow();
+		if (window->SkipItems)
+			return;
+
+		ImGuiContext& g = *GImGui;
+		const ImGuiStyle& style = g.Style;
+		const ImGuiID id = window->GetID(label);
+		const ImVec2 label_size = ImGui::CalcTextSize(label, NULL, true);
+
+		ImVec2 pos = window->DC.CursorPos;
+		ImVec2 size = ImVec2(15, 15);
+
+		const ImRect bb(pos, pos + size);
+		ImGui::ItemSize(size, style.FramePadding.y);
+		if (!ImGui::ItemAdd(bb, id))
+			return;
+		bool hovered, held;
+		bool pressed = ImGui::ButtonBehavior(bb, id, &hovered, &held, NULL);
+		if (pressed)
+			ImGui::MarkItemEdited(id);
+
+		window->DrawList->AddRectFilled(bb.Min, bb.Max,
+			ImColor(25, 25, 25, int(255 * Menu::Get().public_alpha)),
+			3);
+		window->DrawList->AddText(bb.Min + ImVec2(size.x / 2 - ImGui::CalcTextSize("?").x / 2, size.y / 2 - ImGui::CalcTextSize("?").y / 2),
+			ImColor(220, 220, 220, int(255 * Menu::Get().public_alpha)), 
+			"?");
+
+		window->DrawList->AddText(bb.Min + ImVec2(-(ImGui::CalcTextSize("Click").x + 5), size.y / 2 - ImGui::CalcTextSize("Click").y / 2),
+			ImColor(220, 220, 220, int(255 * Menu::Get().public_alpha)),
+			"Click");
+
+		if (ImGui::BeginPopup(label, ImGuiWindowFlags_NoMove)) {
+
+			ImGui::Text(text);
+
+			ImGui::EndPopup();
+		}
+		if (hovered && (ImGui::GetIO().MouseClicked[1] || ImGui::GetIO().MouseClicked[0]))
+			ImGui::OpenPopup(label);
+	}
 }
 
 void Menu::Initialize()
@@ -129,135 +295,23 @@ void Menu::OnDeviceReset()
     ImGui_ImplDX9_CreateDeviceObjects();
 }
 
-bool Tab(const char* label, const ImVec2& size_arg, bool state)
-{
-	ImGuiWindow* window = ImGui::GetCurrentWindow();
-	if (window->SkipItems)
-		return false;
-
-	ImGuiContext& g = *GImGui;
-	const ImGuiStyle& style = g.Style;
-	const ImGuiID id = window->GetID(label);
-	const ImVec2 label_size = ImGui::CalcTextSize(label, NULL, true);
-
-	ImVec2 pos = window->DC.CursorPos;
-	ImVec2 size = ImGui::CalcItemSize(size_arg, label_size.x + style.FramePadding.x * 2.0f, label_size.y + style.FramePadding.y * 2.0f);
-
-	const ImRect bb(pos, pos + size);
-	ImGui::ItemSize(size, style.FramePadding.y);
-	if (!ImGui::ItemAdd(bb, id))
-		return false;
-	bool hovered, held;
-	bool pressed = ImGui::ButtonBehavior(bb, id, &hovered, &held, NULL);
-	if (pressed)
-		ImGui::MarkItemEdited(id);
-
-	static std::map<ImGuiID, int> alpha_anim;
-	auto it_alpha = alpha_anim.find(id);
-	if (it_alpha == alpha_anim.end())
-	{
-		alpha_anim.insert({ id, 0 });
-		it_alpha = alpha_anim.find(id);
-	}
-	if (state) {
-		if (it_alpha->second < 250)
-			it_alpha->second += 10;
-	} else {
-		if (it_alpha->second > 0) 
-			it_alpha->second -= 10; 
-	}
-
-	static std::map<ImGuiID, int> alpha_anim2;
-	auto it_alpha2 = alpha_anim2.find(id);
-	if (it_alpha2 == alpha_anim2.end())
-	{
-		alpha_anim2.insert({ id, 0 });
-		it_alpha2 = alpha_anim2.find(id);
-	}
-	if (state) {
-		if (it_alpha2->second < size_arg.x)
-			it_alpha2->second += 2;
-	}
-	else {
-		if (it_alpha2->second > 0)
-			it_alpha2->second -= 2;
-	}
-
-	if (it_alpha2->second > 0 || it_alpha->second > 0)
-	{
-		window->DrawList->AddRectFilled(bb.Min + ImVec2(size_arg.x / 2 - it_alpha2->second / 2, 0), bb.Min + ImVec2(it_alpha2->second, 4), 
-			ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), it_alpha->second), 2);
-		window->DrawList->AddRectFilled(bb.Min + ImVec2(0, 2), bb.Max, ImColor(25, 25, 25, it_alpha->second));
-		window->DrawList->AddRectFilled(bb.Min + ImVec2(1, 2), bb.Max - ImVec2(1, 0), ImColor(11, 11, 11, it_alpha->second));
-	}
-
-	ImGui::RenderTextClipped(bb.Min + style.FramePadding, bb.Max - style.FramePadding, label, NULL, &label_size, style.ButtonTextAlign, &bb);
-
-	return pressed;
-}
-bool subTab(const char* label, const ImVec2& size_arg, bool state)
-{
-	ImGuiWindow* window = ImGui::GetCurrentWindow();
-	if (window->SkipItems)
-		return false;
-
-	ImGuiContext& g = *GImGui;
-	const ImGuiStyle& style = g.Style;
-	const ImGuiID id = window->GetID(label);
-	const ImVec2 label_size = ImGui::CalcTextSize(label, NULL, true);
-
-	ImVec2 pos = window->DC.CursorPos;
-	ImVec2 size = ImGui::CalcItemSize(size_arg, label_size.x + style.FramePadding.x * 2.0f, label_size.y + style.FramePadding.y * 2.0f);
-
-	const ImRect bb(pos, pos + size);
-	ImGui::ItemSize(size, style.FramePadding.y);
-	if (!ImGui::ItemAdd(bb, id))
-		return false;
-	bool hovered, held;
-	bool pressed = ImGui::ButtonBehavior(bb, id, &hovered, &held, NULL);
-	if (pressed)
-		ImGui::MarkItemEdited(id);
-
-	static std::map<ImGuiID, int> alpha_anim;
-	auto it_alpha = alpha_anim.find(id);
-	if (it_alpha == alpha_anim.end())
-	{
-		alpha_anim.insert({ id, 0 });
-		it_alpha = alpha_anim.find(id);
-	}
-	if (state) {
-		if (it_alpha->second < 40)
-			it_alpha->second += 2;
-	}
-	else {
-		if (it_alpha->second > 0)
-			it_alpha->second -= 2;
-	}
-
-
-	window->DrawList->AddRectFilledMultiColor(bb.Min, bb.Max, ImColor(40, 40, 40, 40 - it_alpha->second), ImColor(40, 40, 40, 0), ImColor(40, 40, 40, 0), ImColor(40, 40, 40, 40 - it_alpha->second));
-	window->DrawList->AddRectFilledMultiColor(bb.Min, bb.Max,
-		ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), it_alpha->second),
-		ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), 0), 
-		ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), 0), 
-		ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), it_alpha->second));
-	window->DrawList->AddRectFilled(bb.Min, bb.Min + ImVec2(3, size_arg.y), 
-		ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b(), it_alpha->second * 6));
-	window->DrawList->AddText(bb.Min + ImVec2(20, size_arg.y / 2 - ImGui::CalcTextSize(label).y / 2), ImColor(220, 220, 220), label);
-
-	return pressed;
-}
-
 void Menu::Render()
 {
 	ImGui::GetIO().MouseDrawCursor = _visible;
-    if(!_visible)
-        return;
-	auto flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | NULL | NULL | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | NULL | NULL | NULL;
+	static float m_alpha = 0.0002f;
+	m_alpha = Math::clamp(m_alpha + (3.f * ImGui::GetIO().DeltaTime * (_visible ? 1.f : -1.f)), 0.0001f, 1.f);
+	public_alpha = m_alpha;
+	if (m_alpha <= 0.0001f)
+		return;
+
+	ImGui::PushStyleVar(ImGuiStyleVar_Alpha, m_alpha);
+
+	auto flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | NULL | NULL | ImGuiWindowFlags_NoCollapse | NULL | NULL | NULL;
 
 	ImGuiStyle* Style = &ImGui::GetStyle();
 	static int tab = 0;
-	static float x = 600, y = 400;
+	static float min_x = 600, min_y = 400;
+	static float x = 0, y = 0;
 	static char cfg_name[64] = { 0 };
 	static char cfg_name_new[64] = { 0 };
 	const char* tabs[] = {
@@ -302,13 +356,19 @@ void Menu::Render()
 	Style->WindowRounding = 5;
 	Style->ChildRounding = 0;
 
-	ImGui::SetNextWindowSize({ x, y });
+	ImGui::SetNextWindowSize({ min_x, min_y }, ImGuiCond_Once);
 
 	ImGui::PushFont(g_MenuFont);
 	ImGui::Begin("nessless", nullptr, flags);
 	{
+		x = ImGui::GetWindowSize().x;
+		y = ImGui::GetWindowSize().y;
+		if (x < min_x) ImGui::SetWindowSize({ min_x, y });
+		if (y < min_y) ImGui::SetWindowSize({ x, min_y });
+
 		ImVec2 w = ImGui::GetWindowPos();
 		ImVec2 p = ImGui::GetCursorPos();
+
 		ImGui::SetCursorPos(ImVec2{ 0, 0 });
 		ImGui::BeginChild("##Tabs", ImVec2{ x, 25 });
 		{
@@ -325,7 +385,7 @@ void Menu::Render()
 			for (int i = 0; i < 6; i++) {
 				float xpos = 160 + 70 * i;
 				ImGui::SetCursorPos(ImVec2( xpos, 2 ));
-				if (Tab(tabs[i], ImVec2( 70, 23 ), tab == i))
+				if (ImGui::Tab(tabs[i], ImVec2( 70, 23 ), tab == i))
 					tab = i;
 			}
 		}
@@ -341,7 +401,7 @@ void Menu::Render()
 			case 0:
 				for (int i = 0; i < 2; i++) {
 					ImGui::SetCursorPos(ImVec2(0, 25 * i));
-					if (subTab(subtabs_rage[i], ImVec2(120, 25), subtab[0] == i))
+					if (ImGui::subTab(subtabs_rage[i], ImVec2(120, 25), subtab[0] == i))
 						subtab[0] = i;
 				}
 
@@ -349,7 +409,7 @@ void Menu::Render()
 					ImGui::PushFont(g_WeaponFont);
 					for (int d = 0; d < 6; d++) {
 						ImGui::SetCursorPos(ImVec2(0, 25 * 3 + 35 * d));
-						if (subTab(rage_weapons[d], ImVec2(120, 35), g_Options.ragebot_weapon == d))
+						if (ImGui::subTab(rage_weapons[d], ImVec2(120, 35), g_Options.ragebot_weapon == d))
 							g_Options.ragebot_weapon = d;
 					}
 					ImGui::PopFont();
@@ -358,13 +418,13 @@ void Menu::Render()
 			case 1:
 				for (int i = 0; i < 2; i++) {
 					ImGui::SetCursorPos(ImVec2(0, 25 * i));
-					if (subTab(subtabs_legit[i], ImVec2(120, 25), subtab[1] == i))
+					if (ImGui::subTab(subtabs_legit[i], ImVec2(120, 25), subtab[1] == i))
 						subtab[1] = i;
 
 					ImGui::PushFont(g_WeaponFont);
 					for (int d = 0; d < 5; d++) {
 						ImGui::SetCursorPos(ImVec2(0, 25 * 3 + 35 * d));
-						if (subTab(legit_weapons[d], ImVec2(120, 35), g_Options.legitbot_weapon == d))
+						if (ImGui::subTab(legit_weapons[d], ImVec2(120, 35), g_Options.legitbot_weapon == d))
 							g_Options.legitbot_weapon = d;
 					}
 					ImGui::PopFont();
@@ -373,28 +433,28 @@ void Menu::Render()
 			case 2:
 				for (int i = 0; i < 1; i++) {
 					ImGui::SetCursorPos(ImVec2(0, 25 * i));
-					if (subTab(subtabs_visuals[i], ImVec2(120, 25), subtab[2] == i))
+					if (ImGui::subTab(subtabs_visuals[i], ImVec2(120, 25), subtab[2] == i))
 						subtab[2] = i;
 				}
 				break;
 			case 3:
 				for (int i = 0; i < 2; i++) {
 					ImGui::SetCursorPos(ImVec2(0, 25 * i));
-					if (subTab(subtabs_misc[i], ImVec2(120, 25), subtab[3] == i))
+					if (ImGui::subTab(subtabs_misc[i], ImVec2(120, 25), subtab[3] == i))
 						subtab[3] = i;
 				}
 				break;
 			case 4:
 				for (int i = 0; i < 2; i++) {
 					ImGui::SetCursorPos(ImVec2(0, 25 * i));
-					if (subTab(subtabs_profile[i], ImVec2(120, 25), subtab[4] == i))
+					if (ImGui::subTab(subtabs_profile[i], ImVec2(120, 25), subtab[4] == i))
 						subtab[4] = i;
 				}
 				break;
 			case 5:
 				for (int i = 0; i < 1; i++) {
 					ImGui::SetCursorPos(ImVec2(0, 25 * i));
-					if (subTab(subtabs_scripting[i], ImVec2(120, 25), subtab[5] == i))
+					if (ImGui::subTab(subtabs_scripting[i], ImVec2(120, 25), subtab[5] == i))
 						subtab[5] = i;
 				}
 				break;
@@ -466,8 +526,8 @@ void Menu::Render()
 				switch (subtab[2]) {
 				case 0:
 					ImGui::Separator("ESP");
-					ImGui::Checkbox("Boxes", &g_Options.esp_player_boxes); ImGui::SameLine(); ImGuiEx::ColorEdit4("Enemies Visible   ", &g_Options.color_esp_enemy_visible);
-					ImGui::Checkbox("Occluded ", &g_Options.esp_player_boxesOccluded); ImGui::SameLine(); ImGuiEx::ColorEdit4("Enemies Occluded      ", &g_Options.color_esp_enemy_occluded);
+					ImGui::Checkbox("Boxes", &g_Options.esp_player_boxes); ImGui::SameLine((float)(last_x / 2) - 30); ImGuiEx::ColorEdit4("Enemies Visible   ", &g_Options.color_esp_enemy_visible);
+					ImGui::Checkbox("Occluded ", &g_Options.esp_player_boxesOccluded); ImGui::SameLine((float)(last_x / 2) - 30); ImGuiEx::ColorEdit4("Enemies Occluded      ", &g_Options.color_esp_enemy_occluded);
 
 					ImGui::Checkbox("Names", &g_Options.esp_player_names);
 					ImGui::Checkbox("Health", &g_Options.esp_player_health);
@@ -475,11 +535,9 @@ void Menu::Render()
 					ImGui::Checkbox("Dropped Weapons", &g_Options.esp_dropped_weapons);
 					ImGui::Spacing();
 					ImGui::Separator("Chams");
-					ImGui::Checkbox("Enabled ", &g_Options.chams_player_enabled); ImGui::SameLine(); ImGuiEx::ColorEdit4a("Enemy Visible ", &g_Options.color_chams_player_enemy_visible);
-					ImGui::Checkbox("Visible shine##chams_enemies_visible_shine", &g_Options.player_enemies_shine);
-					ImGui::SameLine(); 
-					ImGuiEx::ColorEdit4("##color_chams_enemies_visible_shine", &g_Options.player_enemy_visible_shine);
-					ImGui::Checkbox("Occluded  ", &g_Options.chams_player_ignorez); ImGui::SameLine(); ImGuiEx::ColorEdit4a("Enemy Occluded ", &g_Options.color_chams_player_enemy_occluded);
+					ImGui::Checkbox("Enabled ", &g_Options.chams_player_enabled); ImGui::SameLine((float)(last_x / 2) - 30); ImGuiEx::ColorEdit4a("Enemy Visible ", &g_Options.color_chams_player_enemy_visible);
+					ImGui::Checkbox("Visible shine##chams_enemies_visible_shine", &g_Options.player_enemies_shine); ImGui::SameLine((float)(last_x / 2) - 30); ImGuiEx::ColorEdit4("##color_chams_enemies_visible_shine", &g_Options.player_enemy_visible_shine);
+					ImGui::Checkbox("Occluded  ", &g_Options.chams_player_ignorez); ImGui::SameLine((float)(last_x / 2) - 30); ImGuiEx::ColorEdit4a("Enemy Occluded ", &g_Options.color_chams_player_enemy_occluded);
 					ImGui::Combo("##Flat", &g_Options.chams_player_flat, chams_type);
 					break;
 				}
@@ -491,9 +549,7 @@ void Menu::Render()
 
 					ImGui::Checkbox("Rank reveal", &g_Options.misc_showranks);
 					ImGui::Checkbox("Watermark##hc", &g_Options.misc_watermark);
-					ImGui::Checkbox("Velocity", &g_Options.Velocity);
-					ImGui::SameLine();
-					ImGuiEx::ColorEdit4("##Velocity", &g_Options.Velocitycol);
+					ImGui::Checkbox("Velocity", &g_Options.Velocity); ImGui::SameLine((float)(last_x / 2) - 30); ImGuiEx::ColorEdit4("##Velocity", &g_Options.Velocitycol);
 					ImGui::Spacing();
 
 					if (ImGui::BeginCombo("##Velocity", "Velocity", ImGuiComboFlags_NoArrowButton))
@@ -508,8 +564,8 @@ void Menu::Render()
 					ImGui::Checkbox("No flash", &g_Options.no_flash);
 					ImGui::Checkbox("No smoke", &g_Options.no_smoke);
 					ImGui::Checkbox("Sniper crosshair", &g_Options.sniper_xhair);
-					ImGui::Checkbox("Logs", &g_Options.logs);
 					ImGui::Combo("Clantags", &g_Options.misc_combo_clantag, "None\0Nessles\0\0");
+					ImGui::Checkbox("Logs", &g_Options.logs);
 					if (g_Options.logs)
 						ImGui::Checkbox("Logs drawing", &g_Options.logs_drawing);
 					break;
@@ -588,9 +644,13 @@ void Menu::Render()
 							selected = 0;
 						}
 						ImGui::Separator("Menu");
-						ImGui::Text("Color");
-						ImGui::SameLine();
-						ImGuiEx::ColorEdit4("##menucolor", &g_Options.menu_color);
+						if (ImGui::Button(" Panic button"))
+						{
+							g_Unload = true;
+						}
+						ImGui::Text("Color"); 
+						ImGui::SameLine((float)(last_x / 2) - 90); ImGuiEx::ColorEdit4("##menucolor", &g_Options.menu_color); 
+						ImGui::SameLine((float)(last_x / 2) - 30); ImGui::promptList("##menucolorpromt", u8"Изменение основных цветов   \nменю.");
 					}
 					break;
 				case 1:
@@ -628,9 +688,9 @@ void Menu::Render()
 					ImGui::Spacing();
 					ImGui::SliderInt("##damage", &ragebot->damage, 1, 130, "%i");
 					
-					ImGui::Text("Hit Chance"); 
+					ImGui::Text("Miss Chance"); ImGui::SameLine((float)(last_x / 2) - 30); ImGui::promptList("#misschancepromt", u8"Чем больше miss chance,   \nтем меньше hit chance.");
 					ImGui::Spacing();
-					ImGui::SliderInt("##hitchance", &ragebot->hitchance, 1, 100, "%i");
+					ImGui::SliderInt("##misschance", &ragebot->hitchance, 1, 100, "%i");
 
 					if (ImGui::BeginCombo("##hitbox_filter", "Hitboxes", ImGuiComboFlags_NoArrowButton))
 					{
@@ -698,10 +758,10 @@ void Menu::Render()
 				case 0:
 					ImGui::Separator("Glow");
 					ImGui::Checkbox("Enabled", &g_Options.glow_enabled);
-					ImGui::SameLine();
+					ImGui::SameLine((float)(last_x / 2) - 30);
 					ImGuiEx::ColorEdit4a("##Enemy   ", &g_Options.color_glow_enemy);
 					ImGui::Checkbox("Occluded   ", &g_Options.glow_enemiesOC);
-					ImGui::SameLine();
+					ImGui::SameLine((float)(last_x / 2) - 30);
 					ImGuiEx::ColorEdit4a("##color_glow_enemiesOC   ", &g_Options.color_glow_enemyOC);
 					const char* glow_enemies_type[] = {
 						"Outline outer",
