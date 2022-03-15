@@ -49,6 +49,8 @@ namespace Hooks
 	typedef bool(__thiscall* sendnetmsg_fn)(void*, INetMessage* msg, bool reliable, bool voice);
 	inline sendnetmsg_fn original_sendnetmsg = nullptr;
 
+	using EndScene = long(__stdcall*)(IDirect3DDevice9*);
+
 	using FireEvent = bool(__thiscall*)(IGameEventManager2*, IGameEvent* pEvent);
     long __stdcall hkEndScene(IDirect3DDevice9* device);
     long __stdcall hkReset(IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* pPresentationParameters);

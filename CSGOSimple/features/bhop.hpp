@@ -1,11 +1,10 @@
+#include "../singleton.hpp"
+#include "../valve_sdk/csgostructs.hpp"
+
 #pragma once
-
-class C_BasePlayer;
-class CUserCmd;
-
-namespace BunnyHop
+class BunnyHop : public Singleton<BunnyHop>
 {
-    void OnCreateMove(CUserCmd* cmd);
-    void AutoStrafe(CUserCmd* cmd);
-
-}
+public:
+	void OnCreateMove(CUserCmd* cmd);
+	void AutoStrafe(CUserCmd* cmd, QAngle va);
+};

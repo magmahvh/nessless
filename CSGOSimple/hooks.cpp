@@ -116,9 +116,50 @@ namespace Hooks {
 		return oFireEvent(g_GameEvents, pEvent);
 	}
 	//--------------------------------------------------------------------------------
-	long __stdcall hkEndScene(IDirect3DDevice9* pDevice)
-	{
-		static auto oEndScene = direct3d_hook.get_original<decltype(&hkEndScene)>(index::EndScene);
+	  long __stdcall hkEndScene( IDirect3DDevice9* pDevice ) {
+		 auto oEndScene = direct3d_hook.get_original< EndScene >( index::EndScene );
+
+		 static uintptr_t gameoverlay_return_address = 0;
+		 if (!gameoverlay_return_address) {
+			 MEMORY_BASIC_INFORMATION info;
+			 VirtualQuery(_ReturnAddress(), &info, sizeof(MEMORY_BASIC_INFORMATION));
+
+			 char mod[MAX_PATH];
+			 GetModuleFileNameA((HMODULE)info.AllocationBase, mod, MAX_PATH);
+
+			 if (strstr(mod, ("gameoverlay")))
+				 gameoverlay_return_address = (uintptr_t)(_ReturnAddress());
+		 }
+
+		 if (gameoverlay_return_address != (uintptr_t)(_ReturnAddress()))
+			 return oEndScene(pDevice);
+
+		 IDirect3DVertexDeclaration9* vertDec;
+		 IDirect3DVertexShader9* vertShader;
+		 pDevice->GetVertexDeclaration( &vertDec );
+		 pDevice->GetVertexShader( &vertShader );
+
+		 pDevice->SetVertexDeclaration( nullptr );
+		 pDevice->SetVertexShader( nullptr );
+
+		 static auto r_modelAmbientMin = g_CVar->FindVar( "r_modelAmbientMin" );
+		 static auto mat_force_tonemap_scale = g_CVar->FindVar( "mat_force_tonemap_scale" );
+		 static auto mat_postprocess_enable = g_CVar->FindVar( "mat_postprocess_enable" );
+
+		 if( !g_Unload ) {
+			r_modelAmbientMin->SetValue( g_Options.esp_nightmode ? 1.f : 0.0f );
+			mat_force_tonemap_scale->SetValue( g_Options.esp_nightmode ? g_Options.esp_nightmode_size : 1.0f );
+			mat_postprocess_enable->SetValue( g_Options.esp_nightmode ? 1 : 0 );
+		 } else {
+			if( r_modelAmbientMin->GetFloat( ) != 0.0f )
+			  r_modelAmbientMin->SetValue( 0.0f );
+
+			if( mat_force_tonemap_scale->GetFloat( ) != 1.0f )
+			  mat_force_tonemap_scale->SetValue( 1.0f );
+
+			if( mat_postprocess_enable->GetInt( ) != 0 )
+			  mat_postprocess_enable->SetValue( 0 );
+		 }
 
 		DWORD colorwrite, srgbwrite;
 		IDirect3DVertexDeclaration9* vert_dec = nullptr;
@@ -197,10 +238,10 @@ namespace Hooks {
 			cmd->buttons &= ~IN_ATTACK;
 
 		if (g_Options.misc_bhop)
-			BunnyHop::OnCreateMove(cmd);
+			BunnyHop::Get().OnCreateMove(cmd);
 
 		if (g_Options.misc_autostrafe)
-			BunnyHop::AutoStrafe(cmd);
+			BunnyHop::Get().AutoStrafe(cmd, cmd->viewangles);
 
 		static auto prediction = new PredictionSystem();
 		auto flags = g_LocalPlayer->m_fFlags();

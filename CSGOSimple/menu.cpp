@@ -787,12 +787,15 @@ void Menu::Render()
 					ImGui::Separator("Movement");
 
 					ImGui::Checkbox("Bunny hop", &g_Options.misc_bhop);
+					ImGui::SliderFloat("Speed", &g_Options.misc_retrack_speed, 2.0f, 8.0f, "%.1f");
 					ImGui::Checkbox("Auto strafe", &g_Options.misc_autostrafe);
 					ImGui::Checkbox("Edge bug", &g_Options.edge_bug); ImGui::SameLine(); ImGui::Hotkey("  ", &g_Options.edge_bug_key);
 					ImGui::Checkbox("Edge jump", &g_Options.edgejump.enabled); ImGui::SameLine(); ImGui::Hotkey("    ", &g_Options.edgejump.hotkey);
 					ImGui::Checkbox("Duck in Air", &g_Options.edgejump.edge_jump_duck_in_air);
 
 					ImGui::Checkbox("Auto player (beta)", &g_Options.autowalk);
+
+					ImGui::Checkbox("Nightmode", &g_Options.esp_nightmode);
 
 					ImGui::Separator("Third Person");
 					ImGui::Checkbox("Third Person", &g_Options.misc_thirdperson);

@@ -39,6 +39,7 @@ public:
 		void RenderHealth(C_BaseEntity* pl);
 		void RenderArmour();
 		void RenderSnapline();
+		void fog();
 	};
 	void RenderWeapon(C_BaseCombatWeapon* ent);
 	void RenderDefuseKit(C_BaseEntity* ent);

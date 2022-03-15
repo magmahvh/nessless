@@ -205,6 +205,7 @@ public:
 
 	bool misc_autostrafe = false;
 	bool misc_bhop = false;
+	float misc_retrack_speed = 2.0f;
 	int playerModelT{ 0 };
 	int playerModelCT{ 0 };
 
@@ -222,6 +223,8 @@ public:
 	bool autoaccept = false;
 	bool no_flash = false;
 	bool no_smoke = false;
+	bool esp_nightmode = false;
+	float esp_nightmode_size = 0.05f;
 	bool misc_thirdperson = false;
 	int misc_thirdperson_bind = 0;
 	float misc_thirdperson_dist = 50.f;
