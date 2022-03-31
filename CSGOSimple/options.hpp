@@ -153,6 +153,14 @@ public:
 	// ESP
 	// 
 
+	bool InThirdPerson = false;
+	float OFOV = 0;
+	int SHeight = 0;
+	int SWidth = 0;
+	float SWidthHalf = 0;
+	float SHeightHalf = 0;
+	bool change_materials = false;
+
 	bool esp_enemies_only = false;
 	bool esp_player_boxes = false;
 	bool esp_player_boxesOccluded = false;
@@ -204,6 +212,8 @@ public:
 	bool autowalk = false;
 
 	bool misc_autostrafe = false;
+	bool misc_boostspeed = false;
+	bool misc_wasdstrafes = false;
 	bool misc_bhop = false;
 	float misc_retrack_speed = 2.0f;
 	int playerModelT{ 0 };
@@ -223,9 +233,28 @@ public:
 	bool autoaccept = false;
 	bool no_flash = false;
 	bool no_smoke = false;
-	bool esp_nightmode = false;
-	float esp_nightmode_size = 0.05f;
-	bool misc_thirdperson = false;
+	bool enable_offsets = false;
+	float viewmodel_offset_x = 0.0f;
+	float viewmodel_offset_y = 0.0f;
+	float viewmodel_offset_z = 0.0f;
+	float viewmodel_offset_roll = 0.0f;
+	bool enable_post_proc = false;
+	int  viewmodel_fov = 68;
+	bool remove_zoom = false;
+	float asus_props = 0.0f;
+	float asus_walls = 0.0f;
+	bool aspect_ratio = false;
+	bool remove_visualrecoil = false;
+	bool remove_post_processing = false;
+	int skybox_num = false;
+	float aspect_ratio_scale = 1.0f;
+	bool enable_nightmode = false;
+	bool no_scope_crosshair = false;
+	float esp_nightmode_size = 0.05f; 
+	float fog_start_distance = 0.0f;
+	float fog_end_distance = 0.0f;
+	float fog_density = 0.0f; 
+	bool enable_fog = false;
 	int misc_thirdperson_bind = 0;
 	float misc_thirdperson_dist = 50.f;
 
@@ -275,6 +304,10 @@ public:
 	Color color_watermark = { 0, 0, 0 }; // no menu config cuz its useless
 	Color player_enemy_visible_shine = { 0, 0, 0 };
 	Color player_enemy_flat = { 0, 0, 0 };
+	Color nightmode_color = { 255, 255, 255 };
+	Color skybox_color = { 255, 255, 255 };
+	Color fog_color = { 255, 255, 255 };
+	Color post_processing = { 0, 0, 0 };
 
 	Color menu_color = { 100, 120, 235 };
 

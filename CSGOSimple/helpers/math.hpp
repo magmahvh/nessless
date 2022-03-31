@@ -45,6 +45,16 @@ namespace Math
 		}
 		vec[2] = 0.f;
 	}
+	__forceinline float NormalizeAngle(float flAngle)
+	{
+		flAngle = fmod(flAngle, 360.0f);
+		if (flAngle > 180.0f)
+			flAngle -= 360.0f;
+		if (flAngle < -180.0f)
+			flAngle += 360.0f;
+
+		return flAngle;
+	}
     void ClampAngles(QAngle& angles);
 	void FixAngles(QAngle& angles);
     void VectorTransform(const Vector& in1, const matrix3x4_t& in2, Vector& out);

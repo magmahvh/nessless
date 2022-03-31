@@ -552,6 +552,14 @@ void Menu::Render()
 					ImGui::Checkbox("Velocity", &g_Options.Velocity); ImGui::SameLine((float)(last_x / 2) - 30); ImGuiEx::ColorEdit4("##Velocity", &g_Options.Velocitycol);
 					ImGui::Spacing();
 
+					
+					
+
+
+					ImGui::Checkbox("Aspect ratio", &g_Options.aspect_ratio);
+					if (&g_Options.aspect_ratio)
+						ImGui::SliderFloat("Scale", &g_Options.aspect_ratio_scale, 0.1f, 4.f);
+
 					if (ImGui::BeginCombo("##Velocity", "Velocity", ImGuiComboFlags_NoArrowButton))
 					{
 						ImGui::Selectable("Outline", &g_Options.outline, ImGuiSelectableFlags_DontClosePopups);
@@ -568,6 +576,8 @@ void Menu::Render()
 					ImGui::Checkbox("Logs", &g_Options.logs);
 					if (g_Options.logs)
 						ImGui::Checkbox("Logs drawing", &g_Options.logs_drawing);
+
+					ImGui::Text(" Nightmode", &g_Options.enable_nightmode); ImGui::SameLine((float)(last_x / 2) - 30); ImGuiEx::ColorEdit4("##Nightmode", &g_Options.nightmode_color);
 					break;
 				case 1:
 					ImGui::Spacing();
@@ -787,22 +797,20 @@ void Menu::Render()
 					ImGui::Separator("Movement");
 
 					ImGui::Checkbox("Bunny hop", &g_Options.misc_bhop);
-					ImGui::SliderFloat("Speed", &g_Options.misc_retrack_speed, 2.0f, 8.0f, "%.1f");
 					ImGui::Checkbox("Auto strafe", &g_Options.misc_autostrafe);
+					ImGui::Checkbox("Speed boost", &g_Options.misc_boostspeed);
+					ImGui::Checkbox("WASD", &g_Options.misc_wasdstrafes);
 					ImGui::Checkbox("Edge bug", &g_Options.edge_bug); ImGui::SameLine(); ImGui::Hotkey("  ", &g_Options.edge_bug_key);
 					ImGui::Checkbox("Edge jump", &g_Options.edgejump.enabled); ImGui::SameLine(); ImGui::Hotkey("    ", &g_Options.edgejump.hotkey);
 					ImGui::Checkbox("Duck in Air", &g_Options.edgejump.edge_jump_duck_in_air);
 
 					ImGui::Checkbox("Auto player (beta)", &g_Options.autowalk);
 
-					ImGui::Checkbox("Nightmode", &g_Options.esp_nightmode);
 
-					ImGui::Separator("Third Person");
-					ImGui::Checkbox("Third Person", &g_Options.misc_thirdperson);
-					ImGui::SameLine();
-					ImGui::Hotkey("", &g_Options.misc_thirdperson_bind);
-					ImGui::Spacing();
-					ImGui::SliderFloat("Distance", &g_Options.misc_thirdperson_dist, 50.f, 300.f);
+					//ImGui::SameLine();
+					//ImGui::Hotkey("", &g_Options.misc_thirdperson_bind);
+					//ImGui::Spacing();
+				//	ImGui::SliderFloat("Distance", &g_Options.misc_thirdperson_dist, 50.f, 300.f);
 					break;
 				case 1:
 					ImGui::Spacing();

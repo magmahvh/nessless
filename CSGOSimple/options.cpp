@@ -244,6 +244,7 @@ void Options::SetupMisc()
 	SetupValue(g_Options.misc_showranks, "Misc", "Rank reveal");
 	SetupValue(g_Options.misc_watermark, "Misc", "Watermark");
 	SetupValue(g_Options.Velocity, "Misc", "Velocity");
+	SetupValue(g_Options.Velocity, "Misc", "Nightmode");
 	SetupValue(g_Options.outline, "Misc", "Outline");
 	SetupValue(g_Options.lastjump, "Misc", "Last jump");
 	SetupValue(g_Options.lastjumpoutline, "Misc", "Last jump outline");
@@ -260,7 +261,6 @@ void Options::SetupMisc()
 	SetupValue(g_Options.sniper_xhair, "Misc", "Sniper crosshair");
 	SetupValue(g_Options.playerModelCT, "Misc", "playerModelCT");
 	SetupValue(g_Options.playerModelT, "Misc", "playerModelT");
-	SetupValue(g_Options.misc_thirdperson, "Misc", "Thirdperson");
 	SetupValue(g_Options.misc_thirdperson_bind, "Misc", "Thirdperson bind");
 	SetupValue(g_Options.misc_thirdperson_dist, "Misc", "Thirdperson distance");
 

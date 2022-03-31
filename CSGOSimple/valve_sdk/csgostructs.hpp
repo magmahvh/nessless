@@ -22,6 +22,12 @@
 	static auto prop_ptr = NetvarSys::Get().GetNetvarProp(table,netvar); \
 	return prop_ptr; \
 }
+#define OFFSET(type, name, offset)             \
+    type& name##() const {                                          \
+        return *(type*)((uintptr_t)this + offset);                 \
+    } 
+
+
 
 struct datamap_t;
 class AnimationLayer;
@@ -186,6 +192,7 @@ public:
 	NETVAR(float_t, m_flRecoilIndex, "DT_WeaponCSBase", "m_flRecoilIndex");
 	NETVAR(int32_t, m_iViewModelIndex, "DT_BaseCombatWeapon", "m_iViewModelIndex");
 	NETVAR(int32_t, m_iWorldModelIndex, "DT_BaseCombatWeapon", "m_iWorldModelIndex");
+	OFFSET(short, m_iItemDefinitionIndex, 0x2FAA);
 	NETVAR(int32_t, m_iWorldDroppedModelIndex, "DT_BaseCombatWeapon", "m_iWorldDroppedModelIndex");
 	NETVAR(bool, m_bPinPulled, "DT_BaseCSGrenade", "m_bPinPulled");
 	NETVAR(float_t, m_fThrowTime, "DT_BaseCSGrenade", "m_fThrowTime");

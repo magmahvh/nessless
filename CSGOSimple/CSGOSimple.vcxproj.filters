@@ -169,6 +169,9 @@
     <ClCompile Include="Clantag.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="nightmode.cpp">
+      <Filter>Source Files\features</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="features\bhop.hpp">
@@ -513,6 +516,9 @@
     <ClInclude Include="Clantag.h" />
     <ClInclude Include="bytes.hpp">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nightmode.h">
+      <Filter>Source Files\features</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

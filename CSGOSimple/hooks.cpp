@@ -15,9 +15,172 @@
 #include "features/misc.hpp"
 #include "features/resolver.hpp"
 #include "features/autowalk.hpp"
+#include "nightmode.h"
 
 #pragma intrinsic(_ReturnAddress) 
 
+
+bool changed = false;
+std::string backup_skybox = "";
+
+void skybox_changer()
+{
+	static auto fnLoadNamedSkys = (void(__fastcall*)(const char*))Utils::PatternScan(GetModuleHandleA("engine.dll"), "55 8B EC 81 EC ? ? ? ? 56 57 8B F9 C7 45");
+	auto skybox_name = backup_skybox;
+
+	switch (g_Options.skybox_num)
+	{
+	case 1:
+		skybox_name = "cs_tibet";
+		break;
+	case 2:
+		skybox_name = "cs_baggage_skybox_";
+		break;
+	case 3:
+		skybox_name = "italy";
+		break;
+	case 4:
+		skybox_name = "jungle";
+		break;
+	case 5:
+		skybox_name = "office";
+		break;
+	case 6:
+		skybox_name = "sky_cs15_daylight01_hdr";
+		break;
+	case 7:
+		skybox_name = "sky_cs15_daylight02_hdr";
+		break;
+	case 8:
+		skybox_name = "vertigoblue_hdr";
+		break;
+	case 9:
+		skybox_name = "vertigo";
+		break;
+	case 10:
+		skybox_name = "sky_day02_05_hdr";
+		break;
+	case 11:
+		skybox_name = "nukeblank";
+		break;
+	case 12:
+		skybox_name = "sky_venice";
+		break;
+	case 13:
+		skybox_name = "sky_cs15_daylight03_hdr";
+		break;
+	case 14:
+		skybox_name = "sky_cs15_daylight04_hdr";
+		break;
+	case 15:
+		skybox_name = "sky_csgo_cloudy01";
+		break;
+	case 16:
+		skybox_name = "sky_csgo_night02";
+		break;
+	case 17:
+		skybox_name = "sky_csgo_night02b";
+		break;
+	case 18:
+		skybox_name = "sky_csgo_night_flat";
+		break;
+	case 19:
+		skybox_name = "sky_dust";
+		break;
+	case 20:
+		skybox_name = "vietnam";
+		break;
+	}
+
+	static auto skybox_number = 0;
+	static auto old_skybox_name = skybox_name;
+	static auto color_r = (unsigned char)255;
+	static auto color_g = (unsigned char)255;
+	static auto color_b = (unsigned char)255;
+
+
+	if (skybox_number != g_Options.skybox_num)
+	{
+		changed = true;
+		skybox_number = g_Options.skybox_num;
+	}
+	else if (old_skybox_name != skybox_name)
+	{
+		changed = true;
+		old_skybox_name = skybox_name;
+	}
+	else if (color_r != g_Options.skybox_color.r())
+	{
+		changed = true;
+		color_r = g_Options.skybox_color.r();
+	}
+	else if (color_g != g_Options.skybox_color.g())
+	{
+		changed = true;
+		color_g = g_Options.skybox_color.g();
+	}
+	else if (color_b != g_Options.skybox_color.b())
+	{
+		changed = true;
+		color_b = g_Options.skybox_color.b();
+	}
+
+	if (changed)
+	{
+		changed = false;
+		fnLoadNamedSkys(skybox_name.c_str());
+		auto materialsystem = g_MatSystem;
+
+		for (auto i = materialsystem->FirstMaterial(); i != materialsystem->InvalidMaterial(); i = materialsystem->NextMaterial(i))
+		{
+			auto material = materialsystem->GetMaterial(i);
+
+			if (!material)
+				continue;
+
+			if (strstr(material->GetTextureGroupName(), "SkyBox"))
+				material->ColorModulate(g_Options.skybox_color.r() / 255.f, g_Options.skybox_color.g() / 255.f, g_Options.skybox_color.b() / 255.f);
+		}
+	}
+}
+
+void fog_changer()
+{
+	static auto fog_override = g_CVar->FindVar("fog_override");
+
+	if (!g_Options.enable_fog)
+	{
+		if (fog_override->GetBool())
+			fog_override->SetValue(FALSE);
+		return;
+	}
+
+	if (!fog_override->GetBool())
+		fog_override->SetValue(TRUE);
+
+	static auto fog_start = g_CVar->FindVar("fog_start");
+
+	if (fog_start->GetInt() != g_Options.fog_start_distance)
+		fog_start->SetValue(g_Options.fog_start_distance);
+
+	static auto fog_end = g_CVar->FindVar("fog_end");
+
+	if (fog_end->GetInt() != g_Options.fog_end_distance)
+		fog_end->SetValue(g_Options.fog_end_distance);
+
+	static auto fog_maxdensity = g_CVar->FindVar("fog_maxdensity");
+
+	if (fog_maxdensity->GetFloat() != (float)g_Options.fog_density * 0.01f)
+		fog_maxdensity->SetValue((float)g_Options.fog_density * 0.01f);
+
+	char buffer_color[12];
+	sprintf_s(buffer_color, 12, "%i %i %i", g_Options.fog_color.r(), g_Options.fog_color.g(), g_Options.fog_color.b());
+
+	static auto fog_color = g_CVar->FindVar("fog_color");
+
+	if (strcmp(fog_color->GetString(), buffer_color))
+		fog_color->SetValue(buffer_color);
+}
 namespace Hooks {
 
 	void Initialize()
@@ -116,50 +279,63 @@ namespace Hooks {
 		return oFireEvent(g_GameEvents, pEvent);
 	}
 	//--------------------------------------------------------------------------------
-	  long __stdcall hkEndScene( IDirect3DDevice9* pDevice ) {
-		 auto oEndScene = direct3d_hook.get_original< EndScene >( index::EndScene );
+	long __stdcall hkEndScene(IDirect3DDevice9* pDevice)
+	{
+		static auto oEndScene = direct3d_hook.get_original<decltype(&hkEndScene)>(index::EndScene);
 
-		 static uintptr_t gameoverlay_return_address = 0;
-		 if (!gameoverlay_return_address) {
-			 MEMORY_BASIC_INFORMATION info;
-			 VirtualQuery(_ReturnAddress(), &info, sizeof(MEMORY_BASIC_INFORMATION));
+		static auto viewmodel_fov = g_CVar->FindVar("viewmodel_fov");
+		static auto mat_ambient_light_r = g_CVar->FindVar("mat_ambient_light_r");
+		static auto mat_ambient_light_g = g_CVar->FindVar("mat_ambient_light_g");
+		static auto mat_ambient_light_b = g_CVar->FindVar("mat_ambient_light_b");
 
-			 char mod[MAX_PATH];
-			 GetModuleFileNameA((HMODULE)info.AllocationBase, mod, MAX_PATH);
 
-			 if (strstr(mod, ("gameoverlay")))
-				 gameoverlay_return_address = (uintptr_t)(_ReturnAddress());
-		 }
+		viewmodel_fov->m_fnChangeCallbacks.m_Size = 0;
+		viewmodel_fov->SetValue(g_Options.viewmodel_fov);
+		mat_ambient_light_r->SetValue(g_Options.enable_post_proc ? g_Options.post_processing.r() / 255.f : 0);
+		mat_ambient_light_g->SetValue(g_Options.enable_post_proc ? g_Options.post_processing.g() / 255.f : 0);
+		mat_ambient_light_b->SetValue(g_Options.enable_post_proc ? g_Options.post_processing.b() / 255.f : 0);
+		
 
-		 if (gameoverlay_return_address != (uintptr_t)(_ReturnAddress()))
-			 return oEndScene(pDevice);
 
-		 IDirect3DVertexDeclaration9* vertDec;
-		 IDirect3DVertexShader9* vertShader;
-		 pDevice->GetVertexDeclaration( &vertDec );
-		 pDevice->GetVertexShader( &vertShader );
+		static ConVar* zoom_sensitivity_ratio_mouse = g_CVar->FindVar("zoom_sensitivity_ratio_mouse");
+		if (g_Options.remove_zoom)
+			zoom_sensitivity_ratio_mouse->SetValue(0);
+		else
+			zoom_sensitivity_ratio_mouse->SetValue(1);
 
-		 pDevice->SetVertexDeclaration( nullptr );
-		 pDevice->SetVertexShader( nullptr );
+		static auto aspect_ratio = g_CVar->FindVar("r_aspectratio");
+		if (g_EngineClient->IsInGame() && g_LocalPlayer)
+		{
+			if (g_Options.aspect_ratio)
+			{
+				aspect_ratio->SetValue(g_Options.aspect_ratio_scale);
+			}
+			else
+			{
+				aspect_ratio->SetValue(0);
+			}
+		}
 
-		 static auto r_modelAmbientMin = g_CVar->FindVar( "r_modelAmbientMin" );
-		 static auto mat_force_tonemap_scale = g_CVar->FindVar( "mat_force_tonemap_scale" );
-		 static auto mat_postprocess_enable = g_CVar->FindVar( "mat_postprocess_enable" );
+		if (g_EngineClient->IsInGame())
+		{
+			if (g_LocalPlayer)
+			{
+				static ConVar* weapon_debug_spread_show = g_CVar->FindVar("weapon_debug_spread_show");
+				weapon_debug_spread_show->SetValue(g_Options.no_scope_crosshair && !g_LocalPlayer->m_bIsScoped() ? 3 : 0);
+			}
+		}
 
-		 if( !g_Unload ) {
-			r_modelAmbientMin->SetValue( g_Options.esp_nightmode ? 1.f : 0.0f );
-			mat_force_tonemap_scale->SetValue( g_Options.esp_nightmode ? g_Options.esp_nightmode_size : 1.0f );
-			mat_postprocess_enable->SetValue( g_Options.esp_nightmode ? 1 : 0 );
-		 } else {
-			if( r_modelAmbientMin->GetFloat( ) != 0.0f )
-			  r_modelAmbientMin->SetValue( 0.0f );
+		*reinterpret_cast<int*>((DWORD)&g_CVar->FindVar("viewmodel_offset_x")->m_fnChangeCallbacks + 0xC) = 0;
+		*reinterpret_cast<int*>((DWORD)&g_CVar->FindVar("viewmodel_offset_y")->m_fnChangeCallbacks + 0xC) = 0;
+		*reinterpret_cast<int*>((DWORD)&g_CVar->FindVar("viewmodel_offset_z")->m_fnChangeCallbacks + 0xC) = 0;
 
-			if( mat_force_tonemap_scale->GetFloat( ) != 1.0f )
-			  mat_force_tonemap_scale->SetValue( 1.0f );
+		static auto viewmodel_offset_x = g_CVar->FindVar("viewmodel_offset_x");
+		static auto viewmodel_offset_y = g_CVar->FindVar("viewmodel_offset_y");
+		static auto viewmodel_offset_z = g_CVar->FindVar("viewmodel_offset_z");
 
-			if( mat_postprocess_enable->GetInt( ) != 0 )
-			  mat_postprocess_enable->SetValue( 0 );
-		 }
+		viewmodel_offset_x->SetValue(g_Options.enable_offsets ? g_Options.viewmodel_offset_x : 0);
+		viewmodel_offset_y->SetValue(g_Options.enable_offsets ? g_Options.viewmodel_offset_y : 0);
+		viewmodel_offset_z->SetValue(g_Options.enable_offsets ? g_Options.viewmodel_offset_z : 0);
 
 		DWORD colorwrite, srgbwrite;
 		IDirect3DVertexDeclaration9* vert_dec = nullptr;
@@ -169,7 +345,6 @@ namespace Hooks {
 		pDevice->GetRenderState(D3DRS_SRGBWRITEENABLE, &srgbwrite);
 
 		pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0xffffffff);
-		//removes the source engine color correction
 		pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, false);
 
 		pDevice->GetRenderState(D3DRS_COLORWRITEENABLE, &dwOld_D3DRS_COLORWRITEENABLE);
@@ -181,18 +356,14 @@ namespace Hooks {
 		pDevice->SetSamplerState(NULL, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
 		pDevice->SetSamplerState(NULL, D3DSAMP_ADDRESSW, D3DTADDRESS_WRAP);
 		pDevice->SetSamplerState(NULL, D3DSAMP_SRGBTEXTURE, NULL);
-
-		
+	
 		ImGui_ImplDX9_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
-
 		auto esp_drawlist = Render::Get().RenderScene();
 
 		Menu::Get().Render();
-	
-
 		ImGui::Render(esp_drawlist);
 
 		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
@@ -369,16 +540,66 @@ namespace Hooks {
 
 		return oDoPostScreenEffects(g_ClientMode, edx, a1);
 	}
+
+	QAngle aim_punch;
+	QAngle view_punch;
 	//--------------------------------------------------------------------------------
 	void __fastcall hkFrameStageNotify(void* _this, int edx, ClientFrameStage_t stage)
 	{
 		static auto ofunc = hlclient_hook.get_original<decltype(&hkFrameStageNotify)>(index::FrameStageNotify);
-		if (g_EngineClient->IsInGame()) 
+		if (g_EngineClient->IsInGame() && g_LocalPlayer)
 		{
-			if (stage == FRAME_NET_UPDATE_POSTDATAUPDATE_START)
-				skins::on_frame_stage_notify(false);
-			else if (stage == FRAME_NET_UPDATE_POSTDATAUPDATE_END)
-				skins::on_frame_stage_notify(true);
+			if (stage == FRAME_RENDER_START)
+			{
+
+				if (g_Options.remove_visualrecoil)
+				{
+					aim_punch = g_LocalPlayer->m_aimPunchAngle();
+					view_punch = g_LocalPlayer->m_viewPunchAngle();
+
+					g_LocalPlayer->m_aimPunchAngle() = QAngle{};
+					g_LocalPlayer->m_viewPunchAngle() = QAngle{};
+				}
+
+				static ConVar* PostProcVar = g_CVar->FindVar("mat_postprocess_enable");
+				PostProcVar->SetValue(!g_Options.remove_post_processing);
+
+			}
+			else if (stage == FRAME_RENDER_END)
+			{
+				if (!aim_punch.IsZero() || !view_punch.IsZero())
+				{
+					g_LocalPlayer->m_aimPunchAngle() = aim_punch;
+					g_LocalPlayer->m_viewPunchAngle() = view_punch;
+
+					aim_punch = QAngle{};
+					view_punch = QAngle{};
+				}
+				static auto r_drawspecificstaticprop = g_CVar->FindVar("r_drawspecificstaticprop");
+				*(int*)((DWORD)&r_drawspecificstaticprop->m_fnChangeCallbacks + 0xC) = 0;
+				if (r_drawspecificstaticprop->GetBool())
+					r_drawspecificstaticprop->SetValue(FALSE);
+
+				if (g_Options.change_materials)
+				{
+					if (g_Options.enable_nightmode)
+						nightmode::Get().apply();
+					else
+						nightmode::Get().remove();
+
+					g_Options.change_materials = false;
+				}
+				nightmode::Get().asus();
+				nightmode::Get().apply();
+
+				skybox_changer();
+				fog_changer();
+
+				static auto cl_foot_contact_shadows = g_CVar->FindVar("cl_foot_contact_shadows");
+
+				if (cl_foot_contact_shadows->GetBool())
+					cl_foot_contact_shadows->SetValue(FALSE);
+			}
 		}
 		ofunc(g_CHLClient, edx, stage);
 	}
@@ -504,3 +725,41 @@ namespace Hooks {
 			ofunc(g_ViewRender, 0, unk);
 	}
 }
+
+void NightmodeFix()
+{
+	static auto in_game = false;
+
+	if (g_EngineClient->IsInGame() && !in_game)
+	{
+		in_game = true;
+
+		g_Options.change_materials = true;
+		changed = true;
+
+		static auto skybox = g_CVar->FindVar("sv_skyname");
+		backup_skybox = skybox->GetString();
+		return;
+	}
+	else if (!g_EngineClient->IsInGame() && in_game)
+		in_game = false;
+
+	static auto setting = g_Options.enable_nightmode;
+
+	if (setting != g_Options.enable_nightmode)
+	{
+		setting = g_Options.enable_nightmode;
+		g_Options.change_materials = true;
+		return;
+	}
+
+	static auto setting_world = g_Options.nightmode_color;
+
+	if (setting_world != g_Options.nightmode_color)
+	{
+		setting_world = g_Options.nightmode_color;
+		g_Options.change_materials = true;
+		return;
+	}
+}
+

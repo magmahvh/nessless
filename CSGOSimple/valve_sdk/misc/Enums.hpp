@@ -231,6 +231,8 @@ enum ClassId {
 	ClassId_CEnvDOFController,
 	ClassId_CEnvGasCanister,
 	ClassId_CEnvParticleScript,
+	CBreakableProp,
+	CBreakableSurface,
 	ClassId_CEnvProjectedTexture,
 	ClassId_CEnvQuadraticBeam,
 	ClassId_CEnvScreenEffect,
