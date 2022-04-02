@@ -10,7 +10,6 @@ class Menu
     : public Singleton<Menu>
 {
 public:
-    float public_alpha = 0;
     ImFont* weaponfont;
 
     void Initialize();

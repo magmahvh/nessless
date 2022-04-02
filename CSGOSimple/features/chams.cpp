@@ -25,9 +25,8 @@ Chams::Chams() {
     "$envmaptint" "[0 0.5 1]"
     "$envmapfresnel" "1"
     "$envmapfresnelminmaxexp" "[0 1 2]"
-    "$alpha" "0.8"
+    "$alpha" "0.4"
 })#";
-
 }
 
 Chams::~Chams() {

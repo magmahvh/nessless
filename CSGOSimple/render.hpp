@@ -99,7 +99,7 @@ public:
 		RenderBox(r.left, r.top, r.right, r.bottom, color, thickness, rounding);
 	}
 	template <class T>
-	inline void RenderBoxFilled(T x1, T y1, T x2, T y2, Color color, float thickness = 1.f, float rounding = 0.f) {
+	inline void RenderBoxFilled(T x1, T y1, T x2, T y2, Color color, float rounding = 0.f) {
 		draw_list->AddRectFilled(ImVec2(x1, y1), ImVec2(x2, y2), GetU32(color), rounding, 15);
 	}
 	template <class T>

@@ -166,10 +166,7 @@
     <ClCompile Include="lua\CLua.cpp">
       <Filter>Source Files\lua</Filter>
     </ClCompile>
-    <ClCompile Include="Clantag.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="nightmode.cpp">
+    <ClCompile Include="features\world.cpp">
       <Filter>Source Files\features</Filter>
     </ClCompile>
   </ItemGroup>
@@ -408,17 +405,11 @@
     <ClInclude Include="render.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="singleton.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="ui.hpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="xor.h">
-      <Filter>Source Files\SDK</Filter>
     </ClInclude>
     <ClInclude Include="valve_sdk\interfaces\IStudioRender.hpp">
       <Filter>Source Files\SDK\h</Filter>
@@ -457,9 +448,6 @@
       <Filter>Source Files\features</Filter>
     </ClInclude>
     <ClInclude Include="features\autowalk.hpp">
-      <Filter>Source Files\features</Filter>
-    </ClInclude>
-    <ClInclude Include="IMaterialVar.h">
       <Filter>Source Files\features</Filter>
     </ClInclude>
     <ClInclude Include="helpers\logs.hpp">
@@ -513,11 +501,10 @@
     <ClInclude Include="features\bhopStrafe.hpp">
       <Filter>Source Files\features</Filter>
     </ClInclude>
-    <ClInclude Include="Clantag.h" />
     <ClInclude Include="bytes.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="nightmode.h">
+    <ClInclude Include="features\world.h">
       <Filter>Source Files\features</Filter>
     </ClInclude>
   </ItemGroup>

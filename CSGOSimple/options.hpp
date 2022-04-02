@@ -51,6 +51,7 @@ struct item_setting
 	float wear = FLT_MIN;
 	char custom_name[32] = "";
 };
+
 class Options
 {
 public:
@@ -333,7 +334,10 @@ public:
 	void SaveSettings(const std::string& szIniFile);
 	void DeleteSettings(const std::string& szIniFile);
 
+	bool GetHotkeyActive(std::string name, int key, int type);
+
 	std::string folder;
+	inline static std::unordered_map<std::string, bool> m_hotkey_states{};
 };
 
 inline Options g_Options;

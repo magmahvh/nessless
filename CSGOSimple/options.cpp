@@ -232,6 +232,15 @@ void Options::SetupVisuals()
 	SetupColor(g_Options.color_chams_player_enemy_occluded, "Enemy Occluded ch");
 	SetupColor(g_Options.color_glow_enemy, "Enemy Visible");
 	SetupColor(g_Options.color_glow_enemyOC, "Enemy Occluded");
+
+	SetupValue(g_Options.enable_nightmode, "Misc", "Nightmode");
+	SetupColor(g_Options.nightmode_color, "Nightmode color");
+
+	SetupValue(g_Options.enable_fog, "Misc", "Fog");
+	SetupValue(g_Options.fog_density, "Misc", "Fog densivity");
+	SetupValue(g_Options.fog_start_distance, "Misc", "Fog start");
+	SetupValue(g_Options.fog_end_distance, "Misc", "Fog end");
+	SetupColor(g_Options.fog_color, "Fog color");
 }
 
 void Options::SetupMisc()
@@ -244,7 +253,6 @@ void Options::SetupMisc()
 	SetupValue(g_Options.misc_showranks, "Misc", "Rank reveal");
 	SetupValue(g_Options.misc_watermark, "Misc", "Watermark");
 	SetupValue(g_Options.Velocity, "Misc", "Velocity");
-	SetupValue(g_Options.Velocity, "Misc", "Nightmode");
 	SetupValue(g_Options.outline, "Misc", "Outline");
 	SetupValue(g_Options.lastjump, "Misc", "Last jump");
 	SetupValue(g_Options.lastjumpoutline, "Misc", "Last jump outline");
@@ -334,4 +342,29 @@ void Options::DeleteSettings(const std::string& szIniFile)
 		return;
 
 	remove(file.c_str());
+}
+
+bool Options::GetHotkeyActive(std::string name, int key, int type) {
+	switch (type) {
+	case 0:
+		if (m_hotkey_states.find(name) == m_hotkey_states.end()) {
+			m_hotkey_states[name] = GetAsyncKeyState(key);
+		}
+		else if (GetAsyncKeyState(key)) {
+			m_hotkey_states[name] = !GetAsyncKeyState(key);
+		}
+		return m_hotkey_states[name];
+		break;
+	case 1:
+		return GetAsyncKeyState(key);
+		break;
+	case 2:
+		return !GetAsyncKeyState(key);
+		break;
+	case 3:
+		return true;
+		break;
+	}
+
+	return false;
 }

@@ -15,172 +15,11 @@
 #include "features/misc.hpp"
 #include "features/resolver.hpp"
 #include "features/autowalk.hpp"
-#include "nightmode.h"
+#include "features/world.h"
 
 #pragma intrinsic(_ReturnAddress) 
 
 
-bool changed = false;
-std::string backup_skybox = "";
-
-void skybox_changer()
-{
-	static auto fnLoadNamedSkys = (void(__fastcall*)(const char*))Utils::PatternScan(GetModuleHandleA("engine.dll"), "55 8B EC 81 EC ? ? ? ? 56 57 8B F9 C7 45");
-	auto skybox_name = backup_skybox;
-
-	switch (g_Options.skybox_num)
-	{
-	case 1:
-		skybox_name = "cs_tibet";
-		break;
-	case 2:
-		skybox_name = "cs_baggage_skybox_";
-		break;
-	case 3:
-		skybox_name = "italy";
-		break;
-	case 4:
-		skybox_name = "jungle";
-		break;
-	case 5:
-		skybox_name = "office";
-		break;
-	case 6:
-		skybox_name = "sky_cs15_daylight01_hdr";
-		break;
-	case 7:
-		skybox_name = "sky_cs15_daylight02_hdr";
-		break;
-	case 8:
-		skybox_name = "vertigoblue_hdr";
-		break;
-	case 9:
-		skybox_name = "vertigo";
-		break;
-	case 10:
-		skybox_name = "sky_day02_05_hdr";
-		break;
-	case 11:
-		skybox_name = "nukeblank";
-		break;
-	case 12:
-		skybox_name = "sky_venice";
-		break;
-	case 13:
-		skybox_name = "sky_cs15_daylight03_hdr";
-		break;
-	case 14:
-		skybox_name = "sky_cs15_daylight04_hdr";
-		break;
-	case 15:
-		skybox_name = "sky_csgo_cloudy01";
-		break;
-	case 16:
-		skybox_name = "sky_csgo_night02";
-		break;
-	case 17:
-		skybox_name = "sky_csgo_night02b";
-		break;
-	case 18:
-		skybox_name = "sky_csgo_night_flat";
-		break;
-	case 19:
-		skybox_name = "sky_dust";
-		break;
-	case 20:
-		skybox_name = "vietnam";
-		break;
-	}
-
-	static auto skybox_number = 0;
-	static auto old_skybox_name = skybox_name;
-	static auto color_r = (unsigned char)255;
-	static auto color_g = (unsigned char)255;
-	static auto color_b = (unsigned char)255;
-
-
-	if (skybox_number != g_Options.skybox_num)
-	{
-		changed = true;
-		skybox_number = g_Options.skybox_num;
-	}
-	else if (old_skybox_name != skybox_name)
-	{
-		changed = true;
-		old_skybox_name = skybox_name;
-	}
-	else if (color_r != g_Options.skybox_color.r())
-	{
-		changed = true;
-		color_r = g_Options.skybox_color.r();
-	}
-	else if (color_g != g_Options.skybox_color.g())
-	{
-		changed = true;
-		color_g = g_Options.skybox_color.g();
-	}
-	else if (color_b != g_Options.skybox_color.b())
-	{
-		changed = true;
-		color_b = g_Options.skybox_color.b();
-	}
-
-	if (changed)
-	{
-		changed = false;
-		fnLoadNamedSkys(skybox_name.c_str());
-		auto materialsystem = g_MatSystem;
-
-		for (auto i = materialsystem->FirstMaterial(); i != materialsystem->InvalidMaterial(); i = materialsystem->NextMaterial(i))
-		{
-			auto material = materialsystem->GetMaterial(i);
-
-			if (!material)
-				continue;
-
-			if (strstr(material->GetTextureGroupName(), "SkyBox"))
-				material->ColorModulate(g_Options.skybox_color.r() / 255.f, g_Options.skybox_color.g() / 255.f, g_Options.skybox_color.b() / 255.f);
-		}
-	}
-}
-
-void fog_changer()
-{
-	static auto fog_override = g_CVar->FindVar("fog_override");
-
-	if (!g_Options.enable_fog)
-	{
-		if (fog_override->GetBool())
-			fog_override->SetValue(FALSE);
-		return;
-	}
-
-	if (!fog_override->GetBool())
-		fog_override->SetValue(TRUE);
-
-	static auto fog_start = g_CVar->FindVar("fog_start");
-
-	if (fog_start->GetInt() != g_Options.fog_start_distance)
-		fog_start->SetValue(g_Options.fog_start_distance);
-
-	static auto fog_end = g_CVar->FindVar("fog_end");
-
-	if (fog_end->GetInt() != g_Options.fog_end_distance)
-		fog_end->SetValue(g_Options.fog_end_distance);
-
-	static auto fog_maxdensity = g_CVar->FindVar("fog_maxdensity");
-
-	if (fog_maxdensity->GetFloat() != (float)g_Options.fog_density * 0.01f)
-		fog_maxdensity->SetValue((float)g_Options.fog_density * 0.01f);
-
-	char buffer_color[12];
-	sprintf_s(buffer_color, 12, "%i %i %i", g_Options.fog_color.r(), g_Options.fog_color.g(), g_Options.fog_color.b());
-
-	static auto fog_color = g_CVar->FindVar("fog_color");
-
-	if (strcmp(fog_color->GetString(), buffer_color))
-		fog_color->SetValue(buffer_color);
-}
 namespace Hooks {
 
 	void Initialize()
@@ -583,17 +422,17 @@ namespace Hooks {
 				if (g_Options.change_materials)
 				{
 					if (g_Options.enable_nightmode)
-						nightmode::Get().apply();
+						World::Get().apply();
 					else
-						nightmode::Get().remove();
+						World::Get().remove();
 
 					g_Options.change_materials = false;
 				}
-				nightmode::Get().asus();
-				nightmode::Get().apply();
+				World::Get().asus();
+				World::Get().apply();
 
-				skybox_changer();
-				fog_changer();
+				World::Get().skybox_changer();
+				World::Get().fog_changer();
 
 				static auto cl_foot_contact_shadows = g_CVar->FindVar("cl_foot_contact_shadows");
 
@@ -725,41 +564,3 @@ namespace Hooks {
 			ofunc(g_ViewRender, 0, unk);
 	}
 }
-
-void NightmodeFix()
-{
-	static auto in_game = false;
-
-	if (g_EngineClient->IsInGame() && !in_game)
-	{
-		in_game = true;
-
-		g_Options.change_materials = true;
-		changed = true;
-
-		static auto skybox = g_CVar->FindVar("sv_skyname");
-		backup_skybox = skybox->GetString();
-		return;
-	}
-	else if (!g_EngineClient->IsInGame() && in_game)
-		in_game = false;
-
-	static auto setting = g_Options.enable_nightmode;
-
-	if (setting != g_Options.enable_nightmode)
-	{
-		setting = g_Options.enable_nightmode;
-		g_Options.change_materials = true;
-		return;
-	}
-
-	static auto setting_world = g_Options.nightmode_color;
-
-	if (setting_world != g_Options.nightmode_color)
-	{
-		setting_world = g_Options.nightmode_color;
-		g_Options.change_materials = true;
-		return;
-	}
-}
-

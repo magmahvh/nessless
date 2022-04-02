@@ -1,6 +1,6 @@
-#include "hooks.hpp"
+#include "../hooks.hpp"
 #include <intrin.h>  
-#include "render.hpp"
+#include "../render.hpp"
 #include <algorithm>
 
 class MaterialBackup
@@ -34,7 +34,7 @@ public:
 	}
 };
 
-class nightmode : public Singleton <nightmode>
+class World : public Singleton <World>
 {
 public:
 	void clear_stored_materials();
@@ -43,4 +43,6 @@ public:
 	void apply();
 	void asus();
 	void remove();
+	void skybox_changer();
+	void fog_changer();
 };

@@ -28,7 +28,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -97,7 +97,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Clantag.cpp" />
     <ClCompile Include="features\aimbot.cpp" />
     <ClCompile Include="features\antiaim.cpp" />
     <ClCompile Include="features\autowalk.cpp" />
@@ -113,6 +112,7 @@
     <ClCompile Include="features\resolver.cpp" />
     <ClCompile Include="features\skins.cpp" />
     <ClCompile Include="features\visuals.cpp" />
+    <ClCompile Include="features\world.cpp" />
     <ClCompile Include="helpers\input.cpp" />
     <ClCompile Include="helpers\logs.cpp" />
     <ClCompile Include="helpers\math.cpp" />
@@ -129,7 +129,6 @@
     <ClCompile Include="lua\CLuaHook.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu.cpp" />
-    <ClCompile Include="nightmode.cpp" />
     <ClCompile Include="options.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="ui.cpp" />
@@ -149,7 +148,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bytes.hpp" />
-    <ClInclude Include="Clantag.h" />
     <ClInclude Include="features\aimbot.hpp" />
     <ClInclude Include="features\antiaim.hpp" />
     <ClInclude Include="features\autowalk.hpp" />
@@ -162,11 +160,11 @@
     <ClInclude Include="features\ragebot.hpp" />
     <ClInclude Include="features\resolver.hpp" />
     <ClInclude Include="features\skins.h" />
+    <ClInclude Include="features\world.h" />
     <ClInclude Include="helpers\IMaterialVar.h" />
     <ClInclude Include="helpers\KeyValues.h" />
     <ClInclude Include="helpers\logs.hpp" />
     <ClInclude Include="helpers\prediction.hpp" />
-    <ClInclude Include="IMaterialVar.h" />
     <ClInclude Include="imgui\impl\imgui_impl_dx9.h" />
     <ClInclude Include="imgui\impl\imgui_impl_win32.h" />
     <ClInclude Include="lua\CLua.h" />
@@ -177,8 +175,6 @@
     <ClInclude Include="lua\luaconf.h" />
     <ClInclude Include="lua\lualib.h" />
     <ClInclude Include="lua\sol.hpp" />
-    <ClInclude Include="nightmode.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="user.hpp" />
     <ClInclude Include="valve_sdk\interfaces\IGameTypes.hpp" />
     <ClInclude Include="valve_sdk\interfaces\IStudioRender.hpp" />
@@ -263,7 +259,6 @@
     <ClInclude Include="valve_sdk\misc\UtlVector.hpp" />
     <ClInclude Include="valve_sdk\misc\vfunc.hpp" />
     <ClInclude Include="valve_sdk\netvars.hpp" />
-    <ClInclude Include="xor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

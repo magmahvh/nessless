@@ -44,13 +44,6 @@ bool ImGui::ToggleButton(const char* label, bool* v, const ImVec2& size_arg)
 	return pressed;
 }
 
-static bool Items_ArrayGetter(void* data, int idx, const char** out_text)
-{
-	const char* const* items = (const char* const*)data;
-	if (out_text)
-		*out_text = items[idx];
-	return true;
-}
 
 static auto vector_getter = [](void* vec, int idx, const char** out_text) {
 	auto& vector = *static_cast<std::vector<std::string>*>(vec);
@@ -518,34 +511,34 @@ bool ImGui::Hotkey(const char* label, int* k, const ImVec2& size_arg)
 	return value_changed;
 }
 
-bool ImGui::ListBox(const char* label, int* current_item, std::string items[], int items_count, int height_items) {
-	char **tmp;
-	tmp = new char*[items_count];//(char**)malloc(sizeof(char*) * items_count);
-	for (int i = 0; i < items_count; i++) {
-		//tmp[i] = new char[items[i].size()];//(char*)malloc(sizeof(char*));
-		tmp[i] = const_cast<char*>(items[i].c_str());
-	}
+//bool ImGui::ListBox(const char* label, int* current_item, std::string items[], int items_count, int height_items) {
+//	char** tmp;
+//	tmp = new char* [items_count];//(char**)malloc(sizeof(char*) * items_count);
+//	for (int i = 0; i < items_count; i++) {
+//		//tmp[i] = new char[items[i].size()];//(char*)malloc(sizeof(char*));
+//		tmp[i] = const_cast<char*>(items[i].c_str());
+//	}
+//
+//	const bool value_changed = ImGui::ListBox(label, current_item, Items_ArrayGetter, static_cast<void*>(tmp), items_count, height_items);
+//	return value_changed;
+//}
 
-	const bool value_changed = ImGui::ListBox(label, current_item, Items_ArrayGetter, static_cast<void*>(tmp), items_count, height_items);
-	return value_changed;
-}
-
-bool ImGui::ListBox(const char* label, int* current_item, std::function<const char*(int)> lambda, int items_count, int height_in_items)
+bool ImGui::ListBox(const char* label, int* current_item, std::function<const char* (int)> lambda, int items_count, int height_in_items)
 {
 	return ImGui::ListBox(label, current_item, [](void* data, int idx, const char** out_text)
-	{
-		*out_text = (*reinterpret_cast<std::function<const char*(int)>*>(data))(idx);
-		return true;
-	}, &lambda, items_count, height_in_items);
+		{
+			*out_text = (*reinterpret_cast<std::function<const char* (int)>*>(data))(idx);
+			return true;
+		}, &lambda, items_count, height_in_items);
 }
 
-bool ImGui::Combo(const char* label, int* current_item, std::function<const char*(int)> lambda, int items_count, int height_in_items)
+bool ImGui::Combo(const char* label, int* current_item, std::function<const char* (int)> lambda, int items_count, int height_in_items)
 {
 	return ImGui::Combo(label, current_item, [](void* data, int idx, const char** out_text)
-	{
-		*out_text = (*reinterpret_cast<std::function<const char*(int)>*>(data))(idx);
-		return true;
-	}, &lambda, items_count, height_in_items);
+		{
+			*out_text = (*reinterpret_cast<std::function<const char* (int)>*>(data))(idx);
+			return true;
+		}, &lambda, items_count, height_in_items);
 }
 void ImGui::Separator(const char* label)
 {

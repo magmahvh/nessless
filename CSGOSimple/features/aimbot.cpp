@@ -126,8 +126,9 @@ C_BasePlayer* CLegitbot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& b
 
 	std::vector<int> hitboxes;
 
-	if (g_Options.legitbot[wpnGroupLegit(weapon)].hitboxes.head)
+	if (g_Options.legitbot[wpnGroupLegit(weapon)].hitboxes.head) {
 		hitboxes.emplace_back(HITBOX_HEAD);
+	}
 
 	if (g_Options.legitbot[wpnGroupLegit(weapon)].hitboxes.chest)
 	{
@@ -186,8 +187,8 @@ C_BasePlayer* CLegitbot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& b
 					continue;
 
 				//const auto damage = c_autowall::get()->autowall(g_LocalPlayer->GetEyePos(), hitboxPos, g_LocalPlayer, player).damage;
-				auto damage = 0.f;
-				//C_AutoWall::Get().PenetrateWall(g_LocalPlayer, g_LocalPlayer->m_hActiveWeapon(), hitboxPos, damage);
+				Vector hitboxPos = player->GetHitboxPos(hitbox);
+				auto damage = CAutoWall::Get().CanHit(hitboxPos);
 
 				if (damage < g_Options.legitbot[wpnGroupLegit(weapon)].autowall.min_damage)
 					continue;

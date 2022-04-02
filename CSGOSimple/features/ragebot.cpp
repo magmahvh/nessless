@@ -139,6 +139,8 @@ C_BasePlayer* CRagebot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& be
 
 	const Vector eyePos = g_LocalPlayer->GetEyePos();
 
+	float damage;
+
 	for (auto i = 1; i <= g_GlobalVars->maxClients; i++)
 	{
 		C_BasePlayer* player = C_BasePlayer::GetPlayerByIndex(i);
@@ -156,7 +158,9 @@ C_BasePlayer* CRagebot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& be
 			Math::VectorAngles(hitboxPos - eyePos, ang);
 			const float fov = GetFovToPlayer(cmd->viewangles + last_punch * 2.f, ang);
 			
-			auto damage = 0.f;
+			damage = CAutoWall::Get().CanHit(hitboxPos);
+
+			if (damage < g_Options.ragebot[wpnGroupRage(weapon)].damage) continue;
 
 			if (!g_LocalPlayer->CanSeePlayer(player, hitboxPos))
 			{
