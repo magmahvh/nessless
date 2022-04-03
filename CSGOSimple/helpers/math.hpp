@@ -67,4 +67,7 @@ namespace Math
 	void vector_angles(const Vector& forward, Vector& angles);
 	void angle_vectors(const Vector& angles, Vector& forward);
 
+	int TIME_TO_TICKS(int dt);
+	int TICKS_TO_TIME(int t);
+
 }

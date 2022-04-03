@@ -24,4 +24,5 @@ namespace ImGui {
 	bool ListBox(const char * label, int * current_item, std::function<const char*(int)> lambda, int items_count, int height_in_items);
 	bool Combo(const char * label, int * current_item, std::function<const char*(int)> lambda, int items_count, int height_in_items);
 	void Separator(const char* label);
+	void DrawKeyBind(const char* label, int key, int type, const char* unique_id);
 }

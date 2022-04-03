@@ -21,7 +21,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <SpectreMitigation>false</SpectreMitigation>
   </PropertyGroup>
@@ -106,6 +106,7 @@
     <ClCompile Include="features\glow.cpp" />
     <ClCompile Include="features\item_definitions.cpp" />
     <ClCompile Include="features\kit_parser.cpp" />
+    <ClCompile Include="features\lagcompensation.cpp" />
     <ClCompile Include="features\misc.cpp" />
     <ClCompile Include="features\parser.cpp" />
     <ClCompile Include="features\ragebot.cpp" />
@@ -152,9 +153,9 @@
     <ClInclude Include="features\antiaim.hpp" />
     <ClInclude Include="features\autowalk.hpp" />
     <ClInclude Include="features\autowall.hpp" />
-    <ClInclude Include="features\bhopStrafe.hpp" />
     <ClInclude Include="features\item_definitions.h" />
     <ClInclude Include="features\kit_parser.h" />
+    <ClInclude Include="features\lagcompensation.hpp" />
     <ClInclude Include="features\misc.hpp" />
     <ClInclude Include="features\parser.h" />
     <ClInclude Include="features\ragebot.hpp" />

@@ -13,7 +13,6 @@
 #include "features/skins.h"
 #include "features/antiaim.hpp"
 #include "features/misc.hpp"
-#include "features/resolver.hpp"
 #include "features/autowalk.hpp"
 #include "features/world.h"
 
@@ -274,19 +273,6 @@ namespace Hooks {
 
 		if (g_LocalPlayer->IsAlive() && g_EngineClient->IsInGame()) Antiaim::Get().Run(cmd, bSendPacket);
 
-		for (int i = 1; i < g_EngineClient->GetMaxClients(); i++)
-		{
-			C_BasePlayer* pEntity = (C_BasePlayer*)g_EntityList->GetClientEntity(i);
-
-			if (!pEntity)
-				continue; 
-
-			if (pEntity == g_LocalPlayer)
-				continue;
-
-			Resolver::Get().Resolve(pEntity);
-		}
-
 		if (g_Options.misc_showranks && cmd->buttons & IN_SCORE)
 			g_CHLClient->DispatchUserMessage(CS_UM_ServerRankRevealAll, 0, 0, nullptr);
 
@@ -321,6 +307,9 @@ namespace Hooks {
 	{
 		static auto panelId = vgui::VPANEL{ 0 };
 		static auto oPaintTraverse = vguipanel_hook.get_original<decltype(&hkPaintTraverse)>(index::PaintTraverse);
+
+		if (!strcmp("HudZoom", g_VGuiPanel->GetName(panel)) && g_Options.remove_scope)
+			return;
 
 		oPaintTraverse(g_VGuiPanel, edx, panel, forceRepaint, allowForce);
 
@@ -532,24 +521,12 @@ namespace Hooks {
 
 		static auto flash = g_MatSystem->FindMaterial("effects/flashbang", TEXTURE_GROUP_CLIENT_EFFECTS);
 		static auto flash_white = g_MatSystem->FindMaterial("effects/flashbang_white", TEXTURE_GROUP_CLIENT_EFFECTS);
-		flash->SetMaterialVarFlag(MATERIAL_VAR_NO_DRAW, g_Options.no_flash);
-		flash_white->SetMaterialVarFlag(MATERIAL_VAR_NO_DRAW, g_Options.no_flash);
-		std::vector<const char*> vistasmoke_mats =
-
-		{
-				"particle/vistasmokev1/vistasmokev1_fire",
-				"particle/vistasmokev1/vistasmokev1_smokegrenade",
-				"particle/vistasmokev1/vistasmokev1_emods",
-				"particle/vistasmokev1/vistasmokev1_emods_impactdust",
-		};
-
-		for (auto mat_s : vistasmoke_mats)
-		{
-			IMaterial* mat = g_MatSystem->FindMaterial(mat_s, TEXTURE_GROUP_OTHER);
-			mat->SetMaterialVarFlag(MATERIAL_VAR_WIREFRAME, g_Options.no_smoke);
-		}
+		flash->SetMaterialVarFlag(MATERIAL_VAR_NO_DRAW, g_Options.remove_flash);
+		flash_white->SetMaterialVarFlag(MATERIAL_VAR_NO_DRAW, g_Options.remove_flash);
 
 		Chams::Get().OnDrawModelExecute(pResults, pInfo, pBoneToWorld, flpFlexWeights, flpFlexDelayedWeights, vrModelOrigin, iFlags);
+		World::Get().RemoveSmoke();
+		World::Get().RemoveScope();
 
 		ofunc(g_StudioRender, 0, pResults, pInfo, pBoneToWorld, flpFlexWeights, flpFlexDelayedWeights, vrModelOrigin, iFlags);
 
@@ -560,7 +537,7 @@ namespace Hooks {
 	{
 		static auto ofunc = viewrender_hook.get_original<decltype(&RenderSmokeOverlay)>(index::RenderSmokeOverlay);
 
-		if (!g_Options.no_smoke)
+		if (!g_Options.remove_smoke)
 			ofunc(g_ViewRender, 0, unk);
 	}
 }

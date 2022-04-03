@@ -34,9 +34,6 @@
     <ClCompile Include="menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="valve_sdk\misc\characterset.cpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClCompile>
     <ClCompile Include="valve_sdk\misc\checksum_crc.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
@@ -168,6 +165,12 @@
     </ClCompile>
     <ClCompile Include="features\world.cpp">
       <Filter>Source Files\features</Filter>
+    </ClCompile>
+    <ClCompile Include="features\lagcompensation.cpp">
+      <Filter>Source Files\features</Filter>
+    </ClCompile>
+    <ClCompile Include="valve_sdk\misc\characterset.cpp">
+      <Filter>Source Files\SDK</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -498,13 +501,13 @@
     <ClInclude Include="lua\lauxlib.h">
       <Filter>Source Files\lua</Filter>
     </ClInclude>
-    <ClInclude Include="features\bhopStrafe.hpp">
-      <Filter>Source Files\features</Filter>
-    </ClInclude>
     <ClInclude Include="bytes.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="features\world.h">
+      <Filter>Source Files\features</Filter>
+    </ClInclude>
+    <ClInclude Include="features\lagcompensation.hpp">
       <Filter>Source Files\features</Filter>
     </ClInclude>
   </ItemGroup>

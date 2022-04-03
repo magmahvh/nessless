@@ -3,7 +3,6 @@
 
 #include "../valve_sdk/csgostructs.hpp"
 #include "../helpers/math.hpp"
-#include "bhopStrafe.hpp"
 #include <filesystem>
 
 void BunnyHop::OnCreateMove(CUserCmd* cmd)

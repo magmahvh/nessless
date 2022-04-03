@@ -110,6 +110,15 @@ public:
         z -= fl;
         return *this;
     }
+    Vector operator+(float fl)
+    {
+        return Vector(x + fl, y + fl, z + fl);
+    }
+    Vector operator-(float fl)
+    {
+        return Vector(x - fl, y - fl, z - fl);
+    }
+
 
     void NormalizeInPlace()
     {
@@ -201,6 +210,13 @@ public:
     Vector Vector::operator/(const Vector& v) const
     {
         return Vector(x / v.x, y / v.y, z / v.z);
+    }
+
+    Vector Cross(const Vector& v)
+    {
+        return { this->y * v.z - this->z * v.y,
+                 this->z * v.x - this->x * v.z,
+                 this->x * v.y - this->y * v.x };
     }
 
     float x, y, z;

@@ -299,4 +299,13 @@ namespace Math
         forward.z = -sp;
     }
 
+    int TIME_TO_TICKS(int dt)
+    {
+        return ((int)(0.5f + (float)(dt) / g_GlobalVars->interval_per_tick));
+    }
+    int TICKS_TO_TIME(int t)
+    {
+        return (g_GlobalVars->interval_per_tick * (t));
+    }
+
 }

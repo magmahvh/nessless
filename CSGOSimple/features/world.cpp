@@ -268,3 +268,49 @@ void World::fog_changer()
 	if (strcmp(fog_color->GetString(), buffer_color))
 		fog_color->SetValue(buffer_color);
 }
+
+void World::RemoveScope() {
+	if (!g_Options.remove_scope) return;
+	static std::vector <const char*> skope_materials =
+	{
+		"dev/blurfilterx_nohdr",
+		"dev/blurfiltery_nohdr",
+		"models/weapons/shared/scope/scope_dot_green",
+		"particle/fire_burning_character/fire_env_fire",
+		"models/weapons/shared/scope/scope_dot_red",
+		"dev/scope_bluroverlay"
+
+	};
+
+	for (auto material_name2 : skope_materials)
+	{
+		auto material = g_MatSystem->FindMaterial(material_name2, TEXTURE_GROUP_OTHER);
+
+		if (!material)
+			continue;
+
+		material->SetMaterialVarFlag(MATERIAL_VAR_NO_DRAW, g_Options.remove_scope);
+	}
+}
+
+void World::RemoveSmoke() {
+	if (!g_Options.remove_smoke) return;
+
+	static std::vector <const char*> smoke_materials =
+	{
+		"particle/vistasmokev1/vistasmokev1_emods",
+		"particle/vistasmokev1/vistasmokev1_emods_impactdust",
+		"particle/vistasmokev1/vistasmokev1_smokegrenade",
+		"particle/vistasmokev1/vistasmokev1_fire"
+	};
+
+	for (auto material_name : smoke_materials)
+	{
+		auto material = g_MatSystem->FindMaterial(material_name, TEXTURE_GROUP_OTHER);
+
+		if (!material)
+			continue;
+
+		material->SetMaterialVarFlag(MATERIAL_VAR_NO_DRAW, g_Options.remove_smoke);
+	}
+}

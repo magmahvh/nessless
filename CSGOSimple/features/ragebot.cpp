@@ -4,6 +4,9 @@
 #include "../helpers/math.hpp"
 #include "../helpers/input.hpp"
 #include "../helpers/logs.hpp"
+#include "lagcompensation.hpp"
+#include "resolver.hpp"
+#include "../render.hpp"
 
 int wpnGroupRage(CHandle<C_BaseCombatWeapon> pWeapon) {
 
@@ -24,11 +27,19 @@ int wpnGroupRage(CHandle<C_BaseCombatWeapon> pWeapon) {
 		return 5;
 }
 
-bool Hitchance(float hitchance, C_BaseCombatWeapon* pWeapon)
+float hitchance(IClientEntity* pLocal, C_BaseCombatWeapon* pWeapon)
 {
-	if (hitchance >= pWeapon->GetInaccuracy() * 1000) //1000 потому  что так надо =D Magma techonology
-		return true;
-	else return false;
+	float hitchance = 101;
+	if (!pWeapon) return 0;
+	if (g_Options.ragebot[wpnGroupRage(pWeapon)].hitchance > 1)
+	{
+		float inaccuracy = pWeapon->GetInaccuracy();
+		if (inaccuracy == 0) inaccuracy = 0.0000001;
+		inaccuracy = 1 / inaccuracy;
+		hitchance = inaccuracy;
+
+	}
+	return hitchance;
 }
 
 float CRagebot::GetFovToPlayer(QAngle viewAngle, QAngle aimAngle)
@@ -93,6 +104,7 @@ void CRagebot::RCS(QAngle& angle, C_BasePlayer* target)
 
 C_BasePlayer* CRagebot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& bestFov, QAngle& bestAngles)
 {
+
 	target = nullptr;
 
 	std::vector<int> hitboxes;
@@ -151,13 +163,18 @@ C_BasePlayer* CRagebot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& be
 		if (!player->IsEnemy())
 			continue;
 
+		Resolver::Get().Resolve(player);
+
+		cmd->tick_count = Math::TIME_TO_TICKS(player->m_flSimulationTime() + CLagCompensation::Get().LagFix());
+
 		for (const auto hitbox : hitboxes)
 		{
-			Vector hitboxPos = player->GetHitboxPos(hitbox);
-			QAngle ang;
+			float multipoint = hitbox == HITBOX_HEAD ? g_Options.ragebot[wpnGroupRage(weapon)].multipoint_head : g_Options.ragebot[wpnGroupRage(weapon)].multipoint_body;
+			Vector hitboxPos = player->GetHitboxPos(hitbox) + Vector(0, 0, multipoint);
+			QAngle ang; 
 			Math::VectorAngles(hitboxPos - eyePos, ang);
 			const float fov = GetFovToPlayer(cmd->viewangles + last_punch * 2.f, ang);
-			
+
 			damage = CAutoWall::Get().CanHit(hitboxPos);
 
 			if (damage < g_Options.ragebot[wpnGroupRage(weapon)].damage) continue;
@@ -167,7 +184,7 @@ C_BasePlayer* CRagebot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& be
 				if (!g_Options.ragebot[wpnGroupRage(weapon)].autowall)
 					continue;
 			}
-				
+
 			if (bestFov > fov)
 			{
 				bestBone = hitbox;
@@ -217,7 +234,9 @@ void Attack(CUserCmd* cmd, C_BasePlayer* target, int bone) {
 	cmd->buttons |= IN_ATTACK;
 	std::stringstream log;
 	log << "Shot fired at ";
-	log << target->m_iName();
+	log << target->m_iName().c_str();
+	log << "; dmg: ";
+	log << (CAutoWall::Get().CanHit(target->GetHitboxPos(bone)));
 	Logs::Get().Create(log.str());
 }
 
@@ -257,7 +276,7 @@ void CRagebot::Run(CUserCmd* cmd)
 	{
 		AutoStop(cmd, weapon_data);
 
-		if (Hitchance(g_Options.ragebot[wpnGroupRage(weapon)].hitchance, weapon)) {
+		if (g_Options.ragebot[wpnGroupRage(weapon)].hitchance < hitchance(g_LocalPlayer, weapon)) {
 
 			if (g_Options.ragebot[wpnGroupRage(weapon)].autoshot)
 				Attack(cmd, target, bestBone);

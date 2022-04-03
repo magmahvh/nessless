@@ -555,3 +555,7 @@ void ImGui::Separator(const char* label)
 
 	ImGui::NewLine();
 }
+
+void ImGui::DrawKeyBind(const char* label, int key, int type, const char* unique_id) {
+	
+}

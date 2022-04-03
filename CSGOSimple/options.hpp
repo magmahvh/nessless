@@ -123,6 +123,10 @@ public:
 
 	int ragebot_weapon = 0;
 	bool rage_enabled = false;
+	int roll_resolver = 0;
+	
+	int roll_resolver_key = 0;
+	int roll_resolver_type = 0;
 	struct
 	{
 		bool enabled = false;
@@ -133,6 +137,9 @@ public:
 
 		int damage = 1;
 		int hitchance = 1;
+
+		float multipoint_body = 1;
+		float multipoint_head = 1;
 
 		struct
 		{
@@ -148,6 +155,9 @@ public:
 	
 	bool antiaim = false;
 	int antiaim_flip = 0;
+
+	int antiaim_flip_key = 0;
+	int antiaim_flip_type = 0;
 
 
 	// 
@@ -174,6 +184,19 @@ public:
 	bool esp_defuse_kit = false;
 	bool esp_planted_c4 = false;
 	bool esp_items = false;
+
+	float esp_nightmode_size = 0.05f;
+	float fog_start_distance = 0.0f;
+	float fog_end_distance = 0.0f;
+	float fog_density = 0.0f;
+	bool enable_fog = false;
+
+	bool remove_smoke = false;
+	bool remove_scope = false;
+	bool remove_visualrecoil = false;
+	bool remove_post_processing = false;
+	bool remove_zoom = false;
+	bool remove_flash = false;
 
 	// 
 	// GLOW
@@ -232,8 +255,6 @@ public:
 	bool lastjump = false;
 	bool lastjumpoutline = false;
 	bool autoaccept = false;
-	bool no_flash = false;
-	bool no_smoke = false;
 	bool enable_offsets = false;
 	float viewmodel_offset_x = 0.0f;
 	float viewmodel_offset_y = 0.0f;
@@ -241,21 +262,13 @@ public:
 	float viewmodel_offset_roll = 0.0f;
 	bool enable_post_proc = false;
 	int  viewmodel_fov = 68;
-	bool remove_zoom = false;
 	float asus_props = 0.0f;
 	float asus_walls = 0.0f;
 	bool aspect_ratio = false;
-	bool remove_visualrecoil = false;
-	bool remove_post_processing = false;
 	int skybox_num = false;
 	float aspect_ratio_scale = 1.0f;
 	bool enable_nightmode = false;
 	bool no_scope_crosshair = false;
-	float esp_nightmode_size = 0.05f; 
-	float fog_start_distance = 0.0f;
-	float fog_end_distance = 0.0f;
-	float fog_density = 0.0f; 
-	bool enable_fog = false;
 	int misc_thirdperson_bind = 0;
 	float misc_thirdperson_dist = 50.f;
 

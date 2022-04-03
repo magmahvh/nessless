@@ -2,6 +2,7 @@
 
 #include <mutex>
 
+#include "features/world.h"
 #include "features/visuals.hpp"
 #include "valve_sdk/csgostructs.hpp"
 #include "helpers/input.hpp"
@@ -65,11 +66,27 @@ void Render::ClearDrawList() {
 	render_mutex.unlock();
 }
 
+void RemoveScope() {
+	if (g_Options.remove_scope) {
+		if (g_EngineClient->IsInGame() && g_LocalPlayer) {
+			int w, h;
+			g_EngineClient->GetScreenSize(w, h);
+
+			if (g_LocalPlayer->m_bIsScoped())
+			{
+				Render::Get().RenderLine(w / 2, 0, w / 2, h, Color(0, 0, 0, 255));
+				Render::Get().RenderLine(0, h / 2, w, h / 2, Color(0, 0, 0, 255));
+			}
+		}
+	}
+}
+
 void Render::BeginScene() {
 	draw_list->Clear();
 	draw_list->PushClipRectFullScreen();
 
 	Logs::Get().Draw();
+	RemoveScope();
 
 	if (g_Options.misc_watermark)
 		Render::Get().RenderText("nessless", 10, 5, 18.f, Color::White, false, true, g_VeloFont);

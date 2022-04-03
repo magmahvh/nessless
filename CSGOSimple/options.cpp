@@ -128,8 +128,9 @@ void Options::SetupColor(Color& value, const std::string& name)
 
 void Options::SetupWeapons()
 {
-	SetupValue(g_Options.legit_enabled, "LEGITON", "Enabled Legit");
-	SetupValue(g_Options.rage_enabled, "RAGEON", "Enabled Rage");
+	SetupValue(g_Options.legit_enabled, "LEGIT", "Enabled Legit");
+	SetupValue(g_Options.rage_enabled, "RAGE", "Enabled Rage");
+	SetupValue(g_Options.roll_resolver, "RAGE", "Enabled Roll Resolver");
 	for (int i = 0; i < 5; i++)
 	{
 		auto aimbot = &g_Options.legitbot[i];
@@ -180,6 +181,9 @@ void Options::SetupWeapons()
 
 		SetupValue(aimbot->damage, "RAGEBOTWPN" + i, "Damage");
 		SetupValue(aimbot->hitchance, "RAGEBOTWPN" + i, "Hitchance");
+		
+		SetupValue(aimbot->multipoint_body, "RAGEBOTWPN" + i, "Body multipoint");
+		SetupValue(aimbot->multipoint_head, "RAGEBOTWPN" + i, "Head multipoint");
 
 		SetupValue(aimbot->hitboxes.head, "RAGEBOTWPN" + i, "Head Hitbox");
 		SetupValue(aimbot->hitboxes.upper_chest, "RAGEBOTWPN" + i, "Upper Chest Hitbox");
@@ -236,11 +240,19 @@ void Options::SetupVisuals()
 	SetupValue(g_Options.enable_nightmode, "Misc", "Nightmode");
 	SetupColor(g_Options.nightmode_color, "Nightmode color");
 
-	SetupValue(g_Options.enable_fog, "Misc", "Fog");
-	SetupValue(g_Options.fog_density, "Misc", "Fog densivity");
-	SetupValue(g_Options.fog_start_distance, "Misc", "Fog start");
-	SetupValue(g_Options.fog_end_distance, "Misc", "Fog end");
+	SetupValue(g_Options.enable_fog, "World", "Fog");
+	SetupValue(g_Options.fog_density, "World", "Fog densivity");
+	SetupValue(g_Options.fog_start_distance, "World", "Fog start");
+	SetupValue(g_Options.fog_end_distance, "World", "Fog end");
 	SetupColor(g_Options.fog_color, "Fog color");
+
+	SetupValue(g_Options.remove_smoke, "Misc", "Remove smoke");
+	SetupValue(g_Options.remove_scope, "Misc", "Remove scope");
+	SetupValue(g_Options.remove_visualrecoil, "Misc", "Remove visual recoil");
+	SetupValue(g_Options.remove_post_processing, "Misc", "Remove post processing");
+	SetupValue(g_Options.remove_zoom, "Misc", "Remove zoom");
+	SetupValue(g_Options.remove_scope, "Misc", "Remove scope");
+	SetupValue(g_Options.remove_flash, "Misc", "Remove flash");
 }
 
 void Options::SetupMisc()
@@ -257,9 +269,9 @@ void Options::SetupMisc()
 	SetupValue(g_Options.lastjump, "Misc", "Last jump");
 	SetupValue(g_Options.lastjumpoutline, "Misc", "Last jump outline");
 	SetupValue(g_Options.autoaccept, "Misc", "Auto accept");
-	SetupValue(g_Options.no_flash, "Misc", "No flash");
-	SetupValue(g_Options.no_smoke, "Misc", "No smoke");
 	SetupValue(g_Options.misc_autostrafe, "Misc", "Auto strafe");
+	SetupValue(g_Options.misc_boostspeed, "Misc", "Speed boost");
+	SetupValue(g_Options.misc_wasdstrafes, "Misc", "WASD strafer");
 	SetupValue(g_Options.misc_bhop, "Misc", "Bunny hop");
 	SetupValue(g_Options.edge_bug, "Misc", "Edge bug");
 	SetupValue(g_Options.edge_bug_key, "Misc", "edge_bug_key");

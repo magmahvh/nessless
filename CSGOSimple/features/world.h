@@ -45,4 +45,6 @@ public:
 	void remove();
 	void skybox_changer();
 	void fog_changer();
+	void RemoveScope();
+	void RemoveSmoke();
 };
