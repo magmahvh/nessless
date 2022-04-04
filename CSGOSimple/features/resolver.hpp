@@ -3,6 +3,8 @@
 #include "../valve_sdk/csgostructs.hpp"
 class Resolver : public Singleton<Resolver>
 {
+private:
+	float storedBrute[65];
 public:
-	void Resolve(C_BasePlayer* player);
+	void Run(ClientFrameStage_t stage);
 };

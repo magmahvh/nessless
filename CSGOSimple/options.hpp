@@ -138,8 +138,8 @@ public:
 		int damage = 1;
 		int hitchance = 1;
 
-		float multipoint_body = 1;
-		float multipoint_head = 1;
+		int multipoint_body = 1;
+		int multipoint_head = 1;
 
 		struct
 		{

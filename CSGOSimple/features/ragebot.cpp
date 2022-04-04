@@ -102,6 +102,16 @@ void CRagebot::RCS(QAngle& angle, C_BasePlayer* target)
 	}
 }
 
+int CRagebot::GetMinimumDamage(C_BasePlayer* target) {
+	int damage = g_Options.ragebot[wpnGroupRage(weapon)].damage;
+
+	if (damage <= 100) return damage;
+	else {
+		int hpp_dmg = damage - 100;
+		return target->m_iHealth() + hpp_dmg;
+	}
+}
+
 C_BasePlayer* CRagebot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& bestFov, QAngle& bestAngles)
 {
 
@@ -163,21 +173,19 @@ C_BasePlayer* CRagebot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& be
 		if (!player->IsEnemy())
 			continue;
 
-		Resolver::Get().Resolve(player);
-
 		cmd->tick_count = Math::TIME_TO_TICKS(player->m_flSimulationTime() + CLagCompensation::Get().LagFix());
 
 		for (const auto hitbox : hitboxes)
 		{
 			float multipoint = hitbox == HITBOX_HEAD ? g_Options.ragebot[wpnGroupRage(weapon)].multipoint_head : g_Options.ragebot[wpnGroupRage(weapon)].multipoint_body;
-			Vector hitboxPos = player->GetHitboxPos(hitbox) + Vector(0, 0, multipoint);
+			Vector hitboxPos = player->GetHitboxPos(hitbox) + Vector(0, 0, (multipoint / 10)- 5);
 			QAngle ang; 
 			Math::VectorAngles(hitboxPos - eyePos, ang);
 			const float fov = GetFovToPlayer(cmd->viewangles + last_punch * 2.f, ang);
 
 			damage = CAutoWall::Get().CanHit(hitboxPos);
 
-			if (damage < g_Options.ragebot[wpnGroupRage(weapon)].damage) continue;
+			if (damage < CRagebot::GetMinimumDamage(player)) continue;
 
 			if (!g_LocalPlayer->CanSeePlayer(player, hitboxPos))
 			{

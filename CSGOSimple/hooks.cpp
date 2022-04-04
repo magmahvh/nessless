@@ -15,6 +15,8 @@
 #include "features/misc.hpp"
 #include "features/autowalk.hpp"
 #include "features/world.h"
+#include "features/resolver.hpp"
+#
 
 #pragma intrinsic(_ReturnAddress) 
 
@@ -375,6 +377,9 @@ namespace Hooks {
 	void __fastcall hkFrameStageNotify(void* _this, int edx, ClientFrameStage_t stage)
 	{
 		static auto ofunc = hlclient_hook.get_original<decltype(&hkFrameStageNotify)>(index::FrameStageNotify);
+
+		Resolver::Get().Run(stage);
+
 		if (g_EngineClient->IsInGame() && g_LocalPlayer)
 		{
 			if (stage == FRAME_RENDER_START)
@@ -428,6 +433,10 @@ namespace Hooks {
 				if (cl_foot_contact_shadows->GetBool())
 					cl_foot_contact_shadows->SetValue(FALSE);
 			}
+			else if (stage == FRAME_NET_UPDATE_POSTDATAUPDATE_START)
+				skins::on_frame_stage_notify(false);
+			else if (stage == FRAME_NET_UPDATE_POSTDATAUPDATE_END)
+				skins::on_frame_stage_notify(true);
 		}
 		ofunc(g_CHLClient, edx, stage);
 	}
@@ -527,6 +536,8 @@ namespace Hooks {
 		Chams::Get().OnDrawModelExecute(pResults, pInfo, pBoneToWorld, flpFlexWeights, flpFlexDelayedWeights, vrModelOrigin, iFlags);
 		World::Get().RemoveSmoke();
 		World::Get().RemoveScope();
+
+
 
 		ofunc(g_StudioRender, 0, pResults, pInfo, pBoneToWorld, flpFlexWeights, flpFlexDelayedWeights, vrModelOrigin, iFlags);
 

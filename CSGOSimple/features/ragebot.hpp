@@ -20,6 +20,7 @@ public:
 
 private:
 	void RCS(QAngle& angle, C_BasePlayer* target);
+	int GetMinimumDamage(C_BasePlayer* target);
 	void Smooth(QAngle currentAngle, QAngle aimAngle, QAngle& angle);
 	C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& fov, QAngle& angles);
 	void AutoStop(CUserCmd* cmd, CCSWeaponInfo* weapon_data);

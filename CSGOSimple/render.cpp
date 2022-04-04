@@ -16,6 +16,7 @@ ImFont* g_pDefaultFont;
 ImFont* g_VeloFont;
 ImFont* g_MenuFont;
 ImFont* g_WeaponFont;
+ImFont* g_EspFont;
 
 ImDrawListSharedData _data;
 
@@ -57,7 +58,7 @@ void Render::GetFonts() {
 	g_WeaponFont = io.Fonts->AddFontFromMemoryTTF((void*)weaponbytes, sizeof(weaponbytes), 20.0f, &font_config, ranges);
 	g_pDefaultFont = io.Fonts->AddFontFromFileTTF(u8"C:\\Windows\\Fonts\\verdana.ttf", 25.f, NULL, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
 	g_VeloFont = io.Fonts->AddFontFromFileTTF(u8"C:\\Windows\\Fonts\\verdana.ttf", 30.f, NULL, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
-
+	g_EspFont = io.Fonts->AddFontFromFileTTF(u8"C:\\Windows\\Fonts\\verdana.ttf", 14.f, NULL, ranges);
 }
 
 void Render::ClearDrawList() {

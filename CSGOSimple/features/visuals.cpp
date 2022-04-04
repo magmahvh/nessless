@@ -118,16 +118,16 @@ bool Visuals::Player::Begin(C_BasePlayer* pl)
 //--------------------------------------------------------------------------------
 void Visuals::Player::RenderBox(C_BaseEntity* pl) {
 	if (!ctx.is_visible && g_Options.esp_player_boxesOccluded) {
-	Render::Get().RenderBoxByType(ctx.bbox.left, ctx.bbox.top, ctx.bbox.right, ctx.bbox.bottom, Color(g_Options.color_esp_enemy_occluded[0], g_Options.color_esp_enemy_occluded[1], g_Options.color_esp_enemy_occluded[2], flPlayerAlpha[pl->EntIndex()]), 1);
-	Render::Get().RenderBoxByType(ctx.bbox.left - 1, ctx.bbox.top - 1, ctx.bbox.right + 1, ctx.bbox.bottom + 1, Color(0, 0, 0, flPlayerAlpha[pl->EntIndex()]), 1);
-	Render::Get().RenderBoxByType(ctx.bbox.left + 1, ctx.bbox.top + 1, ctx.bbox.right - 1, ctx.bbox.bottom - 1, Color(0, 0, 0, flPlayerAlpha[pl->EntIndex()]), 1);
+		Render::Get().RenderBoxByType(ctx.bbox.left, ctx.bbox.top, ctx.bbox.right, ctx.bbox.bottom, Color(g_Options.color_esp_enemy_occluded[0], g_Options.color_esp_enemy_occluded[1], g_Options.color_esp_enemy_occluded[2], flPlayerAlpha[pl->EntIndex()]), 1);
+		Render::Get().RenderBoxByType(ctx.bbox.left - 1, ctx.bbox.top - 1, ctx.bbox.right + 1, ctx.bbox.bottom + 1, Color(0, 0, 0, flPlayerAlpha[pl->EntIndex()]), 1);
+		Render::Get().RenderBoxByType(ctx.bbox.left + 1, ctx.bbox.top + 1, ctx.bbox.right - 1, ctx.bbox.bottom - 1, Color(0, 0, 0, flPlayerAlpha[pl->EntIndex()]), 1);
 	}
 	if (ctx.is_visible) {
-	Render::Get().RenderBoxByType(ctx.bbox.left, ctx.bbox.top, ctx.bbox.right, ctx.bbox.bottom, Color(g_Options.color_esp_enemy_visible[0], g_Options.color_esp_enemy_visible[1], g_Options.color_esp_enemy_visible[2], flPlayerAlpha[pl->EntIndex()]), 1);
-	Render::Get().RenderBoxByType(ctx.bbox.left - 1, ctx.bbox.top - 1, ctx.bbox.right + 1, ctx.bbox.bottom + 1, Color(0, 0, 0, flPlayerAlpha[pl->EntIndex()]), 1);
-	Render::Get().RenderBoxByType(ctx.bbox.left + 1, ctx.bbox.top + 1, ctx.bbox.right - 1, ctx.bbox.bottom - 1, Color(0, 0, 0, flPlayerAlpha[pl->EntIndex()]), 1);
-}
+		Render::Get().RenderBoxByType(ctx.bbox.left, ctx.bbox.top, ctx.bbox.right, ctx.bbox.bottom, Color(g_Options.color_esp_enemy_visible[0], g_Options.color_esp_enemy_visible[1], g_Options.color_esp_enemy_visible[2], flPlayerAlpha[pl->EntIndex()]), 1);
+		Render::Get().RenderBoxByType(ctx.bbox.left - 1, ctx.bbox.top - 1, ctx.bbox.right + 1, ctx.bbox.bottom + 1, Color(0, 0, 0, flPlayerAlpha[pl->EntIndex()]), 1);
+		Render::Get().RenderBoxByType(ctx.bbox.left + 1, ctx.bbox.top + 1, ctx.bbox.right - 1, ctx.bbox.bottom - 1, Color(0, 0, 0, flPlayerAlpha[pl->EntIndex()]), 1);
 	}
+}
 //--------------------------------------------------------------------------------
 void Visuals::Player::RenderName(C_BaseEntity* pl)
 {
@@ -136,7 +136,7 @@ void Visuals::Player::RenderName(C_BaseEntity* pl)
 	auto sz = g_pDefaultFont->CalcTextSizeA(12.f, FLT_MAX, 0.0f, info.szName);
 
 //	Render::Get().RenderText(info.szName, ctx.feet_pos.x - sz.x / 2, ctx.head_pos.y - sz.y, 12.f, Color::White);
-	Render::Get().RenderText(info.szName, ctx.bbox.left + (ctx.bbox.right - ctx.bbox.left - sz.x) / 2, (ctx.bbox.top - sz.y - 1), 12.f, Color(255, 255, 255, flPlayerAlpha[pl->EntIndex()]), false);
+	Render::Get().RenderText(info.szName, ctx.bbox.left + (ctx.bbox.right - ctx.bbox.left - sz.x) / 2, (ctx.bbox.top - sz.y - 1), 12.f, Color(255, 255, 255, flPlayerAlpha[pl->EntIndex()]), false, true, g_EspFont);
 
 }
 //--------------------------------------------------------------------------------
@@ -155,12 +155,9 @@ void Visuals::Player::RenderHealth(C_BaseEntity* pl)
 	int h = box_h;
 	std::string text = std::to_string(hp);
 
-//	Render::Get().RenderBox(x, y, x + w, y + h, Color::Black, 1.f, true);
-//	Render::Get().RenderBox(x + 1, y + 1, x + w - 1, y + height - 2, Color(0, 255, 0, 255), 1.f, true);
-
 	Render::Get().RenderBox(x, y - 1, x + w, y + h + 1, Color(0, 0, 0, flPlayerAlpha[pl->EntIndex()]));
 	Render::Get().RenderBox(x + 1, y + h - height, x + w - 1, y + h, Color(0, 255, 0, flPlayerAlpha[pl->EntIndex()]));
-	Render::Get().RenderText(text, x - 20, y + h - height, 12.f, Color(255, 255, 255, flPlayerAlpha[pl->EntIndex()]));
+	Render::Get().RenderText(text, x - 20, y + h - height, 12.f, Color(255, 255, 255, flPlayerAlpha[pl->EntIndex()]), false, true, g_EspFont);
 
 }
 //--------------------------------------------------------------------------------
@@ -192,7 +189,7 @@ void Visuals::Player::RenderWeaponName(C_BaseEntity* pl)
 	auto text = weapon->GetCSWeaponData()->szWeaponName + 7;
 	auto sz = g_pDefaultFont->CalcTextSizeA(12.f, FLT_MAX, 0.0f, text);
 	//Render::Get().RenderText(text, ctx.feet_pos.x, ctx.feet_pos.y, 12.f, Color::White, true,g_pDefaultFont);
-	Render::Get().RenderText(text, ImVec2(ctx.bbox.left + (ctx.bbox.right - ctx.bbox.left - sz.x) / 2, ctx.bbox.bottom + 1), 12.f, Color(255, 255, 255, flPlayerAlpha[pl->EntIndex()]), false);
+	Render::Get().RenderText(text, ImVec2(ctx.bbox.left + (ctx.bbox.right - ctx.bbox.left - sz.x) / 2, ctx.bbox.bottom + 1), 12.f, Color(255, 255, 255, flPlayerAlpha[pl->EntIndex()]), false, true, g_EspFont);
 
 }
 //--------------------------------------------------------------------------------
@@ -237,7 +234,7 @@ void Visuals::RenderWeapon(C_BaseCombatWeapon* ent)
 	int w = bbox.right - bbox.left;
 
 
-	Render::Get().RenderText(name, ImVec2((bbox.left + w * 0.5f) - sz.x * 0.5f, bbox.bottom + 1), 12.f, Color::White);
+	Render::Get().RenderText(name, ImVec2((bbox.left + w * 0.5f) - sz.x * 0.5f, bbox.bottom + 1), 12.f, Color::White, false, true, g_EspFont);
 }
 //--------------------------------------------------------------------------------
 void Visuals::RenderDefuseKit(C_BaseEntity* ent)
@@ -255,7 +252,7 @@ void Visuals::RenderDefuseKit(C_BaseEntity* ent)
 	auto name = "Defuse Kit";
 	auto sz = g_pDefaultFont->CalcTextSizeA(12.f, FLT_MAX, 0.0f, name);
 	int w = bbox.right - bbox.left;
-	Render::Get().RenderText(name, ImVec2((bbox.left + w * 0.5f) - sz.x * 0.5f, bbox.bottom + 1), 12.f, Color::White);
+	Render::Get().RenderText(name, ImVec2((bbox.left + w * 0.5f) - sz.x * 0.5f, bbox.bottom + 1), 12.f, Color::White, false, true, g_EspFont);
 }
 //--------------------------------------------------------------------------------
 void Visuals::RenderPlantedC4(C_BaseEntity* ent)
@@ -276,7 +273,7 @@ void Visuals::RenderPlantedC4(C_BaseEntity* ent)
 	auto sz = g_pDefaultFont->CalcTextSizeA(12.f, FLT_MAX, 0.0f, name.c_str());
 	int w = bbox.right - bbox.left;
 
-	Render::Get().RenderText(name, ImVec2((bbox.left + w * 0.5f) - sz.x * 0.5f, bbox.bottom + 1), 12.f, g_Options.color_esp_c4);
+	Render::Get().RenderText(name, ImVec2((bbox.left + w * 0.5f) - sz.x * 0.5f, bbox.bottom + 1), 12.f, g_Options.color_esp_c4, false, true, g_EspFont);
 }
 //--------------------------------------------------------------------------------
 void Visuals::RenderItemEsp(C_BaseEntity* ent)
@@ -343,7 +340,7 @@ void Visuals::RenderItemEsp(C_BaseEntity* ent)
 
 
 	//Render::Get().RenderBox(bbox, g_Options.color_esp_item);
-	Render::Get().RenderText(itemstr, ImVec2((bbox.left + w * 0.5f) - sz.x * 0.5f, bbox.bottom + 1), 12.f, g_Options.color_esp_item);
+	Render::Get().RenderText(itemstr, ImVec2((bbox.left + w * 0.5f) - sz.x * 0.5f, bbox.bottom + 1), 12.f, g_Options.color_esp_item, false, true, g_EspFont);
 }
 //--------------------------------------------------------------------------------
 bool lastvelsaved = false; //saver 

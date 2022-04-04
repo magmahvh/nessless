@@ -438,11 +438,11 @@ void Menu::Render()
 
 					ImGui::Text("Head multipoints");
 					ImGui::Spacing();
-					ImGui::SliderFloat("##headmulti", &ragebot->multipoint_head, 1, 10);
+					ImGui::SliderInt("##headmulti", &ragebot->multipoint_head, 1, 100);
 
 					ImGui::Text("Body multipoints");
 					ImGui::Spacing();
-					ImGui::SliderFloat("##bodymulti", &ragebot->multipoint_body, 1, 10);
+					ImGui::SliderInt("##bodymulti", &ragebot->multipoint_body, 1, 100);
 
 					if (ImGui::BeginCombo("##hitbox_filter", "Hitboxes", ImGuiComboFlags_NoArrowButton))
 					{
@@ -640,7 +640,7 @@ void Menu::Render()
 					break;
 				case 2:
 					ImGui::Separator("Weapon");
-					if (ImGui::BeginCombo("##Weapon", "Weapon", ImGuiComboFlags_NoArrowButton))
+					if (ImGui::BeginCombo("##Weapon", "Weapon"))
 					{
 						for (size_t w = 0; w < k_weapon_names.size(); w++)
 						{
@@ -682,9 +682,7 @@ void Menu::Render()
 
 					ImGui::SameLine();
 					if (ImGui::Button("Update")) {
-						typedef void(*FullUpdate_t) (void);
-						FullUpdate_t FullUpdate = (FullUpdate_t)(Utils::PatternScan(GetModuleHandleA("engine.dll"), "A1 ? ? ? ? B9 ? ? ? ? 56 FF 50 14 8B 34 85"));
-						FullUpdate();
+						g_ClientState->ForceFullUpdate();
 					}
 
 					ImGui::Separator("Skin");

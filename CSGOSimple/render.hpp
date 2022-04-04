@@ -19,7 +19,7 @@ extern ImFont* g_pDefaultFont;
 extern ImFont* g_VeloFont;
 extern ImFont* g_MenuFont;
 extern ImFont* g_WeaponFont;
-
+extern ImFont* g_EspFont;
 
 class Vector;
 

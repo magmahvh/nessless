@@ -351,8 +351,8 @@ class AnimationLayer
 public:
 	char  pad_0000[20];
 	// These should also be present in the padding, don't see the use for it though
-	//float	m_flLayerAnimtime;
-	//float	m_flLayerFadeOuttime;
+	float	m_flLayerAnimtime;
+	float	m_flLayerFadeOuttime;
 	uint32_t m_nOrder; //0x0014
 	uint32_t m_nSequence; //0x0018
 	float_t m_flPrevCycle; //0x001C
