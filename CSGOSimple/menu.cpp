@@ -20,6 +20,7 @@
 #include "render.hpp"
 #include "lua/CLua.h"
 #include "helpers/math.hpp"
+#include "helpers/keybinds.hpp"
 
 const char* legit_weapons = "Pistols\0Rifles\0Deagle\0Sniper\0Other";
 const char* rage_weapons = "AWP\0Auto\0Scout\0Deagle and Revolver\0Pistols\0Other";
@@ -336,7 +337,7 @@ void Menu::Render()
 		ImGui::EndChild();
 
 		float subtabSection_width = x - tabSection_width - 30;
-		float subtabSection_height = 40;
+		float subtabSection_height = 25;
 
 		ImGui::SetCursorPos(ImVec2{ tabSection_width + 15, 15 });
 		ImGui::BeginChild("##Subtabs", ImVec2{ subtabSection_width, subtabSection_height });
@@ -415,9 +416,7 @@ void Menu::Render()
 					if (g_Options.rage_enabled) {
 						g_Options.legit_enabled = false;
 					}
-					ImGui::Text("Roll resolver");
-					ImGui::SameLine();
-					ImGui::Hotkey("#rollresolver", &g_Options.roll_resolver);
+					KeyBinds::Get().DrawKeyBind("Roll resolver", &g_Options.roll_resolver_key, &g_Options.roll_resolver_type);
 					break;
 				case 1:
 					ImGui::Separator("Weapons");
@@ -459,9 +458,18 @@ void Menu::Render()
 				case 2:
 					ImGui::Separator("AntiAim");
 					ImGui::Checkbox("Enabled", &g_Options.antiaim);
-					ImGui::Text("Flip fake body");
-					ImGui::SameLine();
-					ImGui::Hotkey("", &g_Options.antiaim_flip);
+					ImGui::Combo("Pitch", &g_Options.antiaim_pitch, "None\0Down\0Up");
+					ImGui::Combo("Direction", &g_Options.antiaim_yaw, "None\0Backward\0Forward\0Right\0Left");
+
+					ImGui::Text("Desync amount");
+					ImGui::Spacing();
+					ImGui::SliderInt("##desyncamount", &g_Options.antiaim_dsy, 1, 59);
+
+					KeyBinds::Get().DrawKeyBind("Inverter", &g_Options.antiaim_flip_key, &g_Options.antiaim_flip_type);
+
+					ImGui::Separator("Fakelag");
+					ImGui::Checkbox("Enabled##fakelag", &g_Options.fakelag);
+					ImGui::SliderInt("Amount##fakelag", &g_Options.fakelag_amount, 1, 14);
 					break;
 				}
 				break;
@@ -526,9 +534,8 @@ void Menu::Render()
 					break;
 				case 2:
 					ImGui::Separator("Autofire");
-					ImGui::Checkbox("Enabled autofire##autofire", &legitbot->autofire.enabled);
-					ImGui::SameLine();
-					ImGui::Hotkey("##autofire", &legitbot->autofire.hotkey);
+					ImGui::Checkbox("Enabled##autofire", &g_Options.autofire_enabled);
+					KeyBinds::Get().DrawKeyBind("Auto fire", &g_Options.autofire_key, &g_Options.autofire_type);
 
 					ImGui::Separator("Autowall");
 					ImGui::Checkbox("Enabled autowall##autowall", &legitbot->autowall.enabled);
@@ -923,7 +930,27 @@ void Menu::Render()
 					}
 					break;
 				case 1:
+					if (ImGui::Button(" Refresh scripts"))
+						Lua::Get().refresh_scripts();
+					if (ImGui::Button(" Reload active scripts"))
+						Lua::Get().reload_all_scripts();
+					if (ImGui::Button(" Unload all scripts"))
+						Lua::Get().unload_all_scripts();
 
+					ImGui::SetCursorPosX(15);
+					ImGui::ListBoxHeader("##lua", ImVec2(0, 140));
+					for (auto s : Lua::Get().scripts)
+					{
+						if (ImGui::Selectable(s.c_str(), Lua::Get().loaded.at(Lua::Get().get_script_id(s)), NULL, ImVec2(0, 0))) {
+							auto scriptId = Lua::Get().get_script_id(s);
+
+							if (Lua::Get().loaded.at(scriptId))
+								Lua::Get().unload_script(scriptId);
+							else
+								Lua::Get().load_script(scriptId);
+						}
+					}
+					ImGui::ListBoxFooter();
 					break;
 				}
 				break;

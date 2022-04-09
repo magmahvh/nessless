@@ -52,7 +52,7 @@ void Logs::Draw()
 		auto y = last_y + log.y;
 		auto x = log.x;
 
-		Render::Get().RenderBoxFilled(x, y, x + ImGui::CalcTextSize(log.message.c_str()).x, y + 30, Color(15, 15, 15, 170), 3);
+		Render::Get().RenderBoxFilled(x, y, x + Render::Get().GetTextSize(log.message.c_str(), 14) + 20, y + 30, Color(15, 15, 15, 170), 3);
 		Render::Get().RenderBoxFilled(x, y, x + 3, y + 30, g_Options.menu_color, 0);
 		Render::Get().RenderText(log.message.c_str(), x + 10, y + 7, 14.f, Color::White, false, false, g_MenuFont);
 	}

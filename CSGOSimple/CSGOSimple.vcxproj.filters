@@ -172,6 +172,12 @@
     <ClCompile Include="valve_sdk\misc\characterset.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
+    <ClCompile Include="features\fakelag.cpp">
+      <Filter>Source Files\features</Filter>
+    </ClCompile>
+    <ClCompile Include="helpers\keybinds.cpp">
+      <Filter>Source Files\SDK\helpers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="features\bhop.hpp">
@@ -510,5 +516,14 @@
     <ClInclude Include="features\lagcompensation.hpp">
       <Filter>Source Files\features</Filter>
     </ClInclude>
+    <ClInclude Include="features\fakelag.hpp">
+      <Filter>Source Files\features</Filter>
+    </ClInclude>
+    <ClInclude Include="helpers\keybinds.hpp">
+      <Filter>Source Files\SDK\helpers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\lua53.lib" />
   </ItemGroup>
 </Project>

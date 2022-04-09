@@ -14,6 +14,7 @@
 #include "options.hpp"
 #include "render.hpp"
 #include "user.hpp"
+#include "helpers/keybinds.hpp"
 
 DWORD WINAPI OnDllAttach(LPVOID base)
 {
@@ -33,7 +34,7 @@ DWORD WINAPI OnDllAttach(LPVOID base)
         InputSys::Get().Initialize();
 		Render::Get().Initialize();
         Menu::Get().Initialize();
-        //Lua::Get().Initialize();
+        Lua::Get().Initialize();
 
         g_Legitbot = new CLegitbot();
         g_Ragebot = new CRagebot();

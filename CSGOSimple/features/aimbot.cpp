@@ -3,6 +3,7 @@
 
 #include "..//helpers/math.hpp"
 #include "..//helpers/input.hpp"
+#include "../helpers/keybinds.hpp"
 
 int wpnGroupLegit(CHandle<C_BaseCombatWeapon> pWeapon) {
 
@@ -55,7 +56,7 @@ bool CLegitbot::IsEnabled(CUserCmd* cmd)
 	if (!weapon->HasBullets())
 		return false;
 
-	return (cmd->buttons & IN_ATTACK) || (g_Options.legitbot[wpnGroupLegit(weapon)].autofire.enabled && GetAsyncKeyState(g_Options.legitbot[wpnGroupLegit(weapon)].autofire.hotkey));
+	return (cmd->buttons & IN_ATTACK) || (g_Options.autofire_enabled && KeyList::Get().autofire);
 }
 
 void CLegitbot::Smooth(QAngle currentAngle, QAngle aimAngle, QAngle& angle)
@@ -264,7 +265,7 @@ void CLegitbot::Run(CUserCmd* cmd)
 		if (shot_delay)
 			cmd->buttons &= ~IN_ATTACK;
 
-		if (g_Options.legitbot[wpnGroupLegit(weapon)].autofire.enabled && GetAsyncKeyState(g_Options.legitbot[wpnGroupLegit(weapon)].autofire.hotkey))
+		if (g_Options.autofire_enabled && KeyList::Get().autofire)
 			cmd->buttons |= IN_ATTACK;
 	}
 

@@ -1,37 +1,15 @@
-#include "resolver.hpp"
 #include "../options.hpp"
 #include "../helpers/math.hpp"
 #include <algorithm>
 
+#include "resolver.hpp"
+#include "../helpers/keybinds.hpp"
+
 #define delta(angle1, angle2) remainderf(fabsf(angle1 - angle2), 360.0f)
 #define n(yaw) Math::NormalizeAngle(fabsf(yaw))
 
-float Bolbilize(float Yaw)
-{
-	if (Yaw > 180)
-		Yaw -= (round(Yaw / 360) * 360.f);
-	else if (Yaw < -180)
-		Yaw += (round(Yaw / 360) * -360.f);
-
-	return Yaw;
-}
-
-Vector CalcAngle69(Vector dst, Vector src)
-{
-	Vector angles;
-
-	double delta[3] = { (src.x - dst.x), (src.y - dst.y), (src.z - dst.z) };
-	double hyp = sqrt(delta[0] * delta[0] + delta[1] * delta[1]);
-	angles.x = (float)(atan(delta[2] / hyp) * 180.0 / 3.14159265);
-	angles.y = (float)(atanf(delta[1] / delta[0]) * 57.295779513082f);
-	angles.z = 0.0f;
-
-	if (delta[0] >= 0.0)
-	{
-		angles.y += 180.0f;
-	}
-
-	return angles;
+int Random(int to) {
+	return rand() % to + 1;
 }
 
 void Resolver::Run(ClientFrameStage_t stage) {
@@ -53,58 +31,33 @@ void Resolver::Run(ClientFrameStage_t stage) {
 		if (!animstate) return;
 
 		const bool is_moving = pEnt->m_vecVelocity().Length2D() > 0.1;
-		const bool could_be_slowmo = pEnt->m_vecVelocity().Length2D() < 36;
+		const bool is_slowing = pEnt->m_vecVelocity().Length2D() < 36;
 		const bool is_crouching = pEnt->m_fFlags() & FL_DUCKING;
 
-		int resolveYaw = 0;
+		int resolveYaw = pEnt->m_angEyeAngles().yaw;
 		int resolveRoll = 0;
+		int maxResolveYaw = 0;
 
-		float fl_eye_yaw = pEnt->m_angEyeAngles().yaw;
-		float fl_lby_yaw = pEnt->m_flLowerBodyYawTarget();
-		float fl_desync_delta = delta(fl_eye_yaw, pEnt->m_angEyeAngles().yaw);
+		if (is_moving) maxResolveYaw = 60;
+		else if (is_slowing) maxResolveYaw = 45;
+		else maxResolveYaw = 15;
 
-		/* setup target side */
-		float fl_left_yaw = n(fl_eye_yaw - 60.0);
-		float fl_right_yaw = n(fl_eye_yaw + 60.0);
-
-		/* setup low delta */
-		float fl_left_low_delta = n(fl_lby_yaw - 35.0);
-		float fl_right_low_delta = n(fl_lby_yaw + 35.0);
-
-		if (fl_desync_delta < 35) {
-			switch (pLocal->m_iShotsFired() % 3) {
-			case 0:
-				resolveYaw = storedBrute[pEnt->EntIndex()];
-				break;
-			case 1:
-				resolveYaw = fl_left_low_delta;
-				storedBrute[pEnt->EntIndex()] = fl_left_low_delta;
-				break;
-			case 2:
-				resolveYaw = fl_right_low_delta;
-				storedBrute[pEnt->EntIndex()] = fl_right_low_delta;
-				break;
-			}
+		switch (pLocal->m_iShotsFired() % 4) {
+		case 0:
+			resolveYaw += maxResolveYaw;
+			break;
+		case 1:
+			resolveYaw -= maxResolveYaw;
+			break;
+		case 2:
+			resolveYaw += maxResolveYaw / 2;
+			break;
+		case 3:
+			resolveYaw -= maxResolveYaw / 2;
+			break;
 		}
 
-		if (fabs(fl_desync_delta) > 60.0) {
-			if (fabs(fl_desync_delta) > 0) {
-				resolveYaw = fl_left_yaw;
-			}
-			else {
-				resolveYaw = fl_right_yaw;
-			}
-		}
-		else if (fabs(fl_desync_delta) < -60.0) {
-			if (fabs(fl_desync_delta) > 0) {
-				resolveYaw = fl_right_yaw;
-			}
-			else {
-				resolveYaw = fl_left_yaw;
-			}
-		}
-
-		if (GetAsyncKeyState(g_Options.roll_resolver)) {
+		if (KeyList::Get().rollresolver) {
 			switch (g_LocalPlayer->m_iShotsFired() % 2) {
 			case 0: resolveRoll = 45.f; break;
 			case 1: resolveRoll = -45.f; break;

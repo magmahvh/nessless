@@ -103,6 +103,7 @@
     <ClCompile Include="features\autowall.cpp" />
     <ClCompile Include="features\bhop.cpp" />
     <ClCompile Include="features\chams.cpp" />
+    <ClCompile Include="features\fakelag.cpp" />
     <ClCompile Include="features\glow.cpp" />
     <ClCompile Include="features\item_definitions.cpp" />
     <ClCompile Include="features\kit_parser.cpp" />
@@ -115,6 +116,7 @@
     <ClCompile Include="features\visuals.cpp" />
     <ClCompile Include="features\world.cpp" />
     <ClCompile Include="helpers\input.cpp" />
+    <ClCompile Include="helpers\keybinds.cpp" />
     <ClCompile Include="helpers\logs.cpp" />
     <ClCompile Include="helpers\math.cpp" />
     <ClCompile Include="helpers\prediction.cpp" />
@@ -153,6 +155,7 @@
     <ClInclude Include="features\antiaim.hpp" />
     <ClInclude Include="features\autowalk.hpp" />
     <ClInclude Include="features\autowall.hpp" />
+    <ClInclude Include="features\fakelag.hpp" />
     <ClInclude Include="features\item_definitions.h" />
     <ClInclude Include="features\kit_parser.h" />
     <ClInclude Include="features\lagcompensation.hpp" />
@@ -163,6 +166,7 @@
     <ClInclude Include="features\skins.h" />
     <ClInclude Include="features\world.h" />
     <ClInclude Include="helpers\IMaterialVar.h" />
+    <ClInclude Include="helpers\keybinds.hpp" />
     <ClInclude Include="helpers\KeyValues.h" />
     <ClInclude Include="helpers\logs.hpp" />
     <ClInclude Include="helpers\prediction.hpp" />
@@ -260,6 +264,9 @@
     <ClInclude Include="valve_sdk\misc\UtlVector.hpp" />
     <ClInclude Include="valve_sdk\misc\vfunc.hpp" />
     <ClInclude Include="valve_sdk\netvars.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\lua53.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

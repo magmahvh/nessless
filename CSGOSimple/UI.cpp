@@ -405,8 +405,8 @@ bool ImGui::Hotkey(const char* label, int* k, const ImVec2& size_arg)
 
 	const ImGuiID id = window->GetID(label);
 	const ImVec2 label_size = CalcTextSize(label, NULL, true);
-	ImVec2 size = CalcItemSize(ImVec2(50, size_arg.y), CalcItemWidth(), label_size.y + style.FramePadding.y * 2.0f);
-	const ImRect frame_bb(window->DC.CursorPos, window->DC.CursorPos + size);
+	ImVec2 size = CalcItemSize(ImVec2(50, size_arg.y), CalcItemWidth(), style.FramePadding.y * 2.0f + 22);
+	const ImRect frame_bb(window->DC.CursorPos + ImVec2(5, 25), window->DC.CursorPos + ImVec2(5, 25) + size);
 	const ImRect total_bb(frame_bb.Min, frame_bb.Max + ImVec2(label_size.x > 0.0f ? (style.ItemInnerSpacing.x + label_size.x) : 0.0f, 0.0f));
 
 	ItemSize(total_bb, style.FramePadding.y);
@@ -491,7 +491,12 @@ bool ImGui::Hotkey(const char* label, int* k, const ImVec2& size_arg)
 
 	char buf_display[64] = "None";
 
-	RenderFrame(frame_bb.Min, frame_bb.Max, GetColorU32(ImGuiCol_FrameBg), true, style.FrameRounding);
+	window->DrawList->AddRectFilled(frame_bb.Min + ImVec2(1, 1), frame_bb.Max + ImVec2(4, -1), ImColor(0.115454f, 0.112457f, 0.127451f, 0.956863f), 4, 15);
+
+	window->DrawList->AddRect(frame_bb.Min, frame_bb.Max + ImVec2(5, 0), ImColor(0.219608f, 0.215686f, 0.235294f, 1.000000f), 4, 15, 1.000000);
+	window->DrawList->AddRect(frame_bb.Min - ImVec2(1, 1), frame_bb.Max + ImVec2(6, 1), ImColor(0.070588f, 0.070588f, 0.090196f, 1.000000f), 4, 15, 1.000000);
+	window->DrawList->AddRect(frame_bb.Min + ImVec2(1, 1), frame_bb.Max + ImVec2(4, -1), ImColor(0.070588f, 0.070588f, 0.090196f, 1.000000f), 4, 15, 1.000000);
+	//RenderFrame(frame_bb.Min, frame_bb.Max, GetColorU32(ImGuiCol_FrameBg), true, style.FrameRounding);
 
 	if (*k != 0 && g.ActiveId != id) {
 		strcpy(buf_display, KeyNames[*k]);
@@ -501,12 +506,12 @@ bool ImGui::Hotkey(const char* label, int* k, const ImVec2& size_arg)
 	}
 
 	const ImRect clip_rect(frame_bb.Min.x, frame_bb.Min.y, frame_bb.Min.x + size.x, frame_bb.Min.y + size.y); // Not using frame_bb.Max because we have adjusted size
-	ImVec2 render_pos = frame_bb.Min + style.FramePadding;
-	RenderTextClipped(frame_bb.Min + style.FramePadding, frame_bb.Max - style.FramePadding, buf_display, NULL, NULL);
+	ImVec2 render_pos = frame_bb.Min + style.FramePadding * 2;
+	RenderTextClipped(render_pos, frame_bb.Max - style.FramePadding * 2, buf_display, NULL, NULL);
 	//draw_window->DrawList->AddText(g.Font, g.FontSize, render_pos, GetColorU32(ImGuiCol_Text), buf_display, NULL, 0.0f, &clip_rect);
 
-	if (label_size.x > 0)
-		RenderText(ImVec2(frame_bb.Max.x + style.ItemInnerSpacing.x, frame_bb.Min.y + style.FramePadding.y), label);
+	//if (label_size.x > 0)
+		//RenderText(ImVec2(frame_bb.Max.x + style.ItemInnerSpacing.x, frame_bb.Min.y + style.FramePadding.y), label);
 
 	return value_changed;
 }
@@ -554,8 +559,4 @@ void ImGui::Separator(const char* label)
 	draw_list->AddLine(ImVec2(pos.x + size.x + 5.f, cursor.y + size.y / 2), ImVec2(cursor.x + width, cursor.y + size.y / 2), ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b()));
 
 	ImGui::NewLine();
-}
-
-void ImGui::DrawKeyBind(const char* label, int key, int type, const char* unique_id) {
-	
 }

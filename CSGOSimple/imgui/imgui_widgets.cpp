@@ -1294,11 +1294,17 @@ bool ImGui::BeginCombo(const char* label, const char* preview_value, ImGuiComboF
     const ImGuiStyle& style = g.Style;
     const ImGuiID id = window->GetID(label);
 
-    const float arrow_size = (flags & ImGuiComboFlags_NoArrowButton) ? 0.0f : GetFrameHeight();
-    const ImVec2 label_size = CalcTextSize(label, NULL, true);
-    const float w = (flags & ImGuiComboFlags_NoPreview) ? arrow_size : CalcItemWidth();
-    const ImRect frame_bb(window->DC.CursorPos - ImVec2(0, style.FramePadding.y + 2), window->DC.CursorPos + ImVec2(w, label_size.y + style.FramePadding.y + 2));
-    const ImRect total_bb(frame_bb.Min, frame_bb.Max + ImVec2(label_size.x > 0.0f ? style.ItemInnerSpacing.x + label_size.x : 0.0f, 0.0f));
+    const float arrow_size = (flags & ImGuiComboFlags_NoArrowButton) ? 0.0f : ImGui::GetFrameHeight();
+    const ImVec2 label_size = ImGui::CalcTextSize(label, NULL, true);
+    const float expected_w = 299;
+    const float w = (flags & ImGuiComboFlags_NoPreview) ? arrow_size : expected_w;
+
+    int text_padding = 0;
+    if (label_size.x > 0)
+        text_padding = 25;
+
+    const ImRect frame_bb(window->DC.CursorPos + ImVec2(10, 0), window->DC.CursorPos + ImVec2(w + 0, 0 + style.FramePadding.y * 2.0f + text_padding + 22));
+    const ImRect total_bb(frame_bb.Min, frame_bb.Max + ImVec2(label_size.x > 0.0f ? style.ItemInnerSpacing.x + 0 : 0.0f, 0.0f));
     ItemSize(total_bb, style.FramePadding.y);
     if (!ItemAdd(total_bb, id, &frame_bb))
         return false;
@@ -1307,24 +1313,46 @@ bool ImGui::BeginCombo(const char* label, const char* preview_value, ImGuiComboF
     bool pressed = ButtonBehavior(frame_bb, id, &hovered, &held);
     bool popup_open = IsPopupOpen(id);
 
-    const ImRect value_bb(frame_bb.Min, frame_bb.Max - ImVec2(arrow_size, 0.0f));
-    const ImU32 frame_col = GetColorU32(hovered ? ImGuiCol_FrameBgHovered : ImGuiCol_FrameBg);
+    const float value_x2 = ImMax(frame_bb.Min.x, frame_bb.Max.x - arrow_size);
 
-    if (!(flags & ImGuiComboFlags_NoPreview))
+    window->DrawList->AddRectFilled(ImVec2(frame_bb.Min.x + 1, frame_bb.Min.y + text_padding + 1), ImVec2(frame_bb.Max.x + 4, frame_bb.Max.y + -1), ImColor(0.115454f, 0.112457f, 0.127451f, 0.956863f), 4, 15);
+    if (!popup_open)
     {
-        window->DrawList->AddRectFilled(frame_bb.Min + ImVec2(5, 2), ImVec2(frame_bb.Max.x, frame_bb.Max.y - 2), ImColor(28, 28, 28), style.FrameRounding, ImDrawCornerFlags_Left);
-        window->DrawList->AddRect(frame_bb.Min + ImVec2(5, 2), ImVec2(frame_bb.Max.x, frame_bb.Max.y - 2), ImColor(0, 0, 0), style.FrameRounding, ImDrawCornerFlags_Left);
+        window->DrawList->AddRect(ImVec2(frame_bb.Min.x + 0, frame_bb.Min.y + text_padding), ImVec2(frame_bb.Max.x + 5, frame_bb.Max.y + 0), ImColor(0.219608f, 0.215686f, 0.235294f, 1.000000f), 4, 15, 1.000000);
+        window->DrawList->AddRect(ImVec2(frame_bb.Min.x + -1, frame_bb.Min.y + text_padding - 1), ImVec2(frame_bb.Max.x + 6, frame_bb.Max.y + 1), ImColor(0.070588f, 0.070588f, 0.090196f, 1.000000f), 4, 15, 1.000000);
+        window->DrawList->AddRect(ImVec2(frame_bb.Min.x + 1, frame_bb.Min.y + text_padding + 1), ImVec2(frame_bb.Max.x + 4, frame_bb.Max.y + -1), ImColor(0.070588f, 0.070588f, 0.090196f, 1.000000f), 4, 15, 1.000000);
+    }
+    else
+    {
+        //window->DrawList->AddRect(ImVec2(frame_bb.Min.x + 0, frame_bb.Min.y + text_padding), ImVec2(frame_bb.Max.x + 5, frame_bb.Max.y + 0), ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b()), 4, 15, 1.000000);
+        //window->DrawList->AddRect(ImVec2(frame_bb.Min.x + -1, frame_bb.Min.y + text_padding - 1), ImVec2(frame_bb.Max.x + 6, frame_bb.Max.y + 1), ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b()), 4, 15, 1.000000);
+        window->DrawList->AddRect(ImVec2(frame_bb.Min.x + 1, frame_bb.Min.y + text_padding + 1), ImVec2(frame_bb.Max.x + 4, frame_bb.Max.y + -1), ImColor(g_Options.menu_color.r(), g_Options.menu_color.g(), g_Options.menu_color.b()), 4, 15, 1.000000);
     }
 
     if (!(flags & ImGuiComboFlags_NoArrowButton))
     {
-        RenderArrow(ImVec2(frame_bb.Max.x - arrow_size + style.FramePadding.y, frame_bb.Min.y + style.FramePadding.y + 5), ImGuiDir_Down, 0.5f);
+        ImU32 text_col = ImGui::GetColorU32(ImGuiCol_Text);
+        if (value_x2 + arrow_size - style.FramePadding.x <= frame_bb.Max.x)
+            if (!popup_open)
+            {
+                ImGui::RenderArrow(ImVec2(value_x2 + style.FramePadding.y + -2, frame_bb.Min.y + style.FramePadding.y + 30), ImGuiDir_Down, 1);
+            }
+            else
+            {
+                ImGui::RenderArrow(ImVec2(value_x2 + style.FramePadding.y + -2, frame_bb.Min.y + style.FramePadding.y + 30), ImGuiDir_Up, 1);
+            }
     }
-
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(255 / 255.f, 254 / 255.f, 254 / 255.f, 255 / 255.f));
     if (preview_value != NULL && !(flags & ImGuiComboFlags_NoPreview))
-        RenderText(frame_bb.Min + style.FramePadding + ImVec2(5, 1), preview_value);
+        ImGui::RenderText(frame_bb.Min + style.FramePadding + ImVec2(5, text_padding + 4), preview_value);
+    ImGui::PopStyleColor();
+
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(255 / 255.f, 254 / 255.f, 254 / 255.f, 255 / 255.f));
     if (label_size.x > 0)
-        RenderText(ImVec2(frame_bb.Max.x + style.ItemInnerSpacing.x, frame_bb.Min.y + style.FramePadding.y + 1), label);
+        ImGui::RenderText(ImVec2(frame_bb.Min.x + style.ItemInnerSpacing.x + -4, frame_bb.Min.y + style.FramePadding.y + 0), label);
+    ImGui::PopStyleColor();
+
+    RenderFrameBorder(frame_bb.Min, frame_bb.Max, style.FrameRounding);
 
     if ((pressed || g.NavActivateId == id) && !popup_open)
     {
@@ -1340,7 +1368,7 @@ bool ImGui::BeginCombo(const char* label, const char* preview_value, ImGuiComboF
     if (backup_next_window_size_constraint)
     {
         g.NextWindowData.SizeConstraintCond = backup_next_window_size_constraint;
-        g.NextWindowData.SizeConstraintRect.Min.x = ImMax(g.NextWindowData.SizeConstraintRect.Min.x, w);
+        g.NextWindowData.SizeConstraintRect.Min.x = ImMax(g.NextWindowData.SizeConstraintRect.Min.x, w + 10);
     }
     else
     {
@@ -1348,10 +1376,10 @@ bool ImGui::BeginCombo(const char* label, const char* preview_value, ImGuiComboF
             flags |= ImGuiComboFlags_HeightRegular;
         IM_ASSERT(ImIsPowerOfTwo(flags & ImGuiComboFlags_HeightMask_));    // Only one
         int popup_max_height_in_items = -1;
-        if (flags & ImGuiComboFlags_HeightRegular)     popup_max_height_in_items = 8;
-        else if (flags & ImGuiComboFlags_HeightSmall)  popup_max_height_in_items = 4;
-        else if (flags & ImGuiComboFlags_HeightLarge)  popup_max_height_in_items = 20;
-        SetNextWindowSizeConstraints(ImVec2(w - 5, 0.0f), ImVec2(FLT_MAX, CalcMaxPopupHeightFromItemCount(popup_max_height_in_items)));
+        if (flags & ImGuiComboFlags_HeightRegular)     popup_max_height_in_items = 8 + 7;
+        else if (flags & ImGuiComboFlags_HeightSmall)  popup_max_height_in_items = 4 + 7;
+        else if (flags & ImGuiComboFlags_HeightLarge)  popup_max_height_in_items = 20 + 7;
+        SetNextWindowSizeConstraints(ImVec2(w + 7, 0.0f), ImVec2(FLT_MAX, CalcMaxPopupHeightFromItemCount(popup_max_height_in_items)));
     }
 
     char name[16];
@@ -1366,14 +1394,12 @@ bool ImGui::BeginCombo(const char* label, const char* preview_value, ImGuiComboF
                 popup_window->AutoPosLastDirection = ImGuiDir_Left;
             ImRect r_outer = GetWindowAllowedExtentRect(popup_window);
             ImVec2 pos = FindBestWindowPosForPopupEx(frame_bb.GetBL(), size_expected, &popup_window->AutoPosLastDirection, r_outer, frame_bb, ImGuiPopupPositionPolicy_ComboBox);
-            SetNextWindowPos(pos + ImVec2(5, 0));
+            SetNextWindowPos(pos);
         }
 
     // Horizontally align ourselves with the framed text
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_Popup | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings;
-    PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(style.FramePadding.x, style.WindowPadding.y));
     bool ret = Begin(name, NULL, window_flags);
-    PopStyleVar();
     if (!ret)
     {
         EndPopup();

@@ -3,6 +3,7 @@
 #include "options.hpp"
 #include "valve_sdk/misc/Enums.hpp"
 #include "valve_sdk/sdk.hpp"
+#include "helpers/logs.hpp"
 
 const std::map<int, const char*> config_names = {
 	{WEAPON_CZ75A, "CZ75 Auto"},
@@ -101,10 +102,6 @@ void Options::SetupValue(int& value, std::string category, std::string name)
 {
 	ints.push_back(new ConfigValue<int>(std::move(category), std::move(name), &value));
 }
-/*void Options::SetupValue(char value, std::string category, std::string name)
-{
-	chars.push_back(new ConfigValue<char>(std::move(category), std::move(name), &value));
-}*/
 
 void Options::SetupValue(bool& value, std::string category, std::string name)
 {
@@ -124,78 +121,110 @@ void Options::SetupColor(Color& value, const std::string& name)
 	SetupValue(value._CColor[3], "Colors", name + "_a");
 }
 
+int Options::GetIntValue(std::string category, std::string name) {
+	for (auto value : ints) {
+		if (value->category == category && value->name == name) {
+			return *value->value;
+		}
+	}
+	Logs::Get().Create("Unknow element: " + category + ":" + name);
+}
+
+int Options::GetBoolValue(std::string category, std::string name) {
+	for (auto value : bools) {
+		if (value->category == category && value->name == name) {
+			return *value->value;
+		}
+	}
+	Logs::Get().Create("Unknow element: " + category + ":" + name);
+}
+
+int Options::GetFloatValue(std::string category, std::string name) {
+	for (auto value : floats) {
+		if (value->category == category && value->name == name) {
+			return *value->value;
+		}
+	}
+	Logs::Get().Create("Unknow element: " + category + ":" + name);
+}
 
 
 void Options::SetupWeapons()
 {
-	SetupValue(g_Options.legit_enabled, "LEGIT", "Enabled Legit");
-	SetupValue(g_Options.rage_enabled, "RAGE", "Enabled Rage");
-	SetupValue(g_Options.roll_resolver, "RAGE", "Enabled Roll Resolver");
+	SetupValue(g_Options.legit_enabled, "Legitbot", "Enabled Legit");
+	SetupValue(g_Options.rage_enabled, "Ragebot", "Enabled Rage");
+	SetupValue(g_Options.roll_resolver_key, "Ragebot", "Roll Resolver Key"); SetupValue(g_Options.roll_resolver_type, "RAGE", "Roll Resolver Type");
 	for (int i = 0; i < 5; i++)
 	{
 		auto aimbot = &g_Options.legitbot[i];
 
-		SetupValue(aimbot->enabled, "LEGITBOTWPN" + i, "Enabled");
-		SetupValue(aimbot->deathmatch, "LEGITBOTWPN" + i, "Deathmatch");
-		//SetupValue(aimbot->silent, key, "pSilent");
-		SetupValue(aimbot->silent, "LEGITBOTWPN" + i, "Silent");
+		SetupValue(aimbot->enabled, "Legitbot" + i, "Enabled");
+		SetupValue(aimbot->deathmatch, "Legitbot" + i, "Deathmatch");
+		SetupValue(aimbot->silent, "Legitbot" + i, "Silent");
 
-		SetupValue(aimbot->flash_check, "LEGITBOTWPN" + i, "Flash Check");
-		SetupValue(aimbot->smoke_check, "LEGITBOTWPN" + i, "Smoke Check");
-		SetupValue(aimbot->autopistol, "LEGITBOTWPN" + i, "AutoPistol");
+		SetupValue(aimbot->flash_check, "Legitbot" + i, "Flash Check");
+		SetupValue(aimbot->smoke_check, "Legitbot" + i, "Smoke Check");
+		SetupValue(aimbot->autopistol, "Legitbot" + i, "AutoPistol");
 
-		SetupValue(aimbot->fov, "LEGITBOTWPN" + i, "Fov");
-		SetupValue(aimbot->silent_fov, "LEGITBOTWPN" + i, "pSilent Fov");
-		SetupValue(aimbot->smooth, "LEGITBOTWPN" + i, "Smooth");
+		SetupValue(aimbot->fov, "Legitbot" + i, "Fov");
+		SetupValue(aimbot->silent_fov, "Legitbot" + i, "pSilent Fov");
+		SetupValue(aimbot->smooth, "Legitbot" + i, "Smooth");
 
-		SetupValue(aimbot->kill_delay, "LEGITBOTWPN" + i, "Kill Delay");
-		SetupValue(aimbot->shot_delay, "LEGITBOTWPN" + i, "Shot Delay");
+		SetupValue(aimbot->kill_delay, "Legitbot" + i, "Kill Delay");
+		SetupValue(aimbot->shot_delay, "Legitbot" + i, "Shot Delay");
 
-		SetupValue(aimbot->hitboxes.head, "LEGITBOTWPN" + i, "Head Hitbox");
-		SetupValue(aimbot->hitboxes.chest, "LEGITBOTWPN" + i, "Chest Hitbox");
-		SetupValue(aimbot->hitboxes.hands, "LEGITBOTWPN" + i, "Hands Hitbox");
-		SetupValue(aimbot->hitboxes.legs, "LEGITBOTWPN" + i, "Legs Hitbox");
+		SetupValue(aimbot->hitboxes.head, "Legitbot" + i, "Head Hitbox");
+		SetupValue(aimbot->hitboxes.chest, "Legitbot" + i, "Chest Hitbox");
+		SetupValue(aimbot->hitboxes.hands, "Legitbot" + i, "Hands Hitbox");
+		SetupValue(aimbot->hitboxes.legs, "Legitbot" + i, "Legs Hitbox");
 
-		SetupValue(aimbot->rcs.enabled, "LEGITBOTWPN" + i, "RCS Enabled");
-		SetupValue(aimbot->rcs.start, "LEGITBOTWPN" + i, "RCS Start");
-		SetupValue(aimbot->rcs.x, "LEGITBOTWPN" + i, "RCS X");
-		SetupValue(aimbot->rcs.y, "LEGITBOTWPN" + i, "RCS Y");
+		SetupValue(aimbot->rcs.enabled, "Legitbot" + i, "RCS Enabled");
+		SetupValue(aimbot->rcs.start, "Legitbot" + i, "RCS Start");
+		SetupValue(aimbot->rcs.x, "Legitbot" + i, "RCS X");
+		SetupValue(aimbot->rcs.y, "Legitbot" + i, "RCS Y");
 
-		SetupValue(aimbot->autowall.enabled, "LEGITBOTWPN" + i, "AutoWall Enabled");
-		SetupValue(aimbot->autowall.min_damage, "LEGITBOTWPN" + i, "AutoWall MinDamage");
-
-		SetupValue(aimbot->autofire.enabled, "LEGITBOTWPN" + i, "AutoFire Enabled");
-		SetupValue(aimbot->autofire.hotkey, "LEGITBOTWPN" + i, "AutoFire Hotkey");
+		SetupValue(aimbot->autowall.enabled, "Legitbot" + i, "AutoWall Enabled");
+		SetupValue(aimbot->autowall.min_damage, "Legitbot" + i, "AutoWall MinDamage");
 
 	}
+
+	SetupValue(g_Options.autofire_enabled, "Legitbot", "AutoFire Enabled");
+	SetupValue(g_Options.autofire_key, "Legitbot", "Auto Fire Key"); SetupValue(g_Options.autofire_type, "Legitbot", "Auto Fire Type");
 
 	for (int i = 0; i < 6; i++)
 	{
 		auto aimbot = &g_Options.ragebot[i];
 
-		SetupValue(aimbot->enabled, "RAGEBOTWPN" + i, "Enabled");
-		SetupValue(aimbot->autoshot, "RAGEBOTWPN" + i, "Autoshot");
-		SetupValue(aimbot->autowall, "RAGEBOTWPN" + i, "Autowall");
-		SetupValue(aimbot->autostop, "RAGEBOTWPN" + i, "Autostop");
-		SetupValue(aimbot->silent, "RAGEBOTWPN" + i, "Silent");
+		SetupValue(aimbot->enabled, "Ragebot" + i, "Enabled");
+		SetupValue(aimbot->autoshot, "Ragebot" + i, "Autoshot");
+		SetupValue(aimbot->autowall, "Ragebot" + i, "Autowall");
+		SetupValue(aimbot->autostop, "Ragebot" + i, "Autostop");
+		SetupValue(aimbot->silent, "Ragebot" + i, "Silent");
 
-		SetupValue(aimbot->damage, "RAGEBOTWPN" + i, "Damage");
-		SetupValue(aimbot->hitchance, "RAGEBOTWPN" + i, "Hitchance");
+		SetupValue(aimbot->damage, "Ragebot" + i, "Damage");
+		SetupValue(aimbot->hitchance, "Ragebot" + i, "Hitchance");
 		
-		SetupValue(aimbot->multipoint_body, "RAGEBOTWPN" + i, "Body multipoint");
-		SetupValue(aimbot->multipoint_head, "RAGEBOTWPN" + i, "Head multipoint");
+		SetupValue(aimbot->multipoint_body, "Ragebot" + i, "Body multipoint");
+		SetupValue(aimbot->multipoint_head, "Ragebot" + i, "Head multipoint");
 
-		SetupValue(aimbot->hitboxes.head, "RAGEBOTWPN" + i, "Head Hitbox");
-		SetupValue(aimbot->hitboxes.upper_chest, "RAGEBOTWPN" + i, "Upper Chest Hitbox");
-		SetupValue(aimbot->hitboxes.chest, "RAGEBOTWPN" + i, "Chest Hitbox");
-		SetupValue(aimbot->hitboxes.lower_chest, "RAGEBOTWPN" + i, "Lower Chest Hitbox");
-		SetupValue(aimbot->hitboxes.hands, "RAGEBOTWPN" + i, "Hands Hitbox");
-		SetupValue(aimbot->hitboxes.legs, "RAGEBOTWPN" + i, "Legs Hitbox");
+		SetupValue(aimbot->hitboxes.head, "Ragebot" + i, "Head Hitbox");
+		SetupValue(aimbot->hitboxes.upper_chest, "Ragebot" + i, "Upper Chest Hitbox");
+		SetupValue(aimbot->hitboxes.chest, "Ragebot" + i, "Chest Hitbox");
+		SetupValue(aimbot->hitboxes.lower_chest, "Ragebot" + i, "Lower Chest Hitbox");
+		SetupValue(aimbot->hitboxes.hands, "Ragebot" + i, "Hands Hitbox");
+		SetupValue(aimbot->hitboxes.legs, "Ragebot" + i, "Legs Hitbox");
 
 	}
 
 	SetupValue(g_Options.antiaim, "AntiAim", "Enabled");
-	SetupValue(g_Options.antiaim_flip, "AntiAim", "Flip");
+	SetupValue(g_Options.antiaim_flip_key, "RAGE", "AA Flip Key"); SetupValue(g_Options.antiaim_flip_type, "RAGE", "AA Flip Type");
+
+	SetupValue(g_Options.antiaim_pitch, "AntiAim", "Pitch");
+	SetupValue(g_Options.antiaim_yaw, "AntiAim", "Yaw");
+	SetupValue(g_Options.antiaim_dsy, "AntiAim", "Dsy");
+
+	SetupValue(g_Options.fakelag, "AntiAim", "Fakelag");
+	SetupValue(g_Options.fakelag_amount, "AntiAim", "Fakelag amount");
 
 	for (auto& [key, val] : k_weapon_names) {
 		auto& option = g_Options.changers.skin.m_items[key];
@@ -215,19 +244,19 @@ void Options::SetupWeapons()
 
 void Options::SetupVisuals()
 {
-	SetupValue(g_Options.esp_player_boxes, "ESP", "Boxes");
-	SetupValue(g_Options.esp_player_boxesOccluded, "ESP", "Occluded");
-	SetupValue(g_Options.esp_player_names, "ESP", "Names");
-	SetupValue(g_Options.esp_player_health, "ESP", "Health");
-	SetupValue(g_Options.esp_player_weapons, "ESP", "Weapon");
-	SetupValue(g_Options.esp_dropped_weapons, "ESP", "Dropped Weapons");
-	SetupValue(g_Options.chams_player_enabled, "ESP", "Enabled ch");
-	SetupValue(g_Options.chams_player_ignorez, "ESP", "Occluded ch");
-	SetupValue(g_Options.glow_enabled, "ESP", "Enabled gl");
-	SetupValue(g_Options.glow_enemiesOC, "ESP", "Occluded gl");
-	SetupValue(g_Options.glow_enemies_type, "ESP", "glow_enemies_type");
-	SetupValue(g_Options.chams_player_flat, "ESP", "Flat");
-	SetupValue(g_Options.player_enemies_shine, "ESP", "Visible shine");
+	SetupValue(g_Options.esp_player_boxes, "Visuals", "Boxes");
+	SetupValue(g_Options.esp_player_boxesOccluded, "Visuals", "Occluded");
+	SetupValue(g_Options.esp_player_names, "Visuals", "Names");
+	SetupValue(g_Options.esp_player_health, "Visuals", "Health");
+	SetupValue(g_Options.esp_player_weapons, "Visuals", "Weapon");
+	SetupValue(g_Options.esp_dropped_weapons, "Visuals", "Dropped Weapons");
+	SetupValue(g_Options.chams_player_enabled, "Visuals", "Enabled ch");
+	SetupValue(g_Options.chams_player_ignorez, "Visuals", "Occluded ch");
+	SetupValue(g_Options.glow_enabled, "Visuals", "Enabled gl");
+	SetupValue(g_Options.glow_enemiesOC, "Visuals", "Occluded gl");
+	SetupValue(g_Options.glow_enemies_type, "Visuals", "glow_enemies_type");
+	SetupValue(g_Options.chams_player_flat, "Visuals", "Flat");
+	SetupValue(g_Options.player_enemies_shine, "Visuals", "Visible shine");
 	SetupColor(g_Options.player_enemy_visible_shine, "color Visible");
 	SetupColor(g_Options.player_enemy_flat, "color Visible");
 	SetupColor(g_Options.color_esp_enemy_visible, "Enemies Visible");
@@ -237,22 +266,22 @@ void Options::SetupVisuals()
 	SetupColor(g_Options.color_glow_enemy, "Enemy Visible");
 	SetupColor(g_Options.color_glow_enemyOC, "Enemy Occluded");
 
-	SetupValue(g_Options.enable_nightmode, "Misc", "Nightmode");
+	SetupValue(g_Options.enable_nightmode, "Visuals", "Nightmode");
 	SetupColor(g_Options.nightmode_color, "Nightmode color");
 
-	SetupValue(g_Options.enable_fog, "World", "Fog");
-	SetupValue(g_Options.fog_density, "World", "Fog densivity");
-	SetupValue(g_Options.fog_start_distance, "World", "Fog start");
-	SetupValue(g_Options.fog_end_distance, "World", "Fog end");
+	SetupValue(g_Options.enable_fog, "Visuals", "Fog");
+	SetupValue(g_Options.fog_density, "Visuals", "Fog densivity");
+	SetupValue(g_Options.fog_start_distance, "Visuals", "Fog start");
+	SetupValue(g_Options.fog_end_distance, "Visuals", "Fog end");
 	SetupColor(g_Options.fog_color, "Fog color");
 
-	SetupValue(g_Options.remove_smoke, "Misc", "Remove smoke");
-	SetupValue(g_Options.remove_scope, "Misc", "Remove scope");
-	SetupValue(g_Options.remove_visualrecoil, "Misc", "Remove visual recoil");
-	SetupValue(g_Options.remove_post_processing, "Misc", "Remove post processing");
-	SetupValue(g_Options.remove_zoom, "Misc", "Remove zoom");
-	SetupValue(g_Options.remove_scope, "Misc", "Remove scope");
-	SetupValue(g_Options.remove_flash, "Misc", "Remove flash");
+	SetupValue(g_Options.remove_smoke, "Visuals", "Remove smoke");
+	SetupValue(g_Options.remove_scope, "Visuals", "Remove scope");
+	SetupValue(g_Options.remove_visualrecoil, "Visuals", "Remove visual recoil");
+	SetupValue(g_Options.remove_post_processing, "Visuals", "Remove post processing");
+	SetupValue(g_Options.remove_zoom, "Visuals", "Remove zoom");
+	SetupValue(g_Options.remove_scope, "Visuals", "Remove scope");
+	SetupValue(g_Options.remove_flash, "Visuals", "Remove flash");
 }
 
 void Options::SetupMisc()
@@ -354,29 +383,4 @@ void Options::DeleteSettings(const std::string& szIniFile)
 		return;
 
 	remove(file.c_str());
-}
-
-bool Options::GetHotkeyActive(std::string name, int key, int type) {
-	switch (type) {
-	case 0:
-		if (m_hotkey_states.find(name) == m_hotkey_states.end()) {
-			m_hotkey_states[name] = GetAsyncKeyState(key);
-		}
-		else if (GetAsyncKeyState(key)) {
-			m_hotkey_states[name] = !GetAsyncKeyState(key);
-		}
-		return m_hotkey_states[name];
-		break;
-	case 1:
-		return GetAsyncKeyState(key);
-		break;
-	case 2:
-		return !GetAsyncKeyState(key);
-		break;
-	case 3:
-		return true;
-		break;
-	}
-
-	return false;
 }

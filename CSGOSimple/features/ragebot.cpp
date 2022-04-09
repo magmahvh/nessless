@@ -193,6 +193,8 @@ C_BasePlayer* CRagebot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& be
 					continue;
 			}
 
+			AutoStop(cmd, weapon->GetCSWeaponData());
+
 			if (bestFov > fov)
 			{
 				bestBone = hitbox;
@@ -282,7 +284,6 @@ void CRagebot::Run(CUserCmd* cmd)
 
 	if (GetClosestPlayer(cmd, bestBone, fov, angles))
 	{
-		AutoStop(cmd, weapon_data);
 
 		if (g_Options.ragebot[wpnGroupRage(weapon)].hitchance < hitchance(g_LocalPlayer, weapon)) {
 

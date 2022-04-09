@@ -16,7 +16,9 @@
 #include "features/autowalk.hpp"
 #include "features/world.h"
 #include "features/resolver.hpp"
-#
+#include "features/fakelag.hpp"
+#include "lua/CLua.h"
+#include "helpers/keybinds.hpp"
 
 #pragma intrinsic(_ReturnAddress) 
 
@@ -25,6 +27,7 @@ namespace Hooks {
 
 	void Initialize()
 	{
+
 		hlclient_hook.setup(g_CHLClient);
 		direct3d_hook.setup(g_D3DDevice9);
 		vguipanel_hook.setup(g_VGuiPanel);
@@ -244,6 +247,10 @@ namespace Hooks {
 
 		if (!cmd || !cmd->command_number)
 			return;
+
+		g_cmd = cmd;
+
+		KeyBinds::Get().BindsSet();
 		
 		if (Menu::Get().IsVisible())
 			cmd->buttons &= ~IN_ATTACK;
@@ -275,6 +282,8 @@ namespace Hooks {
 
 		if (g_LocalPlayer->IsAlive() && g_EngineClient->IsInGame()) Antiaim::Get().Run(cmd, bSendPacket);
 
+		FakeLag::Get().Run(cmd, bSendPacket);
+
 		if (g_Options.misc_showranks && cmd->buttons & IN_SCORE)
 			g_CHLClient->DispatchUserMessage(CS_UM_ServerRankRevealAll, 0, 0, nullptr);
 
@@ -282,6 +291,9 @@ namespace Hooks {
 			g_CVar->FindVar("weapon_debug_spread_show")->SetValue(3);
 		else
 			g_CVar->FindVar("weapon_debug_spread_show")->SetValue(0);
+
+		for (auto hk : Lua::Get().hooks->getHooks("createmove"))
+			hk.func(cmd, bSendPacket);
 
 		verified->m_cmd = *cmd;
 		verified->m_crc = cmd->GetChecksum();
@@ -437,6 +449,9 @@ namespace Hooks {
 				skins::on_frame_stage_notify(false);
 			else if (stage == FRAME_NET_UPDATE_POSTDATAUPDATE_END)
 				skins::on_frame_stage_notify(true);
+
+			for (auto hk : Lua::Get().hooks->getHooks("framestage"))
+				hk.func(stage);
 		}
 		ofunc(g_CHLClient, edx, stage);
 	}
@@ -446,6 +461,8 @@ namespace Hooks {
 		static auto ofunc = clientmode_hook.get_original<decltype(&hkOverrideView)>(index::OverrideView);
 
 		//Misc::Get().ThirdPerson();
+		for (auto hk : Lua::Get().hooks->getHooks("override_view"))
+			hk.func();
 
 		ofunc(g_ClientMode, edx, vsView);
 	}

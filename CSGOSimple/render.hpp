@@ -46,7 +46,9 @@ public:
 	void BeginScene();
 	ImDrawList* RenderScene();
 
-	float RenderText(const std::string& text, ImVec2 position, float size, Color color, bool center = false, bool outline = true, ImFont* pFont = g_pDefaultFont);
+	void RenderText(const std::string& text, ImVec2 position, float size, Color color, bool center = false, bool outline = true, ImFont* pFont = g_pDefaultFont);
+
+	float GetTextSize(const std::string& text, float size, ImFont* pFont = g_pDefaultFont);
 
 	void RenderCircle3D(Vector position, float points, float radius, Color color);
 
@@ -107,8 +109,8 @@ public:
 		draw_list->AddLine(ImVec2(x1, y1), ImVec2(x2, y2), GetU32(color), thickness);
 	}
 	template <class T>
-	inline float RenderText(const std::string& text, T x, T y, float size, Color clr, bool center = false, bool outline = true, ImFont* pFont = g_pDefaultFont) {
-		return RenderText(text, ImVec2(x, y), size, clr, center, outline, pFont);
+	inline void RenderText(const std::string& text, T x, T y, float size, Color clr, bool center = false, bool outline = true, ImFont* pFont = g_pDefaultFont) {
+		RenderText(text, ImVec2(x, y), size, clr, center, outline, pFont);
 	}
 	template <class T>
 	inline void RenderCircle(T x, T y, float radius, int points, Color color, float thickness = 1.f) {

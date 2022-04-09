@@ -1,6 +1,29 @@
 #include "antiaim.hpp"
+#include "fakelag.hpp"
+#include "../helpers/keybinds.hpp"\
 
-static bool invert = false;
+int getPitch() {
+	switch (g_Options.antiaim_pitch) {
+	case 1:
+		return 89;
+	case 2:
+		return -89;
+	}
+}
+
+int getYaw() {
+	switch (g_Options.antiaim_yaw) {
+	case 1:
+		return 179;
+	case 2:
+		return 0;
+	case 3:
+		return 90;
+	case 4:
+		return -90;
+	}
+}
+
 void Antiaim::Run(CUserCmd* pCmd, bool& bSendPacket)
 {
 	if (!g_Options.antiaim)
@@ -12,16 +35,27 @@ void Antiaim::Run(CUserCmd* pCmd, bool& bSendPacket)
 	QAngle oldAngle = pCmd->viewangles;
 	float oldForward = pCmd->forwardmove;
 	float oldSideMove = pCmd->sidemove;
-	if (GetKeyState(g_Options.antiaim_flip))
-		invert = !invert;
+	bool invert = false;
 
-	bSendPacket = pCmd->command_number % 2 ? true : false;
+	if (KeyList::Get().inverter) invert = true;
+	
+	if (!g_Options.fakelag) FakeLag::Get().Override(pCmd, bSendPacket, 2);
+	 
+	pitch = getPitch();
+	yaw = getYaw();
+	dsy = g_Options.antiaim_dsy;
 
-	pCmd->viewangles.pitch = 89;
-	pCmd->viewangles.yaw += 180;
+	for (auto hk : Lua::Get().hooks->getHooks("antiaim"))
+		hk.func();
+
+	if (g_Options.antiaim_pitch != 0)
+		pCmd->viewangles.pitch = pitch;
+
+	if (g_Options.antiaim_yaw != 0)
+		pCmd->viewangles.yaw += yaw;
 
 	if (!bSendPacket) {
-		pCmd->viewangles.yaw += invert ? 59 : -59;
+		pCmd->viewangles.yaw += invert ? dsy : -dsy;
 		if (std::abs(pCmd->sidemove) < 5.0f) {
 			if (pCmd->buttons & IN_DUCK) 
 				pCmd->sidemove = pCmd->tick_count & 1 ? 3.25f : -3.25f;
@@ -29,4 +63,6 @@ void Antiaim::Run(CUserCmd* pCmd, bool& bSendPacket)
 				pCmd->sidemove = pCmd->tick_count & 1 ? 1.1f : -1.1f;
 		}
 	}
+
+	Math::CorrectMovement(oldAngle, pCmd, oldForward, oldSideMove);
 }

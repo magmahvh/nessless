@@ -112,18 +112,14 @@ public:
 			bool enabled = false;
 			int min_damage = 1;
 		} autowall;
-
-		struct
-		{
-			bool enabled = false;
-			int hotkey = 0;
-		} autofire;
 	} legitbot[5];
-
+	
+	bool autofire_enabled = false;
+	int autofire_key = 0;
+	int autofire_type = 0;
 
 	int ragebot_weapon = 0;
 	bool rage_enabled = false;
-	int roll_resolver = 0;
 	
 	int roll_resolver_key = 0;
 	int roll_resolver_type = 0;
@@ -154,10 +150,15 @@ public:
 
 	
 	bool antiaim = false;
-	int antiaim_flip = 0;
+	int antiaim_pitch = 0;
+	int antiaim_yaw = 0;
+	int antiaim_dsy = 1;
 
 	int antiaim_flip_key = 0;
 	int antiaim_flip_type = 0;
+
+	bool fakelag = false;
+	int fakelag_amount = 1;
 
 
 	// 
@@ -347,10 +348,11 @@ public:
 	void SaveSettings(const std::string& szIniFile);
 	void DeleteSettings(const std::string& szIniFile);
 
-	bool GetHotkeyActive(std::string name, int key, int type);
+	int GetIntValue(std::string category, std::string name);
+	int GetBoolValue(std::string category, std::string name);
+	int GetFloatValue(std::string category, std::string name);
 
 	std::string folder;
-	inline static std::unordered_map<std::string, bool> m_hotkey_states{};
 };
 
 inline Options g_Options;

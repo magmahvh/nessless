@@ -56,6 +56,7 @@ namespace Interfaces
     void Dump();
 }
 
+inline CUserCmd*             g_cmd = nullptr;
 inline IVEngineClient*       g_EngineClient   = nullptr;
 inline IBaseClientDLL*       g_CHLClient      = nullptr;
 inline IClientEntityList*    g_EntityList     = nullptr;

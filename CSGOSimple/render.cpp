@@ -11,6 +11,7 @@
 #include "helpers/math.hpp"
 #include "helpers/logs.hpp"
 #include "bytes.hpp"
+#include "lua/CLua.h"
 
 ImFont* g_pDefaultFont;
 ImFont* g_VeloFont;
@@ -86,6 +87,9 @@ void Render::BeginScene() {
 	draw_list->Clear();
 	draw_list->PushClipRectFullScreen();
 
+	for (auto hk : Lua::Get().hooks->getHooks("render"))
+		hk.func();
+
 	Logs::Get().Draw();
 	RemoveScope();
 
@@ -94,7 +98,6 @@ void Render::BeginScene() {
 
 	if (g_EngineClient->IsInGame() && g_LocalPlayer)
 		Visuals::Get().AddToDrawList();
-
 
 	render_mutex.lock();
 	*draw_list_act = *draw_list;
@@ -112,10 +115,10 @@ ImDrawList* Render::RenderScene() {
 }
 
 
-float Render::RenderText(const std::string& text, ImVec2 pos, float size, Color color, bool center, bool outline, ImFont* pFont)
+void Render::RenderText(const std::string& text, ImVec2 pos, float size, Color color, bool center, bool outline, ImFont* pFont)
 {
 	ImVec2 textSize = pFont->CalcTextSizeA(size, FLT_MAX, 0.0f, text.c_str());
-	if (!pFont->ContainerAtlas) return 0.f;
+	if (!pFont->ContainerAtlas) return;
 	draw_list->PushTextureID(pFont->ContainerAtlas->TexID);
 
 	if (center)
@@ -132,8 +135,15 @@ float Render::RenderText(const std::string& text, ImVec2 pos, float size, Color 
 
 	draw_list->PopTextureID();
 
-	return pos.y + textSize.y;
+	//return pos.y + textSize.y;
 }
+
+float Render::GetTextSize(const std::string& text, float size, ImFont* pFont) {
+	ImVec2 textSize = pFont->CalcTextSizeA(size, FLT_MAX, 0.0f, text.c_str());
+	if (!pFont->ContainerAtlas) return 0.f;
+	return textSize.x;
+}
+
 
 void Render::RenderCircle3D(Vector position, float points, float radius, Color color)
 {
