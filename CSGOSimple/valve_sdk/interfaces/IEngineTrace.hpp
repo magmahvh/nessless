@@ -325,6 +325,30 @@ struct Ray_t
 
     Ray_t() : m_pWorldAxisTransform(NULL) {}
 
+    __forceinline Ray_t(const Vector& start, const Vector& end, const Vector& mins, const Vector& maxs) {
+
+        m_Delta = VectorAligned{ end - start };
+
+        m_pWorldAxisTransform = nullptr;
+
+        m_IsSwept = m_Delta.LengthSqr() != 0.f;
+
+        m_Extents = VectorAligned{ maxs - mins };
+
+        m_Extents *= 0.5f;
+
+        m_IsRay = m_Extents.LengthSqr() < 1e-6;
+
+        m_StartOffset = VectorAligned{ mins + maxs };
+
+        m_StartOffset *= 0.5f;
+
+        m_Start = VectorAligned{ start + m_StartOffset };
+
+        m_StartOffset *= -1.f;
+
+    }
+
     void Init(Vector const& start, Vector const& end)
     {
         m_Delta = end - start;

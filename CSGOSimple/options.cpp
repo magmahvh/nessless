@@ -325,8 +325,9 @@ void Options::SetupMisc()
 	SetupValue(g_Options.sniper_xhair, "Misc", "Sniper crosshair");
 	SetupValue(g_Options.playerModelCT, "Misc", "playerModelCT");
 	SetupValue(g_Options.playerModelT, "Misc", "playerModelT");
-	SetupValue(g_Options.misc_thirdperson_bind, "Misc", "Thirdperson bind");
-	SetupValue(g_Options.misc_thirdperson_dist, "Misc", "Thirdperson distance");
+	SetupValue(g_Options.misc_thirdperson, "Misc", "Thirdperson");
+	SetupValue(g_Options.misc_thirdperson_key, "Misc", "Thirdperson Key");
+	SetupValue(g_Options.misc_thirdperson_type, "Misc", "Thirdperson Type");
 
 }
 

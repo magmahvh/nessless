@@ -168,7 +168,7 @@ public:
 	// ESP
 	// 
 
-	bool InThirdPerson = false;
+
 	float OFOV = 0;
 	int SHeight = 0;
 	int SWidth = 0;
@@ -178,6 +178,9 @@ public:
 
 	bool esp_enemies_only = false;
 	bool esp_player_boxes = false;
+	bool misc_thirdperson = false;
+	int misc_thirdperson_key = 0;
+	int misc_thirdperson_type = 0;
 	bool esp_player_boxesOccluded = false;
 	bool esp_player_names = false;
 	bool esp_player_health = false;
@@ -273,8 +276,7 @@ public:
 	float aspect_ratio_scale = 1.0f;
 	bool enable_nightmode = false;
 	bool no_scope_crosshair = false;
-	int misc_thirdperson_bind = 0;
-	float misc_thirdperson_dist = 50.f;
+
 
 	struct
 	{

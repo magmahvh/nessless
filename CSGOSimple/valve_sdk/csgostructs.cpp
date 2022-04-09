@@ -278,8 +278,10 @@ player_info_t C_BasePlayer::GetPlayerInfo()
 
 bool C_BasePlayer::IsAlive()
 {
-	if (m_lifeState() == LIFE_ALIVE) return true;
-	else return false;
+	if (!this) return false;
+	if (!this->IsPlayer()) return false;
+	return this->m_iHealth() > 0;
+
 }
 
 bool C_BasePlayer::IsFlashed()

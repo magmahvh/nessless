@@ -23,4 +23,5 @@ public:
 	bool rollresolver = false;
 	bool inverter = false;
 	bool autofire = false;
+	bool thirdperson = false;
 };

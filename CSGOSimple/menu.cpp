@@ -602,6 +602,9 @@ void Menu::Render()
 
 						ImGui::EndCombo();
 					}
+					ImGui::Separator("Thirdperson");
+					ImGui::Checkbox("Enabled##thirdperson", &g_Options.misc_thirdperson);
+					KeyBinds::Get().DrawKeyBind("Thirdperson", &g_Options.misc_thirdperson_key, &g_Options.misc_thirdperson_type);
 					break;
 				}
 				break;

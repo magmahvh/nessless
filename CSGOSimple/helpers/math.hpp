@@ -70,4 +70,12 @@ namespace Math
 	int TIME_TO_TICKS(int dt);
 	int TICKS_TO_TIME(int t);
 
+	template <typename T>
+	static T Interpolate(const T& t1, const T& t2, float progress)
+	{
+		if (t1 == t2)
+			return t1;
+
+		return t2 * progress + t1 * (1.0f - progress);
+	}
 }

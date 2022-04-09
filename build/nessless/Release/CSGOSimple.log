@@ -1,12 +1,7 @@
-﻿  CLua.cpp
-C:\Users\User\Documents\GitHub\nessless\CSGOSimple\lua\CLua.cpp(745,22): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\User\Documents\GitHub\nessless\CSGOSimple\lua\CLua.cpp(762,20): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\User\Documents\GitHub\nessless\CSGOSimple\lua\CLua.cpp(771,20): warning C4018: <: несоответствие типов со знаком и без знака
-LINK : warning C4743: "class Options g_Options" имеет различный размер в "c:\users\user\documents\github\nessless\csgosimple\features\autowall.cpp" и "c:\users\user\documents\github\nessless\csgosimple\features\aimbot.cpp": 1372 и 1344 байт
-LINK : warning C4743: "class Options g_Options" имеет различный размер в "c:\users\user\documents\github\nessless\csgosimple\features\kit_parser.cpp" и "c:\users\user\documents\github\nessless\csgosimple\features\aimbot.cpp": 1380 и 1344 байт
+﻿  hooks.cpp
   Создание кода
-  117 of 13907 functions ( 0.8%) were compiled, the rest were copied from previous compilation.
+  2 of 13852 functions (<0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    56 functions had inline decision re-evaluated but remain unchanged
+    33 functions had inline decision re-evaluated but remain unchanged
   Создание кода завершено
-  CSGOSimple.vcxproj -> C:\Users\User\Documents\GitHub\nessless\bin\Release\nessless.dll
+  CSGOSimple.vcxproj -> C:\Users\Страдивариус\Documents\github\Raitoningu.xyz\nessless\bin\Release\nessless.dll

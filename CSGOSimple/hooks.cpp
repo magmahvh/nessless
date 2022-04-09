@@ -460,7 +460,7 @@ namespace Hooks {
 	{
 		static auto ofunc = clientmode_hook.get_original<decltype(&hkOverrideView)>(index::OverrideView);
 
-		//Misc::Get().ThirdPerson();
+		Misc::Get().ThirdPerson();
 		for (auto hk : Lua::Get().hooks->getHooks("override_view"))
 			hk.func();
 

@@ -30,4 +30,5 @@ void KeyBinds::BindsSet() {
 	KeyList::Get().rollresolver = KeyBinds::Get().GetHotkeyActive("rollresolver", g_Options.roll_resolver_key, g_Options.roll_resolver_type);
 	KeyList::Get().inverter = KeyBinds::Get().GetHotkeyActive("inverter", g_Options.antiaim_flip_key, g_Options.antiaim_flip_type);
 	KeyList::Get().autofire = KeyBinds::Get().GetHotkeyActive("autofire", g_Options.autofire_key, g_Options.autofire_type);
+	KeyList::Get().thirdperson = KeyBinds::Get().GetHotkeyActive("thirdpeson", g_Options.misc_thirdperson_key, g_Options.misc_thirdperson_type);
 }
