@@ -148,6 +148,21 @@ int Options::GetFloatValue(std::string category, std::string name) {
 	Logs::Get().Create("Unknow element: " + category + ":" + name);
 }
 
+void Options::AddCheckbox(std::string name) {
+	bool_elements[name] = false;
+	bools.push_back(new ConfigValue<bool>("LUA", std::move(name), &bool_elements[name], 0, 0));
+}
+
+void Options::AddSliderInt(std::string name, int min, int max) {
+	int_elements[name] = min;
+	ints.push_back(new ConfigValue<int>("LUA", std::move(name), &int_elements[name], min, max));
+}
+
+void Options::AddSliderFloat(std::string name, float min, float max) {
+	float_elements[name] = min;
+	floats.push_back(new ConfigValue<float>("LUA", std::move(name), &float_elements[name], min));
+}
+
 
 void Options::SetupWeapons()
 {

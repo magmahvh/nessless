@@ -1,12 +1,12 @@
-﻿  options.cpp
+﻿  CLua.cpp
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\lua\CLua.cpp(745,22): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\lua\CLua.cpp(762,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\lua\CLua.cpp(771,20): warning C4018: <: несоответствие типов со знаком и без знака
 LINK : warning C4743: "class Options g_Options" имеет различный размер в "c:\users\user\documents\github\nessless\csgosimple\features\autowall.cpp" и "c:\users\user\documents\github\nessless\csgosimple\features\aimbot.cpp": 1372 и 1344 байт
 LINK : warning C4743: "class Options g_Options" имеет различный размер в "c:\users\user\documents\github\nessless\csgosimple\features\kit_parser.cpp" и "c:\users\user\documents\github\nessless\csgosimple\features\aimbot.cpp": 1380 и 1344 байт
   Создание кода
-C:\Users\User\Documents\GitHub\nessless\CSGOSimple\options.cpp(149): warning C4715: Options::GetFloatValue: значение возвращается не при всех путях выполнения
-C:\Users\User\Documents\GitHub\nessless\CSGOSimple\options.cpp(140): warning C4715: Options::GetBoolValue: значение возвращается не при всех путях выполнения
-C:\Users\User\Documents\GitHub\nessless\CSGOSimple\options.cpp(131): warning C4715: Options::GetIntValue: значение возвращается не при всех путях выполнения
-  10 of 13738 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+  117 of 13907 functions ( 0.8%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    68 functions had inline decision re-evaluated but remain unchanged
+    56 functions had inline decision re-evaluated but remain unchanged
   Создание кода завершено
   CSGOSimple.vcxproj -> C:\Users\User\Documents\GitHub\nessless\bin\Release\nessless.dll

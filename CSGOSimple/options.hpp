@@ -16,15 +16,18 @@ template <typename T>
 class ConfigValue
 {
 public:
-	ConfigValue(std::string category_, std::string name_, T* value_)
+	ConfigValue(std::string category_, std::string name_, T* value_, T min_ = 0, T max_ = 0)
 	{
 		category = category_;
 		name = name_;
 		value = value_;
+		min = min_;
+		max = max_;
 	}
 
 	std::string category, name;
 	T* value;
+	T min, max;
 };
 struct statrack_setting
 {
@@ -325,13 +328,6 @@ public:
 	Color post_processing = { 0, 0, 0 };
 
 	Color menu_color = { 100, 120, 235 };
-
-
-protected:
-	//std::vector<ConfigValue<char>*> chars;
-	std::vector<ConfigValue<int>*> ints;
-	std::vector<ConfigValue<bool>*> bools;
-	std::vector<ConfigValue<float>*> floats;
 private:
 	//	void SetupValue(char value, std::string category, std::string name);
 	void SetupValue(int& value, std::string category, std::string name);
@@ -343,6 +339,14 @@ private:
 	void SetupMisc();
 	void SetupColors();
 public:
+	inline static std::unordered_map<std::string, bool> bool_elements{};
+	inline static std::unordered_map<std::string, int> int_elements{};
+	inline static std::unordered_map<std::string, float> float_elements{};
+
+	std::vector<ConfigValue<int>*> ints;
+	std::vector<ConfigValue<bool>*> bools;
+	std::vector<ConfigValue<float>*> floats;
+
 	void Initialize();
 	void LoadSettings(const std::string& szIniFile);
 	void SaveSettings(const std::string& szIniFile);
@@ -351,6 +355,10 @@ public:
 	int GetIntValue(std::string category, std::string name);
 	int GetBoolValue(std::string category, std::string name);
 	int GetFloatValue(std::string category, std::string name);
+
+	void AddCheckbox(std::string name);
+	void AddSliderInt(std::string name, int min, int max);
+	void AddSliderFloat(std::string name, float min, float max);
 
 	std::string folder;
 };

@@ -300,7 +300,7 @@ void Menu::Render()
 	const char* tabs_legit[] = { "General", "Settings", "Misc"};
 	const char* tabs_visuals[] = { "ESP", "Models", "Glow", "Other" };
 	const char* tabs_misc[] = { "General", "Movement", "Skins"};
-	const char* tabs_profile[] = { "Configs", "Scripts" };
+	const char* tabs_profile[] = { "Configs", "Scripts", "LUA Elements"};
 
 	auto ragebot = &g_Options.ragebot[g_Options.ragebot_weapon];
 	auto legitbot = &g_Options.legitbot[g_Options.legitbot_weapon];
@@ -384,7 +384,7 @@ void Menu::Render()
 				}
 				break;
 			case 4: 
-				active_subtab_size = 2; 
+				active_subtab_size = 3; 
 				for (int i = 0; i < active_subtab_size; i++) {
 					float subtab_size = subtabSection_width / active_subtab_size;
 					ImGui::SetCursorPos(ImVec2(subtab_size * i, 0));
@@ -951,6 +951,22 @@ void Menu::Render()
 						}
 					}
 					ImGui::ListBoxFooter();
+					break;
+				case 2:
+					for (auto value : g_Options.bools) {
+						if (value->category == "LUA")
+							ImGui::Checkbox(value->name.c_str(), &g_Options.bool_elements[value->name]);
+					}
+
+					for (auto value : g_Options.ints) {
+						if (value->category == "LUA")
+							ImGui::SliderInt(value->name.c_str(), &g_Options.int_elements[value->name], value->min, value->max);
+					}
+
+					for (auto value : g_Options.floats) {
+						if (value->category == "LUA")
+							ImGui::SliderFloat(value->name.c_str(), &g_Options.float_elements[value->name], value->min, value->max);
+					}
 					break;
 				}
 				break;

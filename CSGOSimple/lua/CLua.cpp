@@ -25,6 +25,21 @@ void lua_panic(sol::optional<std::string> message) {
 	}
 }
 
+std::string get_current_script(sol::this_state s)
+{
+	sol::state_view lua_state(s);
+	sol::table rs = lua_state["debug"]["getinfo"](2, ("S"));
+	std::string source = rs["source"];
+	std::string filename = std::filesystem::path(source.substr(1)).filename().string();
+
+	return filename;
+}
+
+int get_current_script_id(sol::this_state s)
+{
+	return Lua::Get().get_script_id(get_current_script(s));
+}
+
 // ----- lua functions -----
 
 int extract_owner(sol::this_state st) {
@@ -395,6 +410,30 @@ namespace ns_menu {
 	int get_float_value(std::string category, std::string name) {
 		return g_Options.GetFloatValue(category, name);
 	}
+
+	void add_checkbox(sol::this_state s, std::string name) {
+		auto script = get_current_script(s);
+		auto script_id = Lua::Get().get_script_id(script);
+
+		Lua::Get().menu_items.push_back(item(script_id, name));
+		g_Options.AddCheckbox(name);
+	}
+
+	void add_slider_int(sol::this_state s, std::string name, int min, int max) {
+		auto script = get_current_script(s);
+		auto script_id = Lua::Get().get_script_id(script);
+
+		Lua::Get().menu_items.push_back(item(script_id, name));
+		g_Options.AddSliderInt(name, min, max);
+	}
+
+	void add_slider_float(sol::this_state s, std::string name, float min, float max) {
+		auto script = get_current_script(s);
+		auto script_id = Lua::Get().get_script_id(script);
+
+		Lua::Get().menu_items.push_back(item(script_id, name));
+		g_Options.AddSliderFloat(name, min, max);
+	}
 }
 
 // ----- lua functions -----
@@ -592,6 +631,9 @@ void Lua::Initialize() {
 	menu["GetBoolValue"] = ns_menu::get_bool_value;
 	menu["GetIntValue"] = ns_menu::get_int_value;
 	menu["GetFloatValue"] = ns_menu::get_float_value;
+	menu["AddCheckbox"] = ns_menu::add_checkbox;
+	menu["AddSliderInt"] = ns_menu::add_slider_int;
+	menu["AddSliderFloat"] = ns_menu::add_slider_float;
 
 	this->lua["AntiAim"] = antiaim;
 	this->lua["KeyBinds"] = keybinds;
@@ -637,19 +679,32 @@ void Lua::unload_script(int id) {
 	if (!this->loaded.at(id))
 		return;
 
-	std::map<std::string, std::map<std::string, std::vector<MenuItem_t>>> updated_items;
-	for (auto i : this->menu_items) {
-		for (auto k : i.second) {
-			std::vector<MenuItem_t> updated_vec;
-
-			for (auto m : k.second)
-				if (m.script != id)
-					updated_vec.push_back(m);
-
-			updated_items[k.first][i.first] = updated_vec;
+	for (auto i : Lua::Get().menu_items) {
+		if (i.id == id) {
+			for (auto value : g_Options.bools) {
+				if (value->category == "LUA") {
+					if (value->name == i.name) {
+						g_Options.bools.erase(std::remove(g_Options.bools.begin(), g_Options.bools.end(), value), g_Options.bools.end());
+					}
+				}
+			}
+			for (auto value : g_Options.ints) {
+				if (value->category == "LUA") {
+					if (value->name == i.name) {
+						g_Options.ints.erase(std::remove(g_Options.ints.begin(), g_Options.ints.end(), value), g_Options.ints.end());
+					}
+				}
+			}
+			for (auto value : g_Options.floats) {
+				if (value->category == "LUA") {
+					if (value->name == i.name) {
+						g_Options.floats.erase(std::remove(g_Options.floats.begin(), g_Options.floats.end(), value), g_Options.floats.end());
+					}
+				}
+			}
 		}
 	}
-	this->menu_items = updated_items;
+
 
 	hooks->unregisterHooks(id);
 	this->loaded.at(id) = false;

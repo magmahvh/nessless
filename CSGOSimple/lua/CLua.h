@@ -7,52 +7,16 @@
 
 #include <filesystem>
 
-enum MENUITEMTYPE {
-	MENUITEM_CHECKBOX = 0,
-	MENUITEM_SLIDERINT,
-	MENUITEM_SLIDERFLOAT,
-	MENUITEM_KEYBIND,
-	MENUITEM_TEXT,
-	MENUITEM_SINGLESELECT,
-	MENUITEM_MULTISELECT,
-	MENUITEM_COLORPICKER,
-	MENUITEM_BUTTON
-};
+struct item
+{
+	int id;
+	std::string name;
+	item(int id_, std::string name_) :
+		id(id_), name(name_)
+	{
 
-struct MenuItem_t {
-	MENUITEMTYPE type;
-	int script = -1;
-	std::string label = "";
-	std::string key = "";
+	}
 
-	bool is_visible = true;
-
-	// defaults
-	bool b_default = false;
-	int i_default = 0;
-	float f_default = 0.f;
-	float c_default[4] = { 1.f, 1.f, 1.f, 1.f };
-	std::map<int, bool> m_default = {};
-
-	// keybinds
-	bool allow_style_change = true;
-
-	// singleselect & multiselect
-	std::vector<const char*> items = {};
-
-	// slider_int
-	int i_min = 0;
-	int i_max = 100;
-
-	// slider_float
-	float f_min = 0.f;
-	float f_max = 1.f;
-
-	// sliders
-	std::string format = "%d";
-
-	// callbacks
-	sol::function callback;
 };
 
 class Lua : public Singleton<Lua> {
@@ -74,7 +38,7 @@ public:
 	std::vector<std::string> scripts;
 
 	c_lua_hookManager* hooks = new c_lua_hookManager();
-	std::map<std::string, std::map<std::string, std::vector<MenuItem_t>>> menu_items = {};
+	std::vector<item> menu_items = {};
 
 	sol::state lua;
 
