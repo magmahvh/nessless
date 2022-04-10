@@ -4,6 +4,7 @@
 
 #include "resolver.hpp"
 #include "../helpers/keybinds.hpp"
+#include "ragebot.hpp"
 
 #define delta(angle1, angle2) remainderf(fabsf(angle1 - angle2), 360.0f)
 #define n(yaw) Math::NormalizeAngle(fabsf(yaw))
@@ -42,7 +43,7 @@ void Resolver::Run(ClientFrameStage_t stage) {
 		else if (is_slowing) maxResolveYaw = 45;
 		else maxResolveYaw = 15;
 
-		switch (pLocal->m_iShotsFired() % 4) {
+		switch (g_Ragebot->shots_fired % 4) {
 		case 0:
 			resolveYaw += maxResolveYaw;
 			break;
@@ -58,7 +59,7 @@ void Resolver::Run(ClientFrameStage_t stage) {
 		}
 
 		if (KeyList::Get().rollresolver) {
-			switch (g_LocalPlayer->m_iShotsFired() % 2) {
+			switch (g_Ragebot->shots_fired % 2) {
 			case 0: resolveRoll = 45.f; break;
 			case 1: resolveRoll = -45.f; break;
 			}

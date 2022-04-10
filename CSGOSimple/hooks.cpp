@@ -17,6 +17,7 @@
 #include "features/world.h"
 #include "features/resolver.hpp"
 #include "features/fakelag.hpp"
+#include "features/animationfix.hpp"
 #include "lua/CLua.h"
 #include "helpers/keybinds.hpp"
 
@@ -292,6 +293,8 @@ namespace Hooks {
 		else
 			g_CVar->FindVar("weapon_debug_spread_show")->SetValue(0);
 
+		Antiaim::Get().angle = cmd->viewangles;
+
 		for (auto hk : Lua::Get().hooks->getHooks("createmove"))
 			hk.func(cmd, bSendPacket);
 
@@ -408,6 +411,12 @@ namespace Hooks {
 
 				static ConVar* PostProcVar = g_CVar->FindVar("mat_postprocess_enable");
 				PostProcVar->SetValue(!g_Options.remove_post_processing);
+
+				if (g_LocalPlayer->IsAlive()) {
+					if (KeyList::Get().thirdperson && g_Options.misc_thirdperson) {
+						g_LocalPlayer->SetVAngles(Antiaim::Get().angle);
+					}
+				}
 
 			}
 			else if (stage == FRAME_RENDER_END)

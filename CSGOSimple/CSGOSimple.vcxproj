@@ -98,6 +98,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="features\aimbot.cpp" />
+    <ClCompile Include="features\animationfix.cpp" />
     <ClCompile Include="features\antiaim.cpp" />
     <ClCompile Include="features\autowalk.cpp" />
     <ClCompile Include="features\autowall.cpp" />
@@ -152,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="bytes.hpp" />
     <ClInclude Include="features\aimbot.hpp" />
+    <ClInclude Include="features\animationfix.hpp" />
     <ClInclude Include="features\antiaim.hpp" />
     <ClInclude Include="features\autowalk.hpp" />
     <ClInclude Include="features\autowall.hpp" />

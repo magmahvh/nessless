@@ -248,6 +248,7 @@ void Attack(CUserCmd* cmd, C_BasePlayer* target, int bone) {
 	log << "; dmg: ";
 	log << (CAutoWall::Get().CanHit(target->GetHitboxPos(bone)));
 	Logs::Get().Create(log.str());
+	g_Ragebot->shots_fired++;
 }
 
 void CRagebot::Run(CUserCmd* cmd)

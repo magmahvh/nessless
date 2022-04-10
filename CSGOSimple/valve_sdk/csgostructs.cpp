@@ -448,6 +448,11 @@ QAngle* C_BasePlayer::GetVAngles()
 	static auto deadflag = NetvarSys::Get().GetOffset("DT_BasePlayer", "deadflag");
 	return (QAngle*)((uintptr_t)this + deadflag + 0x4);
 }
+void C_BasePlayer::SetVAngles(QAngle angle)
+{
+	static auto deadflag = NetvarSys::Get().GetOffset("DT_BasePlayer", "deadflag");
+	*(QAngle*)((uintptr_t)this + deadflag + 0x4) = angle;
+}
 void C_BaseAttributableItem::SetModelIndex(int modelIndex)
 {
 	return CallVFunction<void(__thiscall*)(void*, int)>(this, 75)(this, modelIndex);

@@ -6,6 +6,7 @@
 class CRagebot
 {
 public:
+	int shots_fired = 0;
 	CRagebot()
 	{
 		current_punch = last_punch = { 0, 0, 0 };

@@ -14,7 +14,7 @@ int getPitch() {
 int getYaw() {
 	switch (g_Options.antiaim_yaw) {
 	case 1:
-		return 179;
+		return 180;
 	case 2:
 		return 0;
 	case 3:

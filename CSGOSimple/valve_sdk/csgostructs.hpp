@@ -33,6 +33,7 @@ struct datamap_t;
 class AnimationLayer;
 class CBasePlayerAnimState;
 class CCSGOPlayerAnimState;
+class CBoneAccessor;
 class C_BaseEntity;
 
 enum CSWeaponType
@@ -331,7 +332,21 @@ public:
 
 	int m_nMoveType();
 	QAngle * GetVAngles();
+	void SetVAngles(QAngle angle);
 	float_t m_flSpawnTime();
+
+	CBoneAccessor* C_BasePlayer::GetBoneAccessor()
+	{
+		return (CBoneAccessor*)((uintptr_t)this + 0x26A8);
+	}
+
+	Vector& GetAbsAngles()
+	{
+		if (!this)
+			return Vector();
+		typedef Vector& (__thiscall* OriginalFn)(void*);
+		return CallVFunction<OriginalFn>(this, 11)(this);
+	}
 
 };
 
@@ -418,6 +433,25 @@ public:
 	float m_flUnknown3;
 	char pad10[528];
 }; //Size=0x344
+
+class CBoneAccessor
+{
+public:
+
+	inline matrix3x4_t* GetBoneArrayForWrite()
+	{
+		return m_pBones;
+	}
+
+	inline void SetBoneArrayForWrite(matrix3x4_t* bone_array)
+	{
+		m_pBones = bone_array;
+	}
+
+	alignas(16) matrix3x4_t* m_pBones;
+	int32_t m_ReadableBones; // Which bones can be read.
+	int32_t m_WritableBones; // Which bones can be written.
+};
 
 class DT_CSPlayerResource
 {

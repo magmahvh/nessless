@@ -36,6 +36,8 @@ namespace Math
 	float VectorDistance(const Vector& v1, const Vector& v2);
 	QAngle CalcAngle(const Vector& src, const Vector& dst);
 	float GetFOV(const QAngle& viewAngle, const QAngle& aimAngle);
+	void angle_matrix(const Vector& angles, const Vector& position, matrix3x4_t& matrix);
+	extern matrix3x4_t angle_matrix(const Vector angle, const Vector pos);
 	template<class T>
 	void Normalize3(T& vec)
 	{

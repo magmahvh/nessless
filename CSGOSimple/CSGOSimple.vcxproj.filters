@@ -178,6 +178,9 @@
     <ClCompile Include="helpers\keybinds.cpp">
       <Filter>Source Files\SDK\helpers</Filter>
     </ClCompile>
+    <ClCompile Include="features\animationfix.cpp">
+      <Filter>Source Files\features</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="features\bhop.hpp">
@@ -521,6 +524,9 @@
     </ClInclude>
     <ClInclude Include="helpers\keybinds.hpp">
       <Filter>Source Files\SDK\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="features\animationfix.hpp">
+      <Filter>Source Files\features</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

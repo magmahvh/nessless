@@ -11,4 +11,5 @@ public:
 	int yaw = 0;
 	int dsy = 0;
 	void Run(CUserCmd* pCmd, bool& bSendPacket);
+	QAngle angle{};
 };
