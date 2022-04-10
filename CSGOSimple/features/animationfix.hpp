@@ -8,4 +8,7 @@ class AnimFix : public Singleton<AnimFix>
 {
 public:
 
+    void LocalAnimation(CCSGOPlayerAnimState* animstate);
+
+
 };

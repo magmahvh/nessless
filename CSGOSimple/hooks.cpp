@@ -418,6 +418,8 @@ namespace Hooks {
 					}
 				}
 
+				AnimFix::Get().LocalAnimation(g_LocalPlayer->GetPlayerAnimState());
+
 			}
 			else if (stage == FRAME_RENDER_END)
 			{
