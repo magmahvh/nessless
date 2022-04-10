@@ -17,21 +17,75 @@ case 3:
 	break;
 	*/
 
-Chams::Chams() {
-	std::ofstream("csgo/materials/glowOverlay.vmt") << R"#("VertexLitGeneric" {
- 
-    "$additive" "1"
-    "$envmap" "models/effects/cube_white"
-    "$envmaptint" "[0 0.5 1]"
-    "$envmapfresnel" "1"
-    "$envmapfresnelminmaxexp" "[0 1 2]"
-    "$alpha" "0.4"
-})#";
+Chams::Chams( )
+{
+	std::ofstream( "csgo\\materials\\textured_virt.vmt" ) << R"("VertexLitGeneric"
+				{
+					"$basetexture"	"vgui/white"
+					"$model"		"1"
+					"$flat"			"0"
+					"$nocull"		"1"
+					"$halflambert"	"1"
+					"$nofog"		"1"
+					"$ignorez"		"0"
+					"$znearer"		"0"
+					"$wireframe"	"0"
+				})";
+	std::ofstream( "csgo\\materials\\flat_virt.vmt" ) << R"("UnlitGeneric"
+				{
+					"$basetexture"	"vgui/white"
+					"$model"		"1"
+					"$flat"			"1"
+					"$nocull"		"1"
+					"$selfillum"	"1"
+					"$halflambert"	"1"
+					"$nofog"		"1"
+					"$ignorez"		"0"
+					"$znearer"		"0"
+					"$wireframe"	"0"
+				})";
+	std::ofstream( "csgo\\materials\\material_reflective.vmt" ) << R"#("VertexLitGeneric" {
+      "$basetexture" "vgui/white_additive"
+      "$ignorez" "0"
+      "$envmap" "env_cubemap"
+      "$normalmapalphaenvmapmask" "1"
+      "$envmapcontrast"  "1"
+      "$nofog" "1"
+      "$model" "1"
+      "$nocull" "0"
+      "$selfillum" "1"
+      "$halflambert" "1"
+      "$znearer" "0"
+      "$flat" "1" 
 }
+)#";
+	std::ofstream( "csgo/materials/glowOverlay.vmt" ) << R"#("VertexLitGeneric" {
+				"$additive"					"1" 
+				"$envmap"					"models/effects/cube_white" 
+				"$envmaptint"				"[1 1 1]" 
+				"$envmapfresnel"			"1" 
+				"$envmapfresnelminmaxexp" 	"[0 1 2]" 
+				"$alpha" 					"0.8" 
 
-Chams::~Chams() {
 }
+)#";
 
+	materialRegular = g_MatSystem->FindMaterial( "textured_virt", TEXTURE_GROUP_MODEL );
+	materialFlat = g_MatSystem->FindMaterial( "flat_virt", TEXTURE_GROUP_MODEL );
+	materialMetallic = g_MatSystem->FindMaterial( "material_reflective", TEXTURE_GROUP_MODEL );
+	materialDogtag = g_MatSystem->FindMaterial( "models\\inventory_items\\dogtags\\dogtags_outline", TEXTURE_GROUP_OTHER );
+	materialGlowArmsrace = g_MatSystem->FindMaterial( "dev/glow_armsrace.vmt", TEXTURE_GROUP_OTHER );
+	materialEsoGlow = g_MatSystem->FindMaterial( "glowOverlay", TEXTURE_GROUP_OTHER );
+}
+Chams::~Chams( )
+{
+	std::remove( "csgo\\materials\\material_textured.vmt" );
+	std::remove( "csgo\\materials\\material_textured_ignorez.vmt" );
+	std::remove( "csgo\\materials\\material_flat.vmt" );
+	std::remove( "csgo\\materials\\material_flat_ignorez.vmt" );
+	std::remove( "csgo\\materials\\material_reflwective.vmt" );
+	std::remove( "csgo\\materials\\material_reflective_ignorez.vmt" );
+}
 void Chams::OverrideMaterial(int type, bool ignoreZ, const Color& rgba) {
 	IMaterial* material = nullptr;
 
@@ -46,7 +100,7 @@ void Chams::OverrideMaterial(int type, bool ignoreZ, const Color& rgba) {
 		material = materialGlass;
 		break;
 	case 3:
-		material = materialGlow;
+		material = materialEsoGlow;
 		break;
 	}
 
@@ -60,13 +114,20 @@ void Chams::OverrideMaterial(int type, bool ignoreZ, const Color& rgba) {
 	g_MdlRender->ForcedMaterialOverride(material);
 }
 
-void modulate(const Color color, IMaterial* material)
+void modulate(const Color color, IMaterial* material, bool is_glow)
 {
 	if (!g_EngineClient->IsInGame())
 		return;
 
 	if (material)
 	{
+		if (is_glow) 
+		{
+			auto pVar = material->find_var("$envmaptint");
+
+			(*(void(__thiscall**)(int, float, float, float))(*(DWORD*)pVar + 44))((uintptr_t)pVar, color.r() / 255.f, color.g() / 255.f, color.b() / 255.f);
+			return;
+		}
 		material->ColorModulate(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f);
 		material->AlphaModulate(color[3] / 255.f);
 		const auto tint = material->find_var("$envmaptint");
@@ -127,7 +188,7 @@ void Chams::OnDrawModelExecute(void* pResults, DrawModelInfo_t* pInfo, matrix3x4
 						break;
 
 					case 3:
-						player_enemies_type = g_MatSystem->FindMaterial("glowOverlay", "dev/glow_armsrace");
+						player_enemies_type = g_MatSystem->FindMaterial("glowOverlay", TEXTURE_GROUP_OTHER);
 						break;
 					;
 					}
@@ -147,7 +208,7 @@ void Chams::OnDrawModelExecute(void* pResults, DrawModelInfo_t* pInfo, matrix3x4
 						break;
 
 					case 3:
-						player_enemies_occluded_type = g_MatSystem->FindMaterial("glowOverlay", "dev/glow_armsrace");
+						player_enemies_occluded_type = g_MatSystem->FindMaterial("glowOverlay", TEXTURE_GROUP_OTHER);
 						break;
 					
 
@@ -157,14 +218,14 @@ void Chams::OnDrawModelExecute(void* pResults, DrawModelInfo_t* pInfo, matrix3x4
 						if (g_Options.chams_player_ignorez && g_Options.chams_player_enabled)
 						{
 							player_enemies_occluded_type->SetMaterialVarFlag(MATERIAL_VAR_IGNOREZ, true);
-							modulate(g_Options.color_chams_player_enemy_occluded, player_enemies_occluded_type);
+							modulate(g_Options.color_chams_player_enemy_occluded, player_enemies_occluded_type, g_Options.chams_player_flat == 3);
 							g_StudioRender->ForcedMaterialOverride(player_enemies_occluded_type);
 							fnDME(g_StudioRender, 0, pResults, pInfo, pBoneToWorld, flpFlexWeights, flpFlexDelayedWeights, vrModelOrigin, iFlags);
 						}
 						if (g_Options.chams_player_enabled)
 						{
 							player_enemies_type->SetMaterialVarFlag(MATERIAL_VAR_IGNOREZ, false);
-							modulate(g_Options.color_chams_player_enemy_visible, player_enemies_type);
+							modulate(g_Options.color_chams_player_enemy_visible, player_enemies_type, g_Options.chams_player_flat == 3);
 							g_StudioRender->ForcedMaterialOverride(player_enemies_type);
 							fnDME(g_StudioRender, 0, pResults, pInfo, pBoneToWorld, flpFlexWeights, flpFlexDelayedWeights, vrModelOrigin, iFlags);
 							if (g_Options.player_enemies_shine)

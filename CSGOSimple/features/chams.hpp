@@ -25,6 +25,10 @@ private:
 
     IMaterial* materialRegular = nullptr;
     IMaterial* materialFlat = nullptr;
+    IMaterial* materialMetallic = nullptr;
+    IMaterial* materialDogtag = nullptr;
+    IMaterial* materialGlowArmsrace = nullptr;
+    IMaterial* materialEsoGlow = nullptr;
     IMaterial* materialGlass = nullptr;
     IMaterial* materialGlow = nullptr;
     IMaterial* materialOverlay = nullptr;
