@@ -126,15 +126,17 @@ int Options::GetIntValue(std::string category, std::string name) {
 		if (value->category == category && value->name == name) {
 			return *value->value;
 		}
+		return 0;
 	}
 	Logs::Get().Create("Unknow element: " + category + ":" + name);
 }
 
-int Options::GetBoolValue(std::string category, std::string name) {
+bool Options::GetBoolValue(std::string category, std::string name) {
 	for (auto value : bools) {
 		if (value->category == category && value->name == name) {
 			return *value->value;
 		}
+		return 0;
 	}
 	Logs::Get().Create("Unknow element: " + category + ":" + name);
 }
@@ -144,6 +146,7 @@ int Options::GetFloatValue(std::string category, std::string name) {
 		if (value->category == category && value->name == name) {
 			return *value->value;
 		}
+		return 0;
 	}
 	Logs::Get().Create("Unknow element: " + category + ":" + name);
 }
@@ -270,14 +273,17 @@ void Options::SetupVisuals()
 	SetupValue(g_Options.glow_enabled, "Visuals", "Enabled gl");
 	SetupValue(g_Options.glow_enemiesOC, "Visuals", "Occluded gl");
 	SetupValue(g_Options.glow_enemies_type, "Visuals", "glow_enemies_type");
-	SetupValue(g_Options.chams_player_flat, "Visuals", "Flat");
+	SetupValue(g_Options.chams_player_visible, "Visuals", "Type visible");
+	SetupValue(g_Options.chams_player_occluded, "Visuals", "Type occluded");
 	SetupValue(g_Options.player_enemies_shine, "Visuals", "Visible shine");
+	SetupValue(g_Options.chams_desync_enabled, "Visuals", "Desync chams enabled");
+	SetupValue(g_Options.chams_desync, "Visuals", "Chams desync type");
 	SetupColor(g_Options.player_enemy_visible_shine, "color Visible");
-	SetupColor(g_Options.player_enemy_flat, "color Visible");
 	SetupColor(g_Options.color_esp_enemy_visible, "Enemies Visible");
 	SetupColor(g_Options.color_esp_enemy_occluded, "Enemies Occluded");
 	SetupColor(g_Options.color_chams_player_enemy_visible, "Enemy Visible ch");
 	SetupColor(g_Options.color_chams_player_enemy_occluded, "Enemy Occluded ch");
+	SetupColor(g_Options.color_chams_player_desync, "Desync");
 	SetupColor(g_Options.color_glow_enemy, "Enemy Visible");
 	SetupColor(g_Options.color_glow_enemyOC, "Enemy Occluded");
 

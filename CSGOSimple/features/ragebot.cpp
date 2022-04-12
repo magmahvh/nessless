@@ -173,7 +173,7 @@ C_BasePlayer* CRagebot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& be
 		if (!player->IsEnemy())
 			continue;
 
-		cmd->tick_count = Math::TIME_TO_TICKS(player->m_flSimulationTime() + CLagCompensation::Get().LagFix());
+		//cmd->tick_count = Math::TIME_TO_TICKS(player->m_flSimulationTime() + CLagCompensation::Get().LagFix());
 
 		for (const auto hitbox : hitboxes)
 		{
@@ -248,7 +248,7 @@ void Attack(CUserCmd* cmd, C_BasePlayer* target, int bone) {
 	log << "; dmg: ";
 	log << (CAutoWall::Get().CanHit(target->GetHitboxPos(bone)));
 	Logs::Get().Create(log.str());
-	g_Ragebot->shots_fired++;
+	g_Ragebot->shots_fired[target->EntIndex()]++;
 }
 
 void CRagebot::Run(CUserCmd* cmd)

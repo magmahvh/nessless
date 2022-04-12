@@ -97,7 +97,14 @@ namespace ImGuiEx {
 			v->a() / 255.0f
 		};
 		//clr[3]=255;
-		if (ImGui::ColorEdit4(label, clr, ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoTooltip | ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoOptions | ImGuiColorEditFlags_AlphaBar)) {
+		if (ImGui::ColorEdit4(label, clr, 
+			ImGuiColorEditFlags_NoAlpha 
+			| ImGuiColorEditFlags_NoInputs 
+			| ImGuiColorEditFlags_NoLabel 
+			| ImGuiColorEditFlags_NoTooltip 
+			| ImGuiColorEditFlags_NoSidePreview 
+			| ImGuiColorEditFlags_NoOptions 
+			| ImGuiColorEditFlags_AlphaBar)) {
 			v->SetColor(clr[0], clr[1], clr[2], clr[3]);
 			return true;
 		}
@@ -112,7 +119,13 @@ namespace ImGuiEx {
 			v->a() / 255.0f
 		};
 		//clr[3]=255;
-		if (ImGui::ColorEdit4(label, clr, show_alpha | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoTooltip | ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoOptions | ImGuiColorEditFlags_AlphaBar)) {
+		if (ImGui::ColorEdit4(label, clr, 
+			show_alpha | ImGuiColorEditFlags_NoInputs 
+			| ImGuiColorEditFlags_NoLabel 
+			| ImGuiColorEditFlags_NoTooltip 
+			| ImGuiColorEditFlags_NoSidePreview 
+			| ImGuiColorEditFlags_NoOptions
+			| ImGuiColorEditFlags_AlphaBar)) {
 			v->SetColor(clr[0], clr[1], clr[2], clr[3]);
 			return true;
 		}
@@ -564,7 +577,11 @@ void Menu::Render()
 					ImGui::Checkbox("Enabled ", &g_Options.chams_player_enabled); ImGui::SameLine(functional_width - 30); ImGuiEx::ColorEdit4a("Enemy Visible ", &g_Options.color_chams_player_enemy_visible);
 					ImGui::Checkbox("Visible shine##chams_enemies_visible_shine", &g_Options.player_enemies_shine); ImGui::SameLine(functional_width - 30); ImGuiEx::ColorEdit4("##color_chams_enemies_visible_shine", &g_Options.player_enemy_visible_shine);
 					ImGui::Checkbox("Occluded  ", &g_Options.chams_player_ignorez); ImGui::SameLine(functional_width - 30); ImGuiEx::ColorEdit4a("Enemy Occluded ", &g_Options.color_chams_player_enemy_occluded);
-					ImGui::Combo("##Flat", &g_Options.chams_player_flat, chams_type);
+					ImGui::Combo("Visible type", &g_Options.chams_player_visible, chams_type);
+					ImGui::Combo("Occluded type", &g_Options.chams_player_occluded, chams_type);
+					ImGui::Separator("Local");
+					ImGui::Checkbox("Enabled desync chams", &g_Options.chams_desync_enabled); ImGui::SameLine(functional_width - 30); ImGuiEx::ColorEdit4a("Desync color ", &g_Options.color_chams_player_desync);
+					ImGui::Combo("Desync type", &g_Options.chams_desync, chams_type);
 					ImGui::Separator("Glow");
 					ImGui::Checkbox("Enabled", &g_Options.glow_enabled);
 					ImGui::SameLine(functional_width - 30);

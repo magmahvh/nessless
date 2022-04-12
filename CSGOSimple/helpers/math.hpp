@@ -57,6 +57,18 @@ namespace Math
 
 		return flAngle;
 	}
+	inline float DistancePointToLine(Vector Point, Vector LineOrigin, Vector Dir)
+	{
+		auto PointDir = Point - LineOrigin;
+
+		auto TempOffset = PointDir.Dot(Dir) / (Dir.x * Dir.x + Dir.y * Dir.y + Dir.z * Dir.z);
+		if (TempOffset < 0.000001f)
+			return FLT_MAX;
+
+		auto PerpendicularPoint = LineOrigin + (Dir * TempOffset);
+
+		return (Point - PerpendicularPoint).Length();
+	}
     void ClampAngles(QAngle& angles);
 	void FixAngles(QAngle& angles);
     void VectorTransform(const Vector& in1, const matrix3x4_t& in2, Vector& out);
@@ -68,6 +80,7 @@ namespace Math
 	void CorrectMovement(QAngle vOldAngles, CUserCmd* pCmd, float fOldForward, float fOldSidemove);
 	void vector_angles(const Vector& forward, Vector& angles);
 	void angle_vectors(const Vector& angles, Vector& forward);
+	void angle2vectors(const QAngle& angles, Vector& forward);
 
 	int TIME_TO_TICKS(int dt);
 	int TICKS_TO_TIME(int t);

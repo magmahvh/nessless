@@ -181,6 +181,9 @@
     <ClCompile Include="features\animationfix.cpp">
       <Filter>Source Files\features</Filter>
     </ClCompile>
+    <ClCompile Include="features\backtrack.cpp">
+      <Filter>Source Files\features</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="features\bhop.hpp">
@@ -526,6 +529,9 @@
       <Filter>Source Files\SDK\helpers</Filter>
     </ClInclude>
     <ClInclude Include="features\animationfix.hpp">
+      <Filter>Source Files\features</Filter>
+    </ClInclude>
+    <ClInclude Include="features\backtrack.hpp">
       <Filter>Source Files\features</Filter>
     </ClInclude>
   </ItemGroup>

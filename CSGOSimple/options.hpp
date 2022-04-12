@@ -223,19 +223,12 @@ public:
 	//
 	bool chams_player_enabled = false;
 	bool player_enemies_shine = false;
-	bool player_enemies_flat = false;
-
-
-	bool chams_player_enemies_only = false;
-	bool chams_player_wireframe = false;
-	int chams_player_flat = false;
+	int chams_player_occluded = 0;
+	int chams_player_visible = 0;
 	bool chams_player_ignorez = false;
-	bool chams_player_glass = false;
-	bool chams_arms_enabled = false;
-	bool chams_arms_wireframe = false;
-	bool chams_arms_flat = false;
-	bool chams_arms_ignorez = false;
-	bool chams_arms_glass = false;
+
+	bool chams_desync_enabled = false;
+	int chams_desync = 0;
 
 	//
 	// MISC
@@ -303,27 +296,16 @@ public:
 	Color color_esp_item = { 0, 0, 0 };
 	Color Velocitycol = { 0, 0, 0 };
 
-	Color color_glow_ally = { 0, 0, 0 };
-	Color color_glow_allyOC = { 0, 0, 0 };
-
 	Color color_glow_enemy = { 0, 0, 0 };
 	Color color_glow_enemyOC = { 0, 0, 0 };
-
-	Color color_glow_chickens = { 0, 0, 0 };
-	Color color_glow_c4_carrier = { 0, 0, 0 };
-	Color color_glow_planted_c4 = { 0, 0, 0 };
-	Color color_glow_defuse = { 0, 0, 0 };
-	Color color_glow_weapons = { 0, 0, 0 };
 
 	Color color_chams_player_ally_visible = { 0, 0, 0 };
 	Color color_chams_player_ally_occluded = { 0, 0, 0 };
 	Color color_chams_player_enemy_visible = { 0, 0, 0 };
 	Color color_chams_player_enemy_occluded = { 0, 0, 0 };
-	Color color_chams_arms_visible = { 0, 0, 0 };
-	Color color_chams_arms_occluded = { 0, 0, 0 };
+	Color color_chams_player_desync = { 0, 0, 0 };
 	Color color_watermark = { 0, 0, 0 }; // no menu config cuz its useless
 	Color player_enemy_visible_shine = { 0, 0, 0 };
-	Color player_enemy_flat = { 0, 0, 0 };
 	Color nightmode_color = { 255, 255, 255 };
 	Color skybox_color = { 255, 255, 255 };
 	Color fog_color = { 255, 255, 255 };
@@ -355,7 +337,7 @@ public:
 	void DeleteSettings(const std::string& szIniFile);
 
 	int GetIntValue(std::string category, std::string name);
-	int GetBoolValue(std::string category, std::string name);
+	bool GetBoolValue(std::string category, std::string name);
 	int GetFloatValue(std::string category, std::string name);
 
 	void AddCheckbox(std::string name);

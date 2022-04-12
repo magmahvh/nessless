@@ -42,4 +42,4 @@ public:
     {
         return &m_pVerifiedCommands[sequence_number % MULTIPLAYER_BACKUP];
     }
-};
+    };

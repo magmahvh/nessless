@@ -450,6 +450,7 @@ QAngle* C_BasePlayer::GetVAngles()
 }
 void C_BasePlayer::SetVAngles(QAngle angle)
 {
+	g_CVar->ConsolePrintf(std::to_string(GetVAngles()->yaw).c_str());
 	static auto deadflag = NetvarSys::Get().GetOffset("DT_BasePlayer", "deadflag");
 	*(QAngle*)((uintptr_t)this + deadflag + 0x4) = angle;
 }

@@ -18,6 +18,7 @@
 #include "features/resolver.hpp"
 #include "features/fakelag.hpp"
 #include "features/animationfix.hpp"
+#include "features/backtrack.hpp"
 #include "lua/CLua.h"
 #include "helpers/keybinds.hpp"
 
@@ -293,7 +294,11 @@ namespace Hooks {
 		else
 			g_CVar->FindVar("weapon_debug_spread_show")->SetValue(0);
 
+		//Antiaim::Get().manage_local_fake_animstate();
+
 		Antiaim::Get().angle = cmd->viewangles;
+		TimeWarp::Get().CreateMove(cmd);
+
 
 		for (auto hk : Lua::Get().hooks->getHooks("createmove"))
 			hk.func(cmd, bSendPacket);
@@ -558,8 +563,10 @@ namespace Hooks {
 
 		static auto flash = g_MatSystem->FindMaterial("effects/flashbang", TEXTURE_GROUP_CLIENT_EFFECTS);
 		static auto flash_white = g_MatSystem->FindMaterial("effects/flashbang_white", TEXTURE_GROUP_CLIENT_EFFECTS);
-		flash->SetMaterialVarFlag(MATERIAL_VAR_NO_DRAW, g_Options.remove_flash);
-		flash_white->SetMaterialVarFlag(MATERIAL_VAR_NO_DRAW, g_Options.remove_flash);
+		if (g_LocalPlayer->IsAlive()) {
+			flash->SetMaterialVarFlag(MATERIAL_VAR_NO_DRAW, g_Options.remove_flash);
+			flash_white->SetMaterialVarFlag(MATERIAL_VAR_NO_DRAW, g_Options.remove_flash);
+		}
 
 		Chams::Get().OnDrawModelExecute(pResults, pInfo, pBoneToWorld, flpFlexWeights, flpFlexDelayedWeights, vrModelOrigin, iFlags);
 		World::Get().RemoveSmoke();

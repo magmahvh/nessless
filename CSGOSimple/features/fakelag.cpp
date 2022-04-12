@@ -5,7 +5,7 @@
 
 void FakeLag::Override(CUserCmd* cmd, bool& bSendPacket, int amount) {
     static int ticks = 0;
-    int ticksMax = 64;
+    int ticksMax = 16;
 
     if (!g_LocalPlayer || !g_LocalPlayer->IsAlive())
         return;
@@ -22,7 +22,7 @@ void FakeLag::Override(CUserCmd* cmd, bool& bSendPacket, int amount) {
         ticks = 0;
     }
     else
-        bSendPacket = ticks < 64 - amount;
+        bSendPacket = ticks < 16 - amount;
 
     ticks++;
 }

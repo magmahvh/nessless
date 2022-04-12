@@ -5,29 +5,36 @@
 #include "../helpers/keybinds.hpp"
 
 void Misc::ThirdPerson() {
-	if (!g_Options.misc_thirdperson) return;
-	if (!g_LocalPlayer) return;
-	if (!g_LocalPlayer->IsAlive()) return;
+	if (!g_LocalPlayer)
+		return;
 
-	static bool is_active = false;
+	g_Input->m_fCameraInThirdPerson = g_Options.misc_thirdperson && KeyList::Get().thirdperson && g_LocalPlayer->IsAlive();
+	if (!g_Input->m_fCameraInThirdPerson)
+		return;
 
-	if (KeyList::Get().thirdperson) {
-		if (is_active) return;
+	QAngle angles;
+	g_EngineClient->GetViewAngles(&angles);
 
-		is_active = true;
-		ConVar* sv_cheats = g_CVar->FindVar("sv_cheats");
-		*(int*)((DWORD)&sv_cheats->m_fnChangeCallbacks + 0xC) = 0; // ew
-		sv_cheats->SetValue(1);
-		g_EngineClient->ExecuteClientCmd("thirdperson");
-	}
-	else {
-		if (!is_active) return;
+	QAngle backward(angles.pitch, angles.yaw + 180.f, angles.roll);
+	backward.Normalize();
 
-		is_active = false;
-		ConVar* sv_cheats = g_CVar->FindVar("sv_cheats");
-		*(int*)((DWORD)&sv_cheats->m_fnChangeCallbacks + 0xC) = 0; // ew
-		sv_cheats->SetValue(1);
-		g_EngineClient->ExecuteClientCmd("firstperson");
-	}
+	Vector range;
+	Math::angle2vectors(backward, range);
+	range *= 8192.f;
+
+	const auto start = g_LocalPlayer->GetEyePos();
+
+	CTraceFilter filter;
+	filter.pSkip = g_LocalPlayer;
+
+	Ray_t ray;
+	ray.Init(start, start + range);
+
+	trace_t tr;
+	g_EngineTrace->TraceRay(ray, MASK_SHOT_HULL, &filter, &tr);
+
+	angles.roll = std::min<int>(start.DistTo(tr.endpos), 150); // 150 is better distance
+
+	g_Input->m_vecCameraOffset = angles.getVector();
 }
 

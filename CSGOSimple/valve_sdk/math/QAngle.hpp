@@ -150,6 +150,11 @@ public:
 		return l;
 	}
 
+    Vector getVector() const
+    {
+        return Vector(pitch, yaw, roll);
+    }
+
     float pitch;
     float yaw;
     float roll;
