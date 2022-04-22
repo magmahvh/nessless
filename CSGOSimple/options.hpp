@@ -116,14 +116,14 @@ public:
 			int min_damage = 1;
 		} autowall;
 	} legitbot[5];
-	
+
 	bool autofire_enabled = false;
 	int autofire_key = 0;
 	int autofire_type = 0;
 
 	int ragebot_weapon = 0;
 	bool rage_enabled = false;
-	
+
 	int roll_resolver_key = 0;
 	int roll_resolver_type = 0;
 	struct
@@ -151,7 +151,7 @@ public:
 		} hitboxes;
 	} ragebot[6];
 
-	
+
 	bool antiaim = false;
 	int antiaim_pitch = 0;
 	int antiaim_yaw = 0;
@@ -250,10 +250,6 @@ public:
 
 	bool misc_showranks = false;
 	bool misc_watermark = false;
-	bool Velocity = false;
-	bool outline = false;
-	bool lastjump = false;
-	bool lastjumpoutline = false;
 	bool autoaccept = false;
 	bool enable_offsets = false;
 	float viewmodel_offset_x = 0.0f;
@@ -269,17 +265,6 @@ public:
 	float aspect_ratio_scale = 1.0f;
 	bool enable_nightmode = false;
 	bool no_scope_crosshair = false;
-
-
-	struct
-	{
-		bool enabled = false;
-		bool edge_jump_duck_in_air = false;
-
-		int hotkey = 0;
-	} edgejump;
-	bool edge_bug;
-	int edge_bug_key;
 	int glow_enemies_type;
 	bool sniper_xhair = false;
 
@@ -294,7 +279,6 @@ public:
 	Color color_esp_defuse = { 0, 0, 0 };
 	Color color_esp_c4 = { 0, 0, 0 };
 	Color color_esp_item = { 0, 0, 0 };
-	Color Velocitycol = { 0, 0, 0 };
 
 	Color color_glow_enemy = { 0, 0, 0 };
 	Color color_glow_enemyOC = { 0, 0, 0 };

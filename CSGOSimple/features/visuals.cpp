@@ -342,90 +342,6 @@ void Visuals::RenderItemEsp(C_BaseEntity* ent)
 	//Render::Get().RenderBox(bbox, g_Options.color_esp_item);
 	Render::Get().RenderText(itemstr, ImVec2((bbox.left + w * 0.5f) - sz.x * 0.5f, bbox.bottom + 1), 12.f, g_Options.color_esp_item, false, true, g_EspFont);
 }
-//--------------------------------------------------------------------------------
-bool lastvelsaved = false; //saver 
-int lastjump, lastvel, lasttick = 0; // last vel holder 
-std::string drawvel; //text drawer holder 
-std::string drawvel2;
-void speed()
-{
-	/*if (!interfaces::engine->is_connected())
-		return;
-
-	if (!interfaces::engine->is_in_game())
-		return;*/
-	if (!g_Options.Velocity)
-		return;
-
-	if (!g_LocalPlayer)
-		return;
-
-	int screenWidth, screenHeight;
-	g_EngineClient->GetScreenSize(screenWidth, screenHeight);
-
-	auto local_player = g_LocalPlayer;
-
-	Vector speed = local_player->m_vecVelocity();
-	int intspeed = round(speed.Length2D());
-
-	const float delta = intspeed - lastvel;
-
-	std::string vel = std::to_string(intspeed);
-
-	if (local_player->m_fFlags() & FL_ONGROUND)
-	{
-		if (lastvelsaved)
-		{
-			lastvelsaved = false;
-		}
-
-		drawvel = vel;
-	}
-	else
-	{
-		if (!lastvelsaved)
-		{
-			lastjump = intspeed;
-			lastvelsaved = true;
-		}
-		drawvel = vel + " (" + std::to_string(lastjump) + ")";
-	}
-	drawvel2 = "(" + std::to_string(lastjump) + ")";
-
-	if (local_player->m_nMoveType() == MOVETYPE_NOCLIP) {
-
-	}
-	else {
-
-		//	if (intspeed >= 280)
-			//	g_Render->RenderText(std::to_string(intspeed), screenWidth / 2, screenHeight - 100, 27.f, Color(170, 255, 0), false, false, g_VeloFont);
-
-		//	else
-		if (g_Options.outline)
-			Render::Get().RenderText(std::to_string(intspeed), screenWidth / 2 - 48, screenHeight - 100, 27.f, Color(0, 0, 0, 255), false, false, g_VeloFont);
-
-		Render::Get().RenderText(std::to_string(intspeed), screenWidth / 2 - 48, screenHeight - 100, 27.f, g_Options.Velocitycol, false, false, g_VeloFont);
-
-		if (!(local_player->m_fFlags() & FL_ONGROUND)) {
-			//if (lastjump >= 270)
-			//	g_Render->RenderText(drawvel2, screenWidth / 2+ 50, screenHeight - 100, 27.f, Color(170, 255, 0), false, false, g_VeloFont);
-
-			//else
-			if (lastjump >= 100 && g_Options.lastjump)
-			{
-				if (g_Options.lastjumpoutline)
-					Render::Get().RenderText(drawvel2, screenWidth / 2 + 2, screenHeight - 100, 27.f, Color(0, 0, 0), false, false, g_VeloFont);
-
-				Render::Get().RenderText(drawvel2, screenWidth / 2 + 2, screenHeight - 100, 27.f, g_Options.Velocitycol, false, false, g_VeloFont);
-
-			}
-		}
-
-
-	}
-
-}
-
 void Visuals::AddToDrawList() {
 	for (auto i = 1; i <= g_EntityList->GetHighestEntityIndex(); ++i) {
 		auto entity = C_BaseEntity::GetEntityByIndex(i);
@@ -456,5 +372,4 @@ void Visuals::AddToDrawList() {
 		else if (entity->IsLoot() && g_Options.esp_items)
 			RenderItemEsp(entity);
 	}
-	speed();
 }

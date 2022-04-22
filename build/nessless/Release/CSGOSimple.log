@@ -1,9 +1,90 @@
-﻿  options.cpp
+﻿  aimbot.cpp
+  animationfix.cpp
+  antiaim.cpp
+  autowalk.cpp
+  autowall.cpp
+  backtrack.cpp
+  bhop.cpp
+  chams.cpp
+  fakelag.cpp
+  glow.cpp
+  kit_parser.cpp
+  misc.cpp
+  ragebot.cpp
+  resolver.cpp
+  skins.cpp
+  visuals.cpp
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(98,49): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
+          with
+          [
+              T=LONG
+          ]
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(101): message : выполняется компиляция ссылки на экземпляр шаблон функции "void Render::RenderBox<LONG>(T,T,T,T,Color,float,float)"
+          with
+          [
+              T=LONG
+          ]
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(98,45): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
+          with
+          [
+              T=LONG
+          ]
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(98,33): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
+          with
+          [
+              T=LONG
+          ]
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(98,29): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
+          with
+          [
+              T=LONG
+          ]
+  world.cpp
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\features\world.cpp(98,21): warning C4018: <: несоответствие типов со знаком и без знака
+  keybinds.cpp
+  logs.cpp
+  hooks.cpp
+  Компиляция...
+  imgui_widgets.cpp
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\imgui\imgui_widgets.cpp(1347,86): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+  CLua.cpp
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\lua\CLua.cpp(745,22): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\lua\CLua.cpp(762,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\lua\CLua.cpp(771,20): warning C4018: <: несоответствие типов со знаком и без знака
+  main.cpp
+  menu.cpp
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\menu.cpp(123,17): warning C4806: |: небезопасная операция: значение типа "bool", приведенное к типу "ImGuiColorEditFlags_", не может равняться данной константе
+  options.cpp
+  render.cpp
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(98,49): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
+          with
+          [
+              T=LONG
+          ]
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(101): message : выполняется компиляция ссылки на экземпляр шаблон функции "void Render::RenderBox<LONG>(T,T,T,T,Color,float,float)"
+          with
+          [
+              T=LONG
+          ]
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(98,45): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
+          with
+          [
+              T=LONG
+          ]
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(98,33): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
+          with
+          [
+              T=LONG
+          ]
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\render.hpp(98,29): warning C4244: аргумент: преобразование "T" в "float", возможна потеря данных
+          with
+          [
+              T=LONG
+          ]
+  ui.cpp
   Создание кода
-C:\Users\User\Documents\GitHub\nessless\CSGOSimple\options.cpp(146): warning C4715: Options::GetBoolValue: значение возвращается не при всех путях выполнения
-C:\Users\User\Documents\GitHub\nessless\CSGOSimple\options.cpp(134): warning C4715: Options::GetIntValue: значение возвращается не при всех путях выполнения
-  4 of 13889 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+  195 of 13877 functions ( 1.4%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    35 functions had inline decision re-evaluated but remain unchanged
+    167 functions had inline decision re-evaluated but remain unchanged
   Создание кода завершено
   CSGOSimple.vcxproj -> C:\Users\User\Documents\GitHub\nessless\bin\Release\nessless.dll

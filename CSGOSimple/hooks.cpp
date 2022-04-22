@@ -273,14 +273,6 @@ namespace Hooks {
 		g_Legitbot->Run(cmd);
 		g_Ragebot->Run(cmd);
 		prediction->EndPrediction();
-		if (g_Options.edgejump.enabled && GetAsyncKeyState(g_Options.edgejump.hotkey))
-		{
-			if (!(g_LocalPlayer->m_fFlags() & FL_ONGROUND) && (flags & FL_ONGROUND))
-				cmd->buttons |= IN_JUMP;
-
-			if (!(g_LocalPlayer->m_fFlags() & FL_ONGROUND) && g_Options.edgejump.edge_jump_duck_in_air && !(cmd->buttons |= IN_DUCK))
-				cmd->buttons |= IN_DUCK;
-		}
 
 		if (g_LocalPlayer->IsAlive() && g_EngineClient->IsInGame()) Antiaim::Get().Run(cmd, bSendPacket);
 

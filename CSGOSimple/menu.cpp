@@ -631,20 +631,11 @@ void Menu::Render()
 					ImGui::Separator("General");
 					ImGui::Checkbox("Rank reveal", &g_Options.misc_showranks);
 					ImGui::Checkbox("Watermark##hc", &g_Options.misc_watermark);
-					ImGui::Checkbox("Velocity", &g_Options.Velocity); ImGui::SameLine(functional_width - 30); ImGuiEx::ColorEdit4("##Velocity", &g_Options.Velocitycol);
 					ImGui::Spacing();
 					ImGui::Checkbox("Aspect ratio", &g_Options.aspect_ratio);
 					if (&g_Options.aspect_ratio)
 						ImGui::SliderFloat("Scale", &g_Options.aspect_ratio_scale, 0.1f, 4.f);
 
-					if (ImGui::BeginCombo("##Velocity", "Velocity", ImGuiComboFlags_NoArrowButton))
-					{
-						ImGui::Selectable("Outline", &g_Options.outline, ImGuiSelectableFlags_DontClosePopups);
-						ImGui::Selectable("Last jump", &g_Options.lastjump, ImGuiSelectableFlags_DontClosePopups);
-						ImGui::Selectable("Last jump outline", &g_Options.lastjumpoutline, ImGuiSelectableFlags_DontClosePopups);
-
-						ImGui::EndCombo();
-					}
 					ImGui::Checkbox("Auto accept", &g_Options.autoaccept);
 					ImGui::Checkbox("Sniper crosshair", &g_Options.sniper_xhair);
 					ImGui::Combo("Clantags", &g_Options.misc_combo_clantag, "None\0Nessles\0\0");
@@ -659,9 +650,6 @@ void Menu::Render()
 					ImGui::Checkbox("Auto strafe", &g_Options.misc_autostrafe);
 					ImGui::Checkbox("Speed boost", &g_Options.misc_boostspeed);
 					ImGui::Checkbox("WASD", &g_Options.misc_wasdstrafes);
-					ImGui::Checkbox("Edge bug", &g_Options.edge_bug); ImGui::SameLine(); ImGui::Hotkey("  ", &g_Options.edge_bug_key);
-					ImGui::Checkbox("Edge jump", &g_Options.edgejump.enabled); ImGui::SameLine(); ImGui::Hotkey("    ", &g_Options.edgejump.hotkey);
-					ImGui::Checkbox("Duck in Air", &g_Options.edgejump.edge_jump_duck_in_air);
 
 					ImGui::Checkbox("Auto player (beta)", &g_Options.autowalk);
 					break;
@@ -974,17 +962,17 @@ void Menu::Render()
 					break;
 				case 2:
 					for (auto value : g_Options.bools) {
-						if (value->category == "LUA")
+						if (value->category == "profile.lua_elements")
 							ImGui::Checkbox(value->name.c_str(), &g_Options.bool_elements[value->name]);
 					}
 
 					for (auto value : g_Options.ints) {
-						if (value->category == "LUA")
+						if (value->category == "profile.lua_elements")
 							ImGui::SliderInt(value->name.c_str(), &g_Options.int_elements[value->name], value->min, value->max);
 					}
 
 					for (auto value : g_Options.floats) {
-						if (value->category == "LUA")
+						if (value->category == "profile.lua_elements")
 							ImGui::SliderFloat(value->name.c_str(), &g_Options.float_elements[value->name], value->min, value->max);
 					}
 					break;

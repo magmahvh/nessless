@@ -159,96 +159,97 @@ float Options::GetFloatValue(std::string category, std::string name) {
 
 void Options::AddCheckbox(std::string name) {
 	bool_elements[name] = false;
-	bools.push_back(new ConfigValue<bool>("LUA", std::move(name), &bool_elements[name], 0, 0));
+	bools.push_back(new ConfigValue<bool>("profile.lua_elements", std::move(name), &bool_elements[name], 0, 0));
 }
 
 void Options::AddSliderInt(std::string name, int min, int max) {
 	int_elements[name] = min;
-	ints.push_back(new ConfigValue<int>("LUA", std::move(name), &int_elements[name], min, max));
+	ints.push_back(new ConfigValue<int>("profile.lua_elements", std::move(name), &int_elements[name], min, max));
 }
 
 void Options::AddSliderFloat(std::string name, float min, float max) {
 	float_elements[name] = min;
-	floats.push_back(new ConfigValue<float>("LUA", std::move(name), &float_elements[name], min));
+	floats.push_back(new ConfigValue<float>("profile.lua_elements", std::move(name), &float_elements[name], min));
 }
 
 
 void Options::SetupSettings()
 {
-	SetupValue(g_Options.legit_enabled, "Legitbot", "Enabled Legit");
-	SetupValue(g_Options.rage_enabled, "Ragebot", "Enabled Rage");
-	SetupValue(g_Options.roll_resolver_key, "Ragebot", "Roll Resolver Key"); SetupValue(g_Options.roll_resolver_type, "RAGE", "Roll Resolver Type");
+	SetupValue(g_Options.legit_enabled, "legitbot", "enabled");
 	for (int i = 0; i < 5; i++)
 	{
 		auto aimbot = &g_Options.legitbot[i];
 
-		SetupValue(aimbot->enabled, "Legitbot" + i, "Enabled");
-		SetupValue(aimbot->deathmatch, "Legitbot" + i, "Deathmatch");
-		SetupValue(aimbot->silent, "Legitbot" + i, "Silent");
+		SetupValue(aimbot->enabled, "legitbot[" + std::to_string(i) + "]", "enabled");
+		SetupValue(aimbot->deathmatch, "legitbot[" + std::to_string(i) + "]", "deathmatch");
+		SetupValue(aimbot->silent, "legitbot[" + std::to_string(i) + "]", "silent");
 
-		SetupValue(aimbot->flash_check, "Legitbot" + i, "Flash Check");
-		SetupValue(aimbot->smoke_check, "Legitbot" + i, "Smoke Check");
-		SetupValue(aimbot->autopistol, "Legitbot" + i, "AutoPistol");
+		SetupValue(aimbot->flash_check, "legitbot[" + std::to_string(i) + "]", "flash_check");
+		SetupValue(aimbot->smoke_check, "legitbot[" + std::to_string(i) + "]", "smoke_check");
+		SetupValue(aimbot->autopistol, "legitbot[" + std::to_string(i) + "]", "auto_pistol");
 
-		SetupValue(aimbot->fov, "Legitbot" + i, "Fov");
-		SetupValue(aimbot->silent_fov, "Legitbot" + i, "pSilent Fov");
-		SetupValue(aimbot->smooth, "Legitbot" + i, "Smooth");
+		SetupValue(aimbot->fov, "legitbot[" + std::to_string(i) + "]", "fov");
+		SetupValue(aimbot->silent_fov, "legitbot[" + std::to_string(i) + "]", "silent_fov");
+		SetupValue(aimbot->smooth, "legitbot[" + std::to_string(i) + "]", "smooth");
 
-		SetupValue(aimbot->kill_delay, "Legitbot" + i, "Kill Delay");
-		SetupValue(aimbot->shot_delay, "Legitbot" + i, "Shot Delay");
+		SetupValue(aimbot->kill_delay, "legitbot[" + std::to_string(i) + "]", "kill_delay");
+		SetupValue(aimbot->shot_delay, "legitbot[" + std::to_string(i) + "]", "Shot Delay");
 
-		SetupValue(aimbot->hitboxes.head, "Legitbot" + i, "Head Hitbox");
-		SetupValue(aimbot->hitboxes.chest, "Legitbot" + i, "Chest Hitbox");
-		SetupValue(aimbot->hitboxes.hands, "Legitbot" + i, "Hands Hitbox");
-		SetupValue(aimbot->hitboxes.legs, "Legitbot" + i, "Legs Hitbox");
+		SetupValue(aimbot->hitboxes.head, "legitbot[" + std::to_string(i) + "].hitbox", "head");
+		SetupValue(aimbot->hitboxes.chest, "legitbot[" + std::to_string(i) + "].hitbox", "chest");
+		SetupValue(aimbot->hitboxes.hands, "legitbot[" + std::to_string(i) + "].hitbox", "hands");
+		SetupValue(aimbot->hitboxes.legs, "legitbot[" + std::to_string(i) + "].hitbox", "legs");
 
-		SetupValue(aimbot->rcs.enabled, "Legitbot" + i, "RCS Enabled");
-		SetupValue(aimbot->rcs.start, "Legitbot" + i, "RCS Start");
-		SetupValue(aimbot->rcs.x, "Legitbot" + i, "RCS X");
-		SetupValue(aimbot->rcs.y, "Legitbot" + i, "RCS Y");
+		SetupValue(aimbot->rcs.enabled, "legitbot[" + std::to_string(i) + "].rcs", "enabled");
+		SetupValue(aimbot->rcs.start, "legitbot[" + std::to_string(i) + "].rcs", "start");
+		SetupValue(aimbot->rcs.x, "legitbot[" + std::to_string(i) + "].rcs", "x");
+		SetupValue(aimbot->rcs.y, "legitbot[" + std::to_string(i) + "].rcs", "y");
 
-		SetupValue(aimbot->autowall.enabled, "Legitbot" + i, "AutoWall Enabled");
-		SetupValue(aimbot->autowall.min_damage, "Legitbot" + i, "AutoWall MinDamage");
+		SetupValue(aimbot->autowall.enabled, "legitbot.autowall" + i, "enabled");
+		SetupValue(aimbot->autowall.min_damage, "legitbot.autowall" + i, "damage");
 
 	}
 
-	SetupValue(g_Options.autofire_enabled, "Legitbot", "AutoFire Enabled");
-	SetupValue(g_Options.autofire_key, "Legitbot", "Auto Fire Key"); SetupValue(g_Options.autofire_type, "Legitbot", "Auto Fire Type");
+	SetupValue(g_Options.autofire_enabled, "legitbot.autofire", "enabled");
+	SetupValue(g_Options.autofire_key, "legitbot.autofire", "key"); SetupValue(g_Options.autofire_type, "legitbot.autofire", "type");
 
+
+	SetupValue(g_Options.rage_enabled, "ragebot", "enabled");
+	SetupValue(g_Options.roll_resolver_key, "ragebot", "Roll Resolver Key"); SetupValue(g_Options.roll_resolver_type, "RAGE", "Roll Resolver Type");
 	for (int i = 0; i < 6; i++)
 	{
 		auto aimbot = &g_Options.ragebot[i];
 
-		SetupValue(aimbot->enabled, "Ragebot" + i, "Enabled");
-		SetupValue(aimbot->autoshot, "Ragebot" + i, "Autoshot");
-		SetupValue(aimbot->autowall, "Ragebot" + i, "Autowall");
-		SetupValue(aimbot->autostop, "Ragebot" + i, "Autostop");
-		SetupValue(aimbot->silent, "Ragebot" + i, "Silent");
+		SetupValue(aimbot->enabled, "ragebot[" + std::to_string(i) + "]", "enabled");
+		SetupValue(aimbot->autoshot, "ragebot[" + std::to_string(i) + "]", "autoshot");
+		SetupValue(aimbot->autowall, "ragebot[" + std::to_string(i) + "]", "autowall");
+		SetupValue(aimbot->autostop, "ragebot[" + std::to_string(i) + "]", "autostop");
+		SetupValue(aimbot->silent, "ragebot[" + std::to_string(i) + "]", "silent");
 
-		SetupValue(aimbot->damage, "Ragebot" + i, "Damage");
-		SetupValue(aimbot->hitchance, "Ragebot" + i, "Hitchance");
+		SetupValue(aimbot->damage, "ragebot[" + std::to_string(i) + "]", "damage");
+		SetupValue(aimbot->hitchance, "ragebot[" + std::to_string(i) + "]", "hitchance");
 		
-		SetupValue(aimbot->multipoint_body, "Ragebot" + i, "Body multipoint");
-		SetupValue(aimbot->multipoint_head, "Ragebot" + i, "Head multipoint");
+		SetupValue(aimbot->multipoint_body, "ragebot[" + std::to_string(i) + "].multipoint", "body");
+		SetupValue(aimbot->multipoint_head, "ragebot[" + std::to_string(i) + "].multipoint", "head");
 
-		SetupValue(aimbot->hitboxes.head, "Ragebot" + i, "Head Hitbox");
-		SetupValue(aimbot->hitboxes.upper_chest, "Ragebot" + i, "Upper Chest Hitbox");
-		SetupValue(aimbot->hitboxes.chest, "Ragebot" + i, "Chest Hitbox");
-		SetupValue(aimbot->hitboxes.lower_chest, "Ragebot" + i, "Lower Chest Hitbox");
-		SetupValue(aimbot->hitboxes.hands, "Ragebot" + i, "Hands Hitbox");
-		SetupValue(aimbot->hitboxes.legs, "Ragebot" + i, "Legs Hitbox");
+		SetupValue(aimbot->hitboxes.head, "ragebot[" + std::to_string(i) + "].hitbox", "head");
+		SetupValue(aimbot->hitboxes.upper_chest, "ragebot[" + std::to_string(i) + "].hitbox", "upper_chest");
+		SetupValue(aimbot->hitboxes.chest, "ragebot[" + std::to_string(i) + "].hitbox", "chest");
+		SetupValue(aimbot->hitboxes.lower_chest, "ragebot[" + std::to_string(i) + "].hitbox", "lower_chest");
+		SetupValue(aimbot->hitboxes.hands, "ragebot[" + std::to_string(i) + "].hitbox", "hands");
+		SetupValue(aimbot->hitboxes.legs, "ragebot[" + std::to_string(i) + "].hitbox", "legs");
 
 	}
 
-	SetupValue(g_Options.antiaim, "AntiAim", "Enabled");
-	SetupValue(g_Options.antiaim_flip_key, "RAGE", "AA Flip Key"); SetupValue(g_Options.antiaim_flip_type, "RAGE", "AA Flip Type");
+	SetupValue(g_Options.antiaim, "antiaim", "Enabled");
+	SetupValue(g_Options.antiaim_flip_key, "antiaim", "flip_key"); SetupValue(g_Options.antiaim_flip_type, "antiaim", "flip_type");
 
-	SetupValue(g_Options.antiaim_pitch, "AntiAim", "Pitch");
-	SetupValue(g_Options.antiaim_yaw, "AntiAim", "Yaw");
-	SetupValue(g_Options.antiaim_dsy, "AntiAim", "Dsy");
+	SetupValue(g_Options.antiaim_pitch, "antiaim", "pitch");
+	SetupValue(g_Options.antiaim_yaw, "antiaim", "yaw");
+	SetupValue(g_Options.antiaim_dsy, "antiaim", "desync");
 
-	SetupValue(g_Options.fakelag, "AntiAim", "Fakelag");
-	SetupValue(g_Options.fakelag_amount, "AntiAim", "Fakelag amount");
+	SetupValue(g_Options.fakelag, "antiaim.fakelag", "enabled");
+	SetupValue(g_Options.fakelag_amount, "antiaim.fakelag", "amount");
 
 	for (auto& [key, val] : k_weapon_names) {
 		auto& option = g_Options.changers.skin.m_items[key];
@@ -266,77 +267,67 @@ void Options::SetupSettings()
 
 
 
-	SetupValue(g_Options.esp_player_boxes, "Visuals", "Boxes");
-	SetupValue(g_Options.esp_player_boxesOccluded, "Visuals", "Occluded");
-	SetupValue(g_Options.esp_player_names, "Visuals", "Names");
-	SetupValue(g_Options.esp_player_health, "Visuals", "Health");
-	SetupValue(g_Options.esp_player_weapons, "Visuals", "Weapon");
-	SetupValue(g_Options.esp_dropped_weapons, "Visuals", "Dropped Weapons");
-	SetupValue(g_Options.chams_player_enabled, "Visuals", "Enabled ch");
-	SetupValue(g_Options.chams_player_ignorez, "Visuals", "Occluded ch");
-	SetupValue(g_Options.glow_enabled, "Visuals", "Enabled gl");
-	SetupValue(g_Options.glow_enemiesOC, "Visuals", "Occluded gl");
-	SetupValue(g_Options.glow_enemies_type, "Visuals", "glow_enemies_type");
-	SetupValue(g_Options.chams_player_visible, "Visuals", "Type visible");
-	SetupValue(g_Options.chams_player_occluded, "Visuals", "Type occluded");
-	SetupValue(g_Options.player_enemies_shine, "Visuals", "Visible shine");
-	SetupValue(g_Options.chams_desync_enabled, "Visuals", "Desync chams enabled");
-	SetupValue(g_Options.chams_desync, "Visuals", "Chams desync type");
-	SetupColor(g_Options.player_enemy_visible_shine, "color Visible");
-	SetupColor(g_Options.color_esp_enemy_visible, "Enemies Visible");
-	SetupColor(g_Options.color_esp_enemy_occluded, "Enemies Occluded");
-	SetupColor(g_Options.color_chams_player_enemy_visible, "Enemy Visible ch");
-	SetupColor(g_Options.color_chams_player_enemy_occluded, "Enemy Occluded ch");
-	SetupColor(g_Options.color_chams_player_desync, "Desync");
-	SetupColor(g_Options.color_glow_enemy, "Enemy Visible");
-	SetupColor(g_Options.color_glow_enemyOC, "Enemy Occluded");
+	SetupValue(g_Options.esp_player_boxes, "visuals.enemy.esp", "boxes");
+	SetupValue(g_Options.esp_player_boxesOccluded, "visuals.enemy.esp", "occluded");
+	SetupValue(g_Options.esp_player_names, "visuals.enemy.esp", "name");
+	SetupValue(g_Options.esp_player_health, "visuals.enemy.esp", "health");
+	SetupValue(g_Options.esp_player_weapons, "visuals.enemy.esp", "weapon");
+	SetupValue(g_Options.esp_dropped_weapons, "visuals.esp", "dropped_weapons");
+	SetupValue(g_Options.chams_player_enabled, "visuals.enemy", "enabled_chams");
+	SetupValue(g_Options.chams_player_ignorez, "visuals.enemy", "enabled_chams_occluded");
+	SetupValue(g_Options.glow_enabled, "visuals.enemy", "glow_enabled");
+	SetupValue(g_Options.glow_enemiesOC, "visuals.enemy", "glow_enabled_occluded");
+	SetupValue(g_Options.glow_enemies_type, "visuals.enemy", "glow_type");
+	SetupValue(g_Options.chams_player_visible, "visuals.enemy", "Type visible");
+	SetupValue(g_Options.chams_player_occluded, "visuals.enemy", "Type occluded");
+	SetupValue(g_Options.player_enemies_shine, "visuals.enemy", "visible_shine");
+	SetupValue(g_Options.chams_desync_enabled, "visuals.local.desync", "enabled");
+	SetupValue(g_Options.chams_desync, "visuals.local.desync", "type");
+	SetupColor(g_Options.player_enemy_visible_shine, "enemy_visible_shine");
+	SetupColor(g_Options.color_esp_enemy_visible, "enemy_visible");
+	SetupColor(g_Options.color_esp_enemy_occluded, "enemy_occluded");
+	SetupColor(g_Options.color_chams_player_enemy_visible, "enemy_visible_chams");
+	SetupColor(g_Options.color_chams_player_enemy_occluded, "enemy_occluded_chams");
+	SetupColor(g_Options.color_chams_player_desync, "local_desync");
+	SetupColor(g_Options.color_glow_enemy, "enemy_visible_glow");
+	SetupColor(g_Options.color_glow_enemyOC, "enemy_occluded_glow");
 
-	SetupValue(g_Options.enable_nightmode, "Visuals", "Nightmode");
-	SetupColor(g_Options.nightmode_color, "Nightmode color");
+	SetupValue(g_Options.enable_nightmode, "visuals.nightmode", "enabled");
+	SetupColor(g_Options.nightmode_color, "nightmode_color");
 
-	SetupValue(g_Options.enable_fog, "Visuals", "Fog");
-	SetupValue(g_Options.fog_density, "Visuals", "Fog densivity");
-	SetupValue(g_Options.fog_start_distance, "Visuals", "Fog start");
-	SetupValue(g_Options.fog_end_distance, "Visuals", "Fog end");
-	SetupColor(g_Options.fog_color, "Fog color");
+	SetupValue(g_Options.enable_fog, "visuals.fog", "enabled");
+	SetupValue(g_Options.fog_density, "visuals.fog", "densivity");
+	SetupValue(g_Options.fog_start_distance, "visuals.fog", "start");
+	SetupValue(g_Options.fog_end_distance, "visuals.fog", "end");
+	SetupColor(g_Options.fog_color, "fog_color");
 
-	SetupValue(g_Options.remove_smoke, "Visuals", "Remove smoke");
-	SetupValue(g_Options.remove_scope, "Visuals", "Remove scope");
-	SetupValue(g_Options.remove_visualrecoil, "Visuals", "Remove visual recoil");
-	SetupValue(g_Options.remove_post_processing, "Visuals", "Remove post processing");
-	SetupValue(g_Options.remove_zoom, "Visuals", "Remove zoom");
-	SetupValue(g_Options.remove_scope, "Visuals", "Remove scope");
-	SetupValue(g_Options.remove_flash, "Visuals", "Remove flash");
+	SetupValue(g_Options.remove_smoke, "visuals.removals", "smoke");
+	SetupValue(g_Options.remove_scope, "visuals.removals", "scope");
+	SetupValue(g_Options.remove_visualrecoil, "visuals.removals", "visual_recoil");
+	SetupValue(g_Options.remove_post_processing, "visuals.removals", "post_processing");
+	SetupValue(g_Options.remove_zoom, "visual.removalss", "zoom");
+	SetupValue(g_Options.remove_scope, "visuals.removals", "scope");
+	SetupValue(g_Options.remove_flash, "visuals.removals", "flash");
 
 
 
-	SetupValue(g_Options.logs, "Misc", "Logs");
-	SetupValue(g_Options.logs_drawing, "Misc", "Logs Drawing");
+	SetupValue(g_Options.logs, "misc.logs", "enabled");
+	SetupValue(g_Options.logs_drawing, "misc.logs", "drawing");
 
-	SetupValue(g_Options.autowalk, "Misc", "Walk bot");
-	SetupColor(g_Options.Velocitycol, "Velocity");
-	SetupValue(g_Options.misc_showranks, "Misc", "Rank reveal");
-	SetupValue(g_Options.misc_watermark, "Misc", "Watermark");
-	SetupValue(g_Options.Velocity, "Misc", "Velocity");
-	SetupValue(g_Options.outline, "Misc", "Outline");
-	SetupValue(g_Options.lastjump, "Misc", "Last jump");
-	SetupValue(g_Options.lastjumpoutline, "Misc", "Last jump outline");
-	SetupValue(g_Options.autoaccept, "Misc", "Auto accept");
-	SetupValue(g_Options.misc_autostrafe, "Misc", "Auto strafe");
-	SetupValue(g_Options.misc_boostspeed, "Misc", "Speed boost");
-	SetupValue(g_Options.misc_wasdstrafes, "Misc", "WASD strafer");
-	SetupValue(g_Options.misc_bhop, "Misc", "Bunny hop");
-	SetupValue(g_Options.edge_bug, "Misc", "Edge bug");
-	SetupValue(g_Options.edge_bug_key, "Misc", "edge_bug_key");
-	SetupValue(g_Options.edgejump.enabled, "Misc", "Edge jump");
-	SetupValue(g_Options.edgejump.hotkey, "Misc", "edgejump_key");
-	SetupValue(g_Options.edgejump.edge_jump_duck_in_air, "Misc", "Duck in Air");
-	SetupValue(g_Options.sniper_xhair, "Misc", "Sniper crosshair");
-	SetupValue(g_Options.playerModelCT, "Misc", "playerModelCT");
-	SetupValue(g_Options.playerModelT, "Misc", "playerModelT");
-	SetupValue(g_Options.misc_thirdperson, "Misc", "Thirdperson");
-	SetupValue(g_Options.misc_thirdperson_key, "Misc", "Thirdperson Key");
-	SetupValue(g_Options.misc_thirdperson_type, "Misc", "Thirdperson Type");
+	SetupValue(g_Options.autowalk, "misc", "walk_bot");
+	SetupValue(g_Options.misc_showranks, "misc", "rank_reveal");
+	SetupValue(g_Options.misc_watermark, "misc", "watermark");
+	SetupValue(g_Options.autoaccept, "misc", "auto_accept");
+	SetupValue(g_Options.misc_autostrafe, "misc", "auto_strafe");
+	SetupValue(g_Options.misc_boostspeed, "misc", "speed_boost");
+	SetupValue(g_Options.misc_wasdstrafes, "misc", "wasd_strafer");
+	SetupValue(g_Options.misc_bhop, "misc", "bunny_hop");
+	SetupValue(g_Options.sniper_xhair, "misc", "sniper_crosshair");
+	SetupValue(g_Options.playerModelCT, "misc", "playerModelCT");
+	SetupValue(g_Options.playerModelT, "misc", "playerModelT");
+	SetupValue(g_Options.misc_thirdperson, "misc.thirdperson", "enabled");
+	SetupValue(g_Options.misc_thirdperson_key, "misc.thirdperson", "key");
+	SetupValue(g_Options.misc_thirdperson_type, "misc.thirdperson", "type");
 
 }
 

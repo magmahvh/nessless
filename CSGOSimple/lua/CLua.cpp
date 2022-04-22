@@ -682,21 +682,21 @@ void Lua::unload_script(int id) {
 	for (auto i : Lua::Get().menu_items) {
 		if (i.id == id) {
 			for (auto value : g_Options.bools) {
-				if (value->category == "LUA") {
+				if (value->category == "profile.lua_elements") {
 					if (value->name == i.name) {
 						g_Options.bools.erase(std::remove(g_Options.bools.begin(), g_Options.bools.end(), value), g_Options.bools.end());
 					}
 				}
 			}
 			for (auto value : g_Options.ints) {
-				if (value->category == "LUA") {
+				if (value->category == "profile.lua_elements") {
 					if (value->name == i.name) {
 						g_Options.ints.erase(std::remove(g_Options.ints.begin(), g_Options.ints.end(), value), g_Options.ints.end());
 					}
 				}
 			}
 			for (auto value : g_Options.floats) {
-				if (value->category == "LUA") {
+				if (value->category == "profile.lua_elements") {
 					if (value->name == i.name) {
 						g_Options.floats.erase(std::remove(g_Options.floats.begin(), g_Options.floats.end(), value), g_Options.floats.end());
 					}
