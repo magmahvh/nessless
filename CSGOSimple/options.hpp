@@ -318,10 +318,7 @@ private:
 	void SetupValue(bool& value, std::string category, std::string name);
 	void SetupValue(float& value, std::string category, std::string name);
 	void SetupColor(Color& value, const std::string& name);
-	void SetupWeapons();
-	void SetupVisuals();
-	void SetupMisc();
-	void SetupColors();
+	void SetupSettings();
 public:
 	inline static std::unordered_map<std::string, bool> bool_elements{};
 	inline static std::unordered_map<std::string, int> int_elements{};
@@ -338,7 +335,7 @@ public:
 
 	int GetIntValue(std::string category, std::string name);
 	bool GetBoolValue(std::string category, std::string name);
-	int GetFloatValue(std::string category, std::string name);
+	float GetFloatValue(std::string category, std::string name);
 
 	void AddCheckbox(std::string name);
 	void AddSliderInt(std::string name, int min, int max);

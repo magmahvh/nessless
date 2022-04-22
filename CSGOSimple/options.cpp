@@ -122,33 +122,39 @@ void Options::SetupColor(Color& value, const std::string& name)
 }
 
 int Options::GetIntValue(std::string category, std::string name) {
+	bool is_have = false;
 	for (auto value : ints) {
 		if (value->category == category && value->name == name) {
+			is_have = true;
 			return *value->value;
 		}
-		return 0;
 	}
-	Logs::Get().Create("Unknow element: " + category + ":" + name);
+	if (!is_have)
+		Logs::Get().Create("Unknow element: " + category + ":" + name);
 }
 
 bool Options::GetBoolValue(std::string category, std::string name) {
+	bool is_have = false;
 	for (auto value : bools) {
 		if (value->category == category && value->name == name) {
+			is_have = true;
 			return *value->value;
 		}
-		return 0;
 	}
-	Logs::Get().Create("Unknow element: " + category + ":" + name);
+	if (!is_have)
+		Logs::Get().Create("Unknow element: " + category + ":" + name);
 }
 
-int Options::GetFloatValue(std::string category, std::string name) {
+float Options::GetFloatValue(std::string category, std::string name) {
+	bool is_have = false;
 	for (auto value : floats) {
 		if (value->category == category && value->name == name) {
+			is_have = true;
 			return *value->value;
 		}
-		return 0;
 	}
-	Logs::Get().Create("Unknow element: " + category + ":" + name);
+	if (!is_have)
+		Logs::Get().Create("Unknow element: " + category + ":" + name);
 }
 
 void Options::AddCheckbox(std::string name) {
@@ -167,7 +173,7 @@ void Options::AddSliderFloat(std::string name, float min, float max) {
 }
 
 
-void Options::SetupWeapons()
+void Options::SetupSettings()
 {
 	SetupValue(g_Options.legit_enabled, "Legitbot", "Enabled Legit");
 	SetupValue(g_Options.rage_enabled, "Ragebot", "Enabled Rage");
@@ -258,10 +264,8 @@ void Options::SetupWeapons()
 		//SetupValue(option.wear, val, "wear");
 	}
 
-}
 
-void Options::SetupVisuals()
-{
+
 	SetupValue(g_Options.esp_player_boxes, "Visuals", "Boxes");
 	SetupValue(g_Options.esp_player_boxesOccluded, "Visuals", "Occluded");
 	SetupValue(g_Options.esp_player_names, "Visuals", "Names");
@@ -303,10 +307,9 @@ void Options::SetupVisuals()
 	SetupValue(g_Options.remove_zoom, "Visuals", "Remove zoom");
 	SetupValue(g_Options.remove_scope, "Visuals", "Remove scope");
 	SetupValue(g_Options.remove_flash, "Visuals", "Remove flash");
-}
 
-void Options::SetupMisc()
-{
+
+
 	SetupValue(g_Options.logs, "Misc", "Logs");
 	SetupValue(g_Options.logs_drawing, "Misc", "Logs Drawing");
 
@@ -343,9 +346,7 @@ void Options::Initialize()
 	SHGetFolderPathA(nullptr, CSIDL_PERSONAL, nullptr, SHGFP_TYPE_CURRENT, my_documents);
 	folder = my_documents + std::string("\\nessless\\");
 	CreateDirectoryA(folder.c_str(), nullptr);
-	SetupWeapons();
-	SetupVisuals();
-	SetupMisc();
+	SetupSettings();
 }
 
 void Options::SaveSettings(const std::string& szIniFile)

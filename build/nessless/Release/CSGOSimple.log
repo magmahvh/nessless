@@ -1,1 +1,9 @@
-﻿  imgui_widgets.cpp
+﻿  options.cpp
+  Создание кода
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\options.cpp(146): warning C4715: Options::GetBoolValue: значение возвращается не при всех путях выполнения
+C:\Users\User\Documents\GitHub\nessless\CSGOSimple\options.cpp(134): warning C4715: Options::GetIntValue: значение возвращается не при всех путях выполнения
+  4 of 13889 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    35 functions had inline decision re-evaluated but remain unchanged
+  Создание кода завершено
+  CSGOSimple.vcxproj -> C:\Users\User\Documents\GitHub\nessless\bin\Release\nessless.dll
