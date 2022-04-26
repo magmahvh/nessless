@@ -297,6 +297,28 @@ namespace Hooks {
 
 		verified->m_cmd = *cmd;
 		verified->m_crc = cmd->GetChecksum();
+
+		static float LastChangeTime = 0.f;
+
+		static bool restore = false;
+		if (g_Options.misc_clantag && g_LocalPlayer) {
+			if (g_GlobalVars->realtime - LastChangeTime >= 0.5f) {
+				static std::string text = "nessless ";
+
+				LastChangeTime = g_GlobalVars->realtime;
+
+				std::string temp = text;
+				text.erase(0, 1);
+				text += temp[0];
+
+				Utils::SetClantag(text.data());
+				restore = true;
+			}
+		}
+		else if (restore) {
+			restore = false;
+			Utils::SetClantag("");
+		}
 	}
 	//--------------------------------------------------------------------------------
 	__declspec(naked) void __fastcall hkCreateMove_Proxy(void* _this, int, int sequence_number, float input_sample_frametime, bool active)

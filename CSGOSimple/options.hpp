@@ -239,6 +239,7 @@ public:
 	bool misc_boostspeed = false;
 	bool misc_wasdstrafes = false;
 	bool misc_bhop = false;
+	bool misc_clantag = false;
 	float misc_retrack_speed = 2.0f;
 	int playerModelT{ 0 };
 	int playerModelCT{ 0 };

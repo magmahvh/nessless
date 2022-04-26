@@ -638,7 +638,7 @@ void Menu::Render()
 
 					ImGui::Checkbox("Auto accept", &g_Options.autoaccept);
 					ImGui::Checkbox("Sniper crosshair", &g_Options.sniper_xhair);
-					ImGui::Combo("Clantags", &g_Options.misc_combo_clantag, "None\0Nessles\0\0");
+					ImGui::Checkbox("Clantag", &g_Options.misc_clantag);
 					ImGui::Checkbox("Logs", &g_Options.logs);
 					if (g_Options.logs)
 						ImGui::Checkbox("Logs drawing", &g_Options.logs_drawing);
