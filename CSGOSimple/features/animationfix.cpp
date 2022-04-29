@@ -1,6 +1,7 @@
 #include "animationfix.hpp"
 #include "../helpers/math.hpp"
 #include "antiaim.hpp"
+#include "../helpers/keybinds.hpp"
 
 void AnimFix::LocalAnimation(CCSGOPlayerAnimState* animstate) { // FRAME_RENDER_START
 
@@ -11,5 +12,8 @@ void AnimFix::LocalAnimation(CCSGOPlayerAnimState* animstate) { // FRAME_RENDER_
 
 	local->UpdateAnimationState(animstate, Antiaim::Get().angle); // in createmove save viewangles when sending packet
 
-	animstate->m_flGoalFeetYaw = g_LocalPlayer->GetEyePos().y;  // same shit
+	if (KeyList::Get().inverter)
+		local->m_angEyeAngles().yaw += Antiaim::Get().dsy;
+	else
+		local->m_angEyeAngles().yaw -= Antiaim::Get().dsy;
 }

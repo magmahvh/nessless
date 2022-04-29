@@ -7,6 +7,7 @@
 #include "lagcompensation.hpp"
 #include "resolver.hpp"
 #include "../render.hpp"
+#include <algorithm>
 
 int wpnGroupRage(CHandle<C_BaseCombatWeapon> pWeapon) {
 
@@ -40,6 +41,145 @@ float hitchance(IClientEntity* pLocal, C_BaseCombatWeapon* pWeapon)
 
 	}
 	return hitchance;
+}
+
+float CRagebot::GetBodyScale(C_BasePlayer* player)
+{
+	if (!(player->m_fFlags() & FL_ONGROUND))
+		return 0.f;
+
+	if (g_Options.ragebot[wpnGroupRage(weapon)].multipoint_body > 0)
+		return std::clamp(g_Options.ragebot[wpnGroupRage(weapon)].multipoint_body / 100.f, 0.f, 0.75f);
+
+	auto factor = [](float x, float min, float max) {
+		return 1.f - 1.f / (1.f + pow(2.f, (-([](float x, float min, float max) {
+			return ((x - min) * 2.f) / (max - min) - 1.f;
+			}(x, min, max)) / 0.115f)));
+	}(player->m_angAbsOrigin().DistTo(g_LocalPlayer->GetEyePos()), 0.f, weapon->GetCSWeaponData()->flRange / 4.f);
+
+	if (weapon->IsSniper() && !weapon->scopeLevel())
+		factor = 0.f;
+
+	if (g_LocalPlayer->m_flDuckAmount() >= 0.9f /*&& !fakeduck*/)
+		return 0.65f;
+
+	return std::clamp(factor, 0.f, 0.75f);
+}
+
+float CRagebot::GetHeadScale(C_BasePlayer* player)
+{
+	if (g_Options.ragebot[wpnGroupRage(weapon)].multipoint_head > 0)
+		return std::clamp(g_Options.ragebot[wpnGroupRage(weapon)].multipoint_head / 100.f, 0.f, 0.80f);
+
+	/*if (!vars.misc.antiuntrusted)
+		return 0.90f;*/
+
+	/*if (g_Binds[bind_fake_duck].active)
+		return 0.70f;*/
+
+	if (player->m_fFlags() & FL_ONGROUND)
+		return GetBodyScale(player);
+	else
+		return 0.75f;
+}
+
+std::vector<std::pair<Vector, bool>> CRagebot::GetMultipoints(C_BasePlayer* pBaseEntity, int iHitbox, matrix3x4_t bones[128]) {
+	std::vector<std::pair<Vector, bool>> points;
+
+	const model_t* model = pBaseEntity->GetModel();
+	if (!model)
+		return points;
+
+	studiohdr_t* hdr = g_MdlInfo->GetStudiomodel(model);
+	if (!hdr)
+		return points;
+
+	mstudiohitboxset_t* set = hdr->GetHitboxSet(pBaseEntity->m_nHitboxSet());
+	if (!set)
+		return points;
+
+	mstudiobbox_t* bbox = set->GetHitbox(iHitbox);
+	if (!bbox)
+		return points;
+
+	Vector max = bbox->bbmax;
+	Vector min = bbox->bbmin;
+	Vector center = (bbox->bbmin + bbox->bbmax) / 2.f;
+
+	if (iHitbox == HITBOX_HEAD) {
+		float r = bbox->m_flRadius * GetHeadScale(pBaseEntity);
+		points.emplace_back(center, true);
+
+		constexpr float rotation = 0.70710678f;
+		points.emplace_back(Vector{ max.x + (rotation * r), max.y + (-rotation * r), max.z }, false);
+
+		Vector right{ max.x, max.y, max.z + r };
+		points.emplace_back(right, false);
+
+		Vector left{ max.x, max.y, max.z - r };
+		points.emplace_back(left, false);
+		
+		Vector back{ max.x, max.y - r, max.z };
+		points.emplace_back(back, false);
+
+		CCSGOPlayerAnimState* state = pBaseEntity->GetPlayerAnimState();
+		if (state && pBaseEntity->m_vecVelocity().Length() <= 0.1f && pBaseEntity->m_angEyeAngles().pitch <= 75.f) {
+			points.emplace_back(Vector{ max.x - r, max.y, max.z }, false);
+		}
+	}
+	else {
+		float r = bbox->m_flRadius * GetBodyScale(pBaseEntity);
+		if (iHitbox == HITBOX_STOMACH) {
+			// center.
+			points.emplace_back(center, true);
+			points.emplace_back(Vector(center.x, center.y, min.z + r), false);
+			points.emplace_back(Vector(center.x, center.y, max.z - r), false);
+			// back.
+			points.emplace_back(Vector{ center.x, max.y - r, center.z }, true);
+		}
+
+		else if (iHitbox == HITBOX_PELVIS || iHitbox == HITBOX_UPPER_CHEST) {
+			//points.emplace_back(center);
+			// left & right points
+			points.emplace_back(Vector(center.x, center.y, max.z + r), false);
+			points.emplace_back(Vector(center.x, center.y, min.z - r), false);
+		}
+
+		// other stomach/chest hitboxes have 2 points.
+		else if (iHitbox == HITBOX_CHEST || iHitbox == HITBOX_LOWER_CHEST) {
+			// left & right points
+			points.emplace_back(Vector(center.x, center.y, max.z + r), false);
+			points.emplace_back(Vector(center.x, center.y, min.z - r), false);
+			// add extra point on back.
+			points.emplace_back(Vector{ center.x, max.y - r, center.z }, false);
+		}
+
+		else if (iHitbox == HITBOX_RIGHT_CALF || iHitbox == HITBOX_LEFT_CALF) {
+			// add center.
+			points.emplace_back(center, true);
+
+			// half bottom.
+			points.emplace_back(Vector{ max.x - (bbox->m_flRadius / 2.f), max.y, max.z }, false);
+		}
+
+		else if (iHitbox == HITBOX_RIGHT_THIGH || iHitbox == HITBOX_LEFT_THIGH) {
+			// add center.
+			points.emplace_back(center, true);
+		}
+
+		// arms get only one point.
+		else if (iHitbox == HITBOX_RIGHT_UPPER_ARM || iHitbox == HITBOX_LEFT_UPPER_ARM) {
+			// elbow.
+			points.emplace_back(Vector{ max.x + bbox->m_flRadius, center.y, center.z }, false);
+		}
+		else
+			points.emplace_back(center, true);
+	}
+
+	return points;
+
+	/*for (auto& p : points)
+		Math::VectorTransform(p.first, bones[bbox->bone], p.first);*/
 }
 
 float CRagebot::GetFovToPlayer(QAngle viewAngle, QAngle aimAngle)
@@ -177,31 +317,33 @@ C_BasePlayer* CRagebot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& be
 
 		for (const auto hitbox : hitboxes)
 		{
-			float multipoint = hitbox == HITBOX_HEAD ? g_Options.ragebot[wpnGroupRage(weapon)].multipoint_head : g_Options.ragebot[wpnGroupRage(weapon)].multipoint_body;
-			Vector hitboxPos = player->GetHitboxPos(hitbox) + Vector(0, 0, (multipoint / 10)- 5);
-			QAngle ang; 
-			Math::VectorAngles(hitboxPos - eyePos, ang);
-			const float fov = GetFovToPlayer(cmd->viewangles + last_punch * 2.f, ang);
+			for (auto hitboxPos : GetMultipoints(player, hitbox, nullptr)) {
+				Vector hbPos = player->GetHitboxPos(hitbox) + hitboxPos.first;
+				QAngle ang;
+				Math::VectorAngles(hbPos - eyePos, ang);
+				const float fov = GetFovToPlayer(cmd->viewangles + last_punch * 2.f, ang);
 
-			damage = CAutoWall::Get().CanHit(hitboxPos);
+				damage = CAutoWall::Get().CanHit(hbPos);
 
-			if (damage < CRagebot::GetMinimumDamage(player)) continue;
+				if (damage < CRagebot::GetMinimumDamage(player)) continue;
 
-			if (!g_LocalPlayer->CanSeePlayer(player, hitboxPos))
-			{
-				if (!g_Options.ragebot[wpnGroupRage(weapon)].autowall)
-					continue;
+				if (!g_LocalPlayer->CanSeePlayer(player, hbPos))
+				{
+					if (!g_Options.ragebot[wpnGroupRage(weapon)].autowall)
+						continue;
+				}
+
+				AutoStop(cmd, weapon->GetCSWeaponData());
+
+				if (bestFov > fov)
+				{
+					bestBone = hitbox;
+					bestAngles = ang;
+					bestFov = fov;
+					target = player;
+				}
 			}
-
-			AutoStop(cmd, weapon->GetCSWeaponData());
-
-			if (bestFov > fov)
-			{
-				bestBone = hitbox;
-				bestAngles = ang;
-				bestFov = fov;
-				target = player;
-			}
+			//Vector hitboxPos = player->GetHitboxPos(hitbox);
 		}
 	}
 

@@ -184,6 +184,7 @@
     <ClInclude Include="lua\luaconf.h" />
     <ClInclude Include="lua\lualib.h" />
     <ClInclude Include="lua\sol.hpp" />
+    <ClInclude Include="singleton.hpp" />
     <ClInclude Include="user.hpp" />
     <ClInclude Include="valve_sdk\interfaces\IGameTypes.hpp" />
     <ClInclude Include="valve_sdk\interfaces\IStudioRender.hpp" />
@@ -207,7 +208,6 @@
     <ClInclude Include="menu.hpp" />
     <ClInclude Include="options.hpp" />
     <ClInclude Include="render.hpp" />
-    <ClInclude Include="singleton.hpp" />
     <ClInclude Include="ui.hpp" />
     <ClInclude Include="valve_sdk\csgostructs.hpp" />
     <ClInclude Include="valve_sdk\sdk.hpp" />

@@ -204,6 +204,7 @@ public:
 	NETVAR(float_t, m_fThrowTime, "DT_BaseCSGrenade", "m_fThrowTime");
 	NETVAR(float_t, m_flPostponeFireReadyTime, "DT_BaseCombatWeapon", "m_flPostponeFireReadyTime");
 	NETVAR(CHandle<C_BaseWeaponWorldModel>, m_hWeaponWorldModel, "DT_BaseCombatWeapon", "m_hWeaponWorldModel");
+	NETVAR(int32_t, scopeLevel, "DT_WeaponCSBaseGun", "m_zoomLevel");
 
 
 	CCSWeaponInfo* GetCSWeaponData();

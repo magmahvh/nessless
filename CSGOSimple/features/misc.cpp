@@ -8,8 +8,8 @@ void Misc::ThirdPerson() {
 	if (!g_LocalPlayer)
 		return;
 
-	g_Input->m_fCameraInThirdPerson = g_Options.misc_thirdperson && KeyList::Get().thirdperson && g_LocalPlayer->IsAlive();
-	if (!g_Input->m_fCameraInThirdPerson)
+	g_Input->bCameraInThirdPerson = g_Options.misc_thirdperson && KeyList::Get().thirdperson && g_LocalPlayer->IsAlive();
+	if (!g_Input->bCameraInThirdPerson)
 		return;
 
 	QAngle angles;
@@ -35,6 +35,6 @@ void Misc::ThirdPerson() {
 
 	angles.roll = std::min<int>(start.DistTo(tr.endpos), 150); // 150 is better distance
 
-	g_Input->m_vecCameraOffset = angles.getVector();
+	g_Input->vecCameraOffset = angles.getVector();
 }
 

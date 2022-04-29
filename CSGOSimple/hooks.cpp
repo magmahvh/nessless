@@ -244,7 +244,7 @@ namespace Hooks {
 		oCreateMove(g_CHLClient, 0, sequence_number, input_sample_frametime, active);
 
 		auto cmd = g_Input->GetUserCmd(sequence_number);
-		auto verified = g_Input->GetVerifiedUserCmd(sequence_number);
+		auto verified = g_Input->GetVerifiedCmd(sequence_number);
 		auto oldangles = cmd->viewangles;
 
 		if (!cmd || !cmd->command_number)

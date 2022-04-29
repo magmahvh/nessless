@@ -420,9 +420,6 @@
     <ClInclude Include="render.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="singleton.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="ui.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -533,6 +530,9 @@
     </ClInclude>
     <ClInclude Include="features\backtrack.hpp">
       <Filter>Source Files\features</Filter>
+    </ClInclude>
+    <ClInclude Include="singleton.hpp">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

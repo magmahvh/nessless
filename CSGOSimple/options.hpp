@@ -186,7 +186,6 @@ public:
 	bool esp_player_health = false;
 	bool esp_player_armour = false;
 	bool esp_player_weapons = false;
-	bool esp_player_snaplines = false;
 	bool esp_dropped_weapons = false;
 	bool esp_defuse_kit = false;
 	bool esp_planted_c4 = false;

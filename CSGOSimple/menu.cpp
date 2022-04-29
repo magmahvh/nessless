@@ -570,7 +570,13 @@ void Menu::Render()
 					ImGui::Checkbox("Names", &g_Options.esp_player_names);
 					ImGui::Checkbox("Health", &g_Options.esp_player_health);
 					ImGui::Checkbox("Weapon", &g_Options.esp_player_weapons);
+					ImGui::Checkbox("Armour", &g_Options.esp_player_armour);
+
+					ImGui::Spacing();
+
 					ImGui::Checkbox("Dropped Weapons", &g_Options.esp_dropped_weapons);
+					ImGui::Checkbox("Planted C4", &g_Options.esp_planted_c4);
+					ImGui::Checkbox("Esp items", &g_Options.esp_items);
 					break;
 				case 1:
 					ImGui::Separator("Chams");

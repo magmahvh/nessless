@@ -18,13 +18,15 @@ public:
 	float GetFovToPlayer(QAngle viewAngle, QAngle aimAngle);
 
 	CHandle<C_BaseCombatWeapon> weapon;
-
 private:
 	void RCS(QAngle& angle, C_BasePlayer* target);
 	int GetMinimumDamage(C_BasePlayer* target);
 	void Smooth(QAngle currentAngle, QAngle aimAngle, QAngle& angle);
 	C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& fov, QAngle& angles);
 	void AutoStop(CUserCmd* cmd, CCSWeaponInfo* weapon_data);
+	float GetBodyScale(C_BasePlayer* player);
+	float GetHeadScale(C_BasePlayer* player);
+	std::vector<std::pair<Vector, bool>> GetMultipoints(C_BasePlayer* pBaseEntity, int iHitbox, matrix3x4_t bones[128]);
 
 	C_BasePlayer* target = nullptr;
 

@@ -82,7 +82,7 @@ bool Visuals::Player::Begin(C_BasePlayer* pl)
 	if (!pl->IsAlive())
 		return false;
 
-	if (pl->IsDormant() && flPlayerAlpha[pl->EntIndex()] > 0)
+	if (pl->IsDormant() && flPlayerAlpha[pl->EntIndex()] > 120)
 	{
 		flPlayerAlpha[pl->EntIndex()] -= flAlphaFade;
 	}
@@ -90,8 +90,6 @@ bool Visuals::Player::Begin(C_BasePlayer* pl)
 	{
 		flPlayerAlpha[pl->EntIndex()] += flAlphaFade;
 	}
-	if (flPlayerAlpha <= 0 && pl->IsDormant())
-		return false;
 	ctx.pl = pl;
 	ctx.is_enemy = g_LocalPlayer->m_iTeamNum() != pl->m_iTeamNum();
 	ctx.is_visible = g_LocalPlayer->CanSeePlayer(pl, HITBOX_CHEST);
@@ -161,7 +159,7 @@ void Visuals::Player::RenderHealth(C_BaseEntity* pl)
 
 }
 //--------------------------------------------------------------------------------
-void Visuals::Player::RenderArmour()
+void Visuals::Player::RenderArmour(C_BaseEntity* pl)
 {
 	auto  armour = ctx.pl->m_ArmorValue();
 	float box_h = (float)fabs(ctx.bbox.bottom - ctx.bbox.top);
@@ -176,7 +174,7 @@ void Visuals::Player::RenderArmour()
 	int h = box_h;
 
 	Render::Get().RenderBox(x, y, x + w, y + h, Color::Black, 1.f, true);
-	Render::Get().RenderBox(x + 1, y + 1, x + w - 1, y + height - 2, Color(0, 50, 255, 255), 1.f, true);
+	Render::Get().RenderBox(x + 1, y + 1, x + w - 1, y + height - 2, Color(0, 50, 255, flPlayerAlpha[pl->EntIndex()]), 1.f, true);
 }
 //--------------------------------------------------------------------------------
 void Visuals::Player::RenderWeaponName(C_BaseEntity* pl)
@@ -191,16 +189,6 @@ void Visuals::Player::RenderWeaponName(C_BaseEntity* pl)
 	//Render::Get().RenderText(text, ctx.feet_pos.x, ctx.feet_pos.y, 12.f, Color::White, true,g_pDefaultFont);
 	Render::Get().RenderText(text, ImVec2(ctx.bbox.left + (ctx.bbox.right - ctx.bbox.left - sz.x) / 2, ctx.bbox.bottom + 1), 12.f, Color(255, 255, 255, flPlayerAlpha[pl->EntIndex()]), false, true, g_EspFont);
 
-}
-//--------------------------------------------------------------------------------
-void Visuals::Player::RenderSnapline()
-{
-
-	int screen_w, screen_h;
-	g_EngineClient->GetScreenSize(screen_w, screen_h);
-
-	Render::Get().RenderLine(screen_w / 2.f, (float)screen_h,
-		ctx.feet_pos.x, ctx.feet_pos.y, Color::Red);
 }
 //--------------------------------------------------------------------------------
 void Visuals::RenderWeapon(C_BaseCombatWeapon* ent)
@@ -349,18 +337,17 @@ void Visuals::AddToDrawList() {
 		if (!entity)
 			continue;
 		
-		if (entity == g_LocalPlayer && !g_Input->m_fCameraInThirdPerson)
+		if (entity == g_LocalPlayer && !g_Input->bCameraInThirdPerson)
 			continue;
 
 		if (i <= g_GlobalVars->maxClients) {
 			auto player = Player();
 			if (player.Begin((C_BasePlayer*)entity)) {
-				//if (g_Options.esp_player_snaplines) player.RenderSnapline();
 				if (g_Options.esp_player_boxes)     player.RenderBox(entity);
 				if (g_Options.esp_player_weapons)   player.RenderWeaponName(entity);
 				if (g_Options.esp_player_names)     player.RenderName(entity);
 				if (g_Options.esp_player_health)    player.RenderHealth(entity);
-				//if (g_Options.esp_player_armour)    player.RenderArmour();
+				if (g_Options.esp_player_armour)    player.RenderArmour(entity);
 			}
 		}
 		else if (g_Options.esp_dropped_weapons && entity->IsWeapon())

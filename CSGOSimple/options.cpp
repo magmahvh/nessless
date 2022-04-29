@@ -305,9 +305,12 @@ void Options::SetupSettings()
 	SetupValue(g_Options.remove_scope, "visuals.removals", "scope");
 	SetupValue(g_Options.remove_visualrecoil, "visuals.removals", "visual_recoil");
 	SetupValue(g_Options.remove_post_processing, "visuals.removals", "post_processing");
-	SetupValue(g_Options.remove_zoom, "visual.removalss", "zoom");
+	SetupValue(g_Options.remove_zoom, "visual.removals", "zoom");
 	SetupValue(g_Options.remove_scope, "visuals.removals", "scope");
 	SetupValue(g_Options.remove_flash, "visuals.removals", "flash");
+
+	SetupValue(g_Options.aspect_ratio, "aspectratio", "enabled");
+	SetupValue(g_Options.aspect_ratio_scale, "aspectratio", "value");
 
 
 

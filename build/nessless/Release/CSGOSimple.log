@@ -1,8 +1,7 @@
-﻿  menu.cpp
-C:\Users\Страдивариус\Documents\github\Raitoningu.xyz\nessless\CSGOSimple\menu.cpp(123,17): warning C4806: |: небезопасная операция: значение типа "bool", приведенное к типу "ImGuiColorEditFlags_", не может равняться данной константе
+﻿  ragebot.cpp
   Создание кода
-  1 of 13879 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+  2 of 13944 functions (<0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    33 functions had inline decision re-evaluated but remain unchanged
+    49 functions had inline decision re-evaluated but remain unchanged
   Создание кода завершено
-  CSGOSimple.vcxproj -> C:\Users\Страдивариус\Documents\github\Raitoningu.xyz\nessless\bin\Release\nessless.dll
+  CSGOSimple.vcxproj -> C:\Users\User\Documents\GitHub\nessless\bin\Release\nessless.dll
