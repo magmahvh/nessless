@@ -190,6 +190,7 @@ public:
 	bool esp_defuse_kit = false;
 	bool esp_planted_c4 = false;
 	bool esp_items = false;
+	bool draw_multipoints = false;
 
 	float esp_nightmode_size = 0.05f;
 	float fog_start_distance = 0.0f;

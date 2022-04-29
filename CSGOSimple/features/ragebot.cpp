@@ -102,29 +102,29 @@ std::vector<std::pair<Vector, bool>> CRagebot::GetMultipoints(C_BasePlayer* pBas
 	if (!bbox)
 		return points;
 
-	Vector max = bbox->bbmax;
-	Vector min = bbox->bbmin;
-	Vector center = (bbox->bbmin + bbox->bbmax) / 2.f;
+	/*Vector max = bbox->bbmax;
+	Vector min = bbox->bbmin;*/
+	Vector center = pBaseEntity->GetHitboxPos(iHitbox);//(bbox->bbmin + bbox->bbmax) / 2.f;
 
 	if (iHitbox == HITBOX_HEAD) {
 		float r = bbox->m_flRadius * GetHeadScale(pBaseEntity);
 		points.emplace_back(center, true);
 
 		constexpr float rotation = 0.70710678f;
-		points.emplace_back(Vector{ max.x + (rotation * r), max.y + (-rotation * r), max.z }, false);
+		points.emplace_back(Vector{ center.x + (rotation * r), center.y + (-rotation * r), center.z }, false);
 
-		Vector right{ max.x, max.y, max.z + r };
+		Vector right{ center.x, center.y, center.z + r };
 		points.emplace_back(right, false);
 
-		Vector left{ max.x, max.y, max.z - r };
+		Vector left{ center.x, center.y, center.z - r };
 		points.emplace_back(left, false);
 		
-		Vector back{ max.x, max.y - r, max.z };
+		Vector back{ center.x, center.y - r, center.z };
 		points.emplace_back(back, false);
 
 		CCSGOPlayerAnimState* state = pBaseEntity->GetPlayerAnimState();
 		if (state && pBaseEntity->m_vecVelocity().Length() <= 0.1f && pBaseEntity->m_angEyeAngles().pitch <= 75.f) {
-			points.emplace_back(Vector{ max.x - r, max.y, max.z }, false);
+			points.emplace_back(Vector{ center.x - r, center.y, center.z }, false);
 		}
 	}
 	else {
@@ -132,26 +132,26 @@ std::vector<std::pair<Vector, bool>> CRagebot::GetMultipoints(C_BasePlayer* pBas
 		if (iHitbox == HITBOX_STOMACH) {
 			// center.
 			points.emplace_back(center, true);
-			points.emplace_back(Vector(center.x, center.y, min.z + r), false);
-			points.emplace_back(Vector(center.x, center.y, max.z - r), false);
+			points.emplace_back(Vector(center.x, center.y, center.z + r), false);
+			points.emplace_back(Vector(center.x, center.y, center.z - r), false);
 			// back.
-			points.emplace_back(Vector{ center.x, max.y - r, center.z }, true);
+			points.emplace_back(Vector{ center.x, center.y - r, center.z }, true);
 		}
 
 		else if (iHitbox == HITBOX_PELVIS || iHitbox == HITBOX_UPPER_CHEST) {
 			//points.emplace_back(center);
 			// left & right points
-			points.emplace_back(Vector(center.x, center.y, max.z + r), false);
-			points.emplace_back(Vector(center.x, center.y, min.z - r), false);
+			points.emplace_back(Vector(center.x, center.y, center.z + r), false);
+			points.emplace_back(Vector(center.x, center.y, center.z - r), false);
 		}
 
 		// other stomach/chest hitboxes have 2 points.
 		else if (iHitbox == HITBOX_CHEST || iHitbox == HITBOX_LOWER_CHEST) {
 			// left & right points
-			points.emplace_back(Vector(center.x, center.y, max.z + r), false);
-			points.emplace_back(Vector(center.x, center.y, min.z - r), false);
+			points.emplace_back(Vector(center.x, center.y, center.z + r), false);
+			points.emplace_back(Vector(center.x, center.y, center.z - r), false);
 			// add extra point on back.
-			points.emplace_back(Vector{ center.x, max.y - r, center.z }, false);
+			points.emplace_back(Vector{ center.x, center.y - r, center.z }, false);
 		}
 
 		else if (iHitbox == HITBOX_RIGHT_CALF || iHitbox == HITBOX_LEFT_CALF) {
@@ -159,7 +159,7 @@ std::vector<std::pair<Vector, bool>> CRagebot::GetMultipoints(C_BasePlayer* pBas
 			points.emplace_back(center, true);
 
 			// half bottom.
-			points.emplace_back(Vector{ max.x - (bbox->m_flRadius / 2.f), max.y, max.z }, false);
+			points.emplace_back(Vector{ center.x - (bbox->m_flRadius / 2.f), center.y, center.z }, false);
 		}
 
 		else if (iHitbox == HITBOX_RIGHT_THIGH || iHitbox == HITBOX_LEFT_THIGH) {
@@ -170,7 +170,7 @@ std::vector<std::pair<Vector, bool>> CRagebot::GetMultipoints(C_BasePlayer* pBas
 		// arms get only one point.
 		else if (iHitbox == HITBOX_RIGHT_UPPER_ARM || iHitbox == HITBOX_LEFT_UPPER_ARM) {
 			// elbow.
-			points.emplace_back(Vector{ max.x + bbox->m_flRadius, center.y, center.z }, false);
+			points.emplace_back(Vector{ center.x + bbox->m_flRadius, center.y, center.z }, false);
 		}
 		else
 			points.emplace_back(center, true);
@@ -299,6 +299,8 @@ C_BasePlayer* CRagebot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& be
 		hitboxes.emplace_back(HITBOX_LEFT_THIGH);
 	}
 
+	hitboxes_active = hitboxes;
+
 	const Vector eyePos = g_LocalPlayer->GetEyePos();
 
 	float damage;
@@ -318,7 +320,7 @@ C_BasePlayer* CRagebot::GetClosestPlayer(CUserCmd* cmd, int& bestBone, float& be
 		for (const auto hitbox : hitboxes)
 		{
 			for (auto hitboxPos : GetMultipoints(player, hitbox, nullptr)) {
-				Vector hbPos = player->GetHitboxPos(hitbox) + hitboxPos.first;
+				Vector hbPos = hitboxPos.first;
 				QAngle ang;
 				Math::VectorAngles(hbPos - eyePos, ang);
 				const float fov = GetFovToPlayer(cmd->viewangles + last_punch * 2.f, ang);

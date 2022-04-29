@@ -5,6 +5,7 @@
 #include "../options.hpp"
 #include "../helpers/math.hpp"
 #include "../helpers/utils.hpp"
+#include "ragebot.hpp"
 
 
 RECT GetBBox(C_BaseEntity* ent)
@@ -330,6 +331,30 @@ void Visuals::RenderItemEsp(C_BaseEntity* ent)
 	//Render::Get().RenderBox(bbox, g_Options.color_esp_item);
 	Render::Get().RenderText(itemstr, ImVec2((bbox.left + w * 0.5f) - sz.x * 0.5f, bbox.bottom + 1), 12.f, g_Options.color_esp_item, false, true, g_EspFont);
 }
+void Visuals::RenderMultipoints() {
+	for (auto i = 1; i <= g_GlobalVars->maxClients; i++)
+	{
+		C_BasePlayer* player = C_BasePlayer::GetPlayerByIndex(i);
+
+		if (!player || !player->IsAlive() || !player->IsPlayer() || player->m_bGunGameImmunity())
+			continue;
+
+		if (!player->IsEnemy())
+			continue;
+
+		for (const auto hitbox : g_Ragebot->hitboxes_active)
+		{
+			for (auto hitboxPos : g_Ragebot->GetMultipoints(player, hitbox, nullptr)) {
+				Vector hbPos = hitboxPos.first;
+				Vector screenPos = {};
+
+				Math::WorldToScreen(hbPos, screenPos);
+
+				Render::Get().RenderCircleFilled(screenPos.x, screenPos.y, 3, 6, Color(255, 255, 255, 255));
+			}
+		}
+	}
+}
 void Visuals::AddToDrawList() {
 	for (auto i = 1; i <= g_EntityList->GetHighestEntityIndex(); ++i) {
 		auto entity = C_BaseEntity::GetEntityByIndex(i);
@@ -358,5 +383,8 @@ void Visuals::AddToDrawList() {
 			RenderPlantedC4(entity);
 		else if (entity->IsLoot() && g_Options.esp_items)
 			RenderItemEsp(entity);
+
+		if (g_Options.draw_multipoints)
+			RenderMultipoints();
 	}
 }

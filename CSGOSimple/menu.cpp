@@ -577,6 +577,7 @@ void Menu::Render()
 					ImGui::Checkbox("Dropped Weapons", &g_Options.esp_dropped_weapons);
 					ImGui::Checkbox("Planted C4", &g_Options.esp_planted_c4);
 					ImGui::Checkbox("Esp items", &g_Options.esp_items);
+					ImGui::Checkbox("Draw multipoints", &g_Options.draw_multipoints);
 					break;
 				case 1:
 					ImGui::Separator("Chams");

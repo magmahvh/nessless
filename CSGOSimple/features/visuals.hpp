@@ -43,6 +43,7 @@ public:
 	void RenderDefuseKit(C_BaseEntity* ent);
 	void RenderPlantedC4(C_BaseEntity* ent);
 	void RenderItemEsp(C_BaseEntity* ent);
+	void RenderMultipoints();
 public:
 	void AddToDrawList();
 	void Render();

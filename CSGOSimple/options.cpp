@@ -291,6 +291,7 @@ void Options::SetupSettings()
 	SetupColor(g_Options.color_chams_player_desync, "local_desync");
 	SetupColor(g_Options.color_glow_enemy, "enemy_visible_glow");
 	SetupColor(g_Options.color_glow_enemyOC, "enemy_occluded_glow");
+	SetupValue(g_Options.draw_multipoints, "visuals", "draw_multipoints");
 
 	SetupValue(g_Options.enable_nightmode, "visuals.nightmode", "enabled");
 	SetupColor(g_Options.nightmode_color, "nightmode_color");
