@@ -8,7 +8,7 @@ void Logs::Create(std::string text)
 
 	logs.emplace_front(loginfo_t(Utils::epoch_time(), text));
 
-	g_CVar->ConsolePrintf("[nessless] "); 
+	g_CVar->ConsolePrintf("[desolate] "); 
 	g_CVar->ConsolePrintf(text.c_str());
 	g_CVar->ConsolePrintf("\n");
 }

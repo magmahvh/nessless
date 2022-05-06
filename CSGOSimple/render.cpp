@@ -94,7 +94,7 @@ void Render::BeginScene() {
 	RemoveScope();
 
 	if (g_Options.misc_watermark)
-		Render::Get().RenderText("nessless", 10, 5, 18.f, Color::White, false, true, g_VeloFont);
+		Render::Get().RenderText("desolate", 10, 5, 18.f, Color::White, false, true, g_VeloFont);
 
 	if (g_EngineClient->IsInGame() && g_LocalPlayer)
 		Visuals::Get().AddToDrawList();

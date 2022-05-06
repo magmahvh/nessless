@@ -7,4 +7,5 @@ class Misc : public Singleton<Misc>
 {
 public:
 	void ThirdPerson();
+	void Fakeduck(CUserCmd* cmd, bool& bSendPacket, int amount);
 };

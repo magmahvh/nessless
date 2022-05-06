@@ -50,6 +50,7 @@ namespace Hooks
 	inline sendnetmsg_fn original_sendnetmsg = nullptr;
 
 	using EndScene = long(__stdcall*)(IDirect3DDevice9*);
+	using WriteUsercmdDeltaToBufferFn = bool(__thiscall*)(IBaseClientDLL*, /*void* unk,*/ int, bf_write*, int, int, bool);
 
 	using FireEvent = bool(__thiscall*)(IGameEventManager2*, IGameEvent* pEvent);
     long __stdcall hkEndScene(IDirect3DDevice9* device);

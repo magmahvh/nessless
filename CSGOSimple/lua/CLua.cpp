@@ -736,7 +736,7 @@ void Lua::refresh_scripts() {
 	CHAR my_documents[MAX_PATH];
 	SHGetFolderPathA(nullptr, CSIDL_PERSONAL, nullptr, SHGFP_TYPE_CURRENT, my_documents);
 
-	for (auto& entry : std::filesystem::directory_iterator(my_documents + std::string("\\nessless\\lua\\"))) {
+	for (auto& entry : std::filesystem::directory_iterator(my_documents + std::string("\\desolate\\lua\\"))) {
 		if (entry.path().extension() == (".lua")) {
 			auto path = entry.path();
 			auto filename = path.filename().string();

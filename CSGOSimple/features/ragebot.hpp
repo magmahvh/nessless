@@ -14,6 +14,7 @@ public:
 	}
 
 	void Run(CUserCmd* cmd);
+	void Slowwalk(CUserCmd* pCmd);
 	bool IsEnabled(CUserCmd* cmd);
 	float GetFovToPlayer(QAngle viewAngle, QAngle aimAngle);
 	std::vector<std::pair<Vector, bool>> GetMultipoints(C_BasePlayer* pBaseEntity, int iHitbox, matrix3x4_t bones[128]);

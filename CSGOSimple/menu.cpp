@@ -321,7 +321,7 @@ void Menu::Render()
 	ImGui::SetNextWindowSize({ x, y });
 
 	ImGui::PushFont(g_MenuFont);
-	ImGui::Begin("nessless", nullptr, flags);
+	ImGui::Begin("desolate", nullptr, flags);
 	{
 
 		ImVec2 w = ImGui::GetWindowPos();
@@ -335,7 +335,7 @@ void Menu::Render()
 		{
 			ImGui::SetCursorPos(ImVec2{ 10, 10 });
 			ImGui::PushFont(g_pDefaultFont);
-			ImGui::Text("NESSLESS");
+			ImGui::Text("DESOLATE");
 			ImGui::PopFont();
 
 			for (int i = 0; i < 5; i++) {
@@ -483,6 +483,10 @@ void Menu::Render()
 					ImGui::Separator("Fakelag");
 					ImGui::Checkbox("Enabled##fakelag", &g_Options.fakelag);
 					ImGui::SliderInt("Amount##fakelag", &g_Options.fakelag_amount, 1, 14);
+
+					ImGui::Checkbox("Fakeduck", &g_Options.fakeduck);
+
+
 					break;
 				}
 				break;

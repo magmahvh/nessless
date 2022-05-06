@@ -462,3 +462,39 @@ void CRagebot::Run(CUserCmd* cmd)
 			Attack(cmd, target, bestBone);
 	}
 }
+
+void CRagebot::Slowwalk(CUserCmd* pCmd) {
+	if (!g_Options.slowwalk || !g_InputSys->IsKeyDown(g_Options.slowwalkkey))
+		return;
+
+	auto weapon_handle = g_LocalPlayer->m_hActiveWeapon();
+
+	if (!weapon_handle)
+		return;
+
+	if (!(g_LocalPlayer->m_fFlags() & FL_ONGROUND))
+		return;
+
+	float amount = 0.0034f * g_Options.slowwalkspeed;
+
+	Vector velocity = g_LocalPlayer->m_vecVelocity();
+	QAngle direction;
+
+	Math::VectorAngles(velocity, direction);
+
+	float speed = velocity.Length2D();
+
+	direction.yaw = pCmd->viewangles.yaw - direction.yaw;
+
+	Vector forward;
+
+	Math::AngleVectors(direction, forward);
+
+	Vector source = forward * -speed;
+
+	if (speed >= (weapon_handle->GetCSWeaponData()->flMaxPlayerSpeed * amount))
+	{
+		pCmd->forwardmove = source.x;
+		pCmd->sidemove = source.y;
+	}
+}

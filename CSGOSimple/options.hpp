@@ -163,6 +163,8 @@ public:
 	bool fakelag = false;
 	int fakelag_amount = 1;
 
+	bool fakeduck = false;
+
 
 	// 
 	// ESP
@@ -225,7 +227,9 @@ public:
 	bool player_enemies_shine = false;
 	int chams_player_occluded = 0;
 	int chams_player_visible = 0;
+	int chams_player_visible_materia = 0;
 	bool chams_player_ignorez = false;
+	bool chams_player_materia = false;
 
 	bool chams_desync_enabled = false;
 	int chams_desync = 0;
@@ -240,6 +244,9 @@ public:
 	bool misc_wasdstrafes = false;
 	bool misc_bhop = false;
 	bool misc_clantag = false;
+	bool slowwalk = false;
+	int slowwalkspeed = 100;
+	int slowwalkkey = 0;
 	float misc_retrack_speed = 2.0f;
 	int playerModelT{ 0 };
 	int playerModelCT{ 0 };
@@ -288,6 +295,7 @@ public:
 	Color color_chams_player_ally_occluded = { 0, 0, 0 };
 	Color color_chams_player_enemy_visible = { 0, 0, 0 };
 	Color color_chams_player_enemy_occluded = { 0, 0, 0 };
+	Color color_chams_player_visible_materia = { 0, 0, 0 };
 	Color color_chams_player_desync = { 0, 0, 0 };
 	Color color_watermark = { 0, 0, 0 }; // no menu config cuz its useless
 	Color player_enemy_visible_shine = { 0, 0, 0 };

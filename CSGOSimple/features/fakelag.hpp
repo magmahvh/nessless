@@ -8,4 +8,5 @@ class FakeLag : public Singleton<FakeLag>
 public:
     void Override(CUserCmd* cmd, bool& bSendPacket, int amount);
     void Run(CUserCmd* cmd, bool& bSendPacket);
+   
 };

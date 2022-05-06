@@ -24,6 +24,9 @@
 
 #pragma intrinsic(_ReturnAddress) 
 
+#pragma intrinsic(_ReturnAddress)  
+int32_t nTickBaseShift = 0;
+int32_t nSinceUse = 0;
 
 namespace Hooks {
 
@@ -303,7 +306,7 @@ namespace Hooks {
 		static bool restore = false;
 		if (g_Options.misc_clantag && g_LocalPlayer) {
 			if (g_GlobalVars->realtime - LastChangeTime >= 0.5f) {
-				static std::string text = "nessless ";
+				static std::string text = "desolate ";
 
 				LastChangeTime = g_GlobalVars->realtime;
 
@@ -319,6 +322,8 @@ namespace Hooks {
 			restore = false;
 			Utils::SetClantag("");
 		}
+
+	
 	}
 	//--------------------------------------------------------------------------------
 	__declspec(naked) void __fastcall hkCreateMove_Proxy(void* _this, int, int sequence_number, float input_sample_frametime, bool active)
@@ -525,7 +530,7 @@ namespace Hooks {
 
 		g_MdlRender->ForcedMaterialOverride(nullptr);
 	}
-
+	//--------------------------------------------------------------------------------
 	bool __fastcall hkSvCheatsGetBool(PVOID pConVar, void* edx)
 	{
 		static auto dwCAM_Think = Utils::PatternScan(GetModuleHandleW(L"client.dll"), "85 C0 75 30 38 86");
@@ -537,7 +542,7 @@ namespace Hooks {
 			return true;
 		return ofunc(pConVar);
 	}
-
+	//--------------------------------------------------------------------------------
 	void RecvProxy(const CRecvProxyData* pData, void* entity, void* output)
 	{
 		static auto ofunc = sequence_hook->get_original_function();
@@ -567,7 +572,7 @@ namespace Hooks {
 
 		ofunc(pData, entity, output);
 	}
-
+	//--------------------------------------------------------------------------------
 	void __fastcall hkDrawModelExecute2(void* _this, int, void* pResults, DrawModelInfo_t* pInfo, matrix3x4_t* pBoneToWorld, float* flpFlexWeights, float* flpFlexDelayedWeights, Vector& vrModelOrigin, int32_t iFlags)
 	{
 		static auto ofunc = stdrender_hook.get_original<decltype(&hkDrawModelExecute2)>(index::DrawModelExecute2);
@@ -592,12 +597,107 @@ namespace Hooks {
 
 		g_StudioRender->ForcedMaterialOverride(nullptr);
 	}
-
+	//--------------------------------------------------------------------------------
 	void __fastcall Hooks::RenderSmokeOverlay(void* _this, int, const bool unk)
 	{
 		static auto ofunc = viewrender_hook.get_original<decltype(&RenderSmokeOverlay)>(index::RenderSmokeOverlay);
 
 		if (!g_Options.remove_smoke)
 			ofunc(g_ViewRender, 0, unk);
+	}
+	//--------------------------------------------------------------------------------
+	void WriteUsercmd(bf_write* buf, CUserCmd* pin, CUserCmd* pout)
+	{
+		using WriteUsercmd_t = void(__fastcall*)(bf_write*, CUserCmd*, CUserCmd*);
+		static WriteUsercmd_t WriteUsercmdF = (WriteUsercmd_t)Utils::PatternScan(GetModuleHandleA("client.dll"), ("55 8B EC 83 E4 F8 51 53 56 8B D9 8B 0D"));
+
+		__asm
+		{
+			mov     ecx, buf
+			mov     edx, pin
+			push	pout
+			call    WriteUsercmdF
+			add     esp, 4
+		}
+	};
+	//--------------------------------------------------------------------------------
+
+
+	bool __fastcall hkWriteUsercmdDeltaToBuffer(IBaseClientDLL* ECX, void* EDX, /*void* unk,*/ int nSlot, bf_write* buf, int from, int to, bool isNewCmd)
+	{
+		static DWORD WriteUsercmdDeltaToBufferReturn = (DWORD)Utils::PatternScan(GetModuleHandleA("engine.dll"), ("84 C0 74 04 B0 01 EB 02 32 C0 8B FE 46 3B F3 7E C9 84 C0 0F 84"));
+		static auto sendmovecall = Utils::PatternScan(GetModuleHandleA("engine.dll"), ("84 C0 74 04 B0 01 EB 02 32 C0 8B FE 46 3B F3 7E C9 84 C0 0F 84 ? ? ? ?"));
+
+		if (nTickBaseShift <= 0 /*|| (DWORD)_ReturnAddress() != ((DWORD)GetModuleHandleA("engine.dll") + 0xCCCA6)*/)
+			return hlclient_hook.get_original<WriteUsercmdDeltaToBufferFn>(24)(ECX, /*unk,*/ nSlot, buf, from, to, isNewCmd);
+
+		if (!g_LocalPlayer->IsAlive() || !g_EngineClient->IsConnected() || !g_EngineClient->IsInGame())
+		{
+			nTickBaseShift = 0;
+			return hlclient_hook.get_original<WriteUsercmdDeltaToBufferFn>(24)(ECX, /*unk,*/ nSlot, buf, from, to, isNewCmd);
+		}
+
+
+		if (from != -1)
+			return true;
+
+		// CL_SendMove function
+		auto CL_SendMove = []()
+		{
+			using CL_SendMove_t = void(__fastcall*)(void);
+			static CL_SendMove_t CL_SendMoveF = (CL_SendMove_t)Utils::PatternScan(GetModuleHandleA("engine.dll"), ("55 8B EC A1 ? ? ? ? 81 EC ? ? ? ? B9 ? ? ? ? 53 8B 98"));
+
+			CL_SendMoveF();
+		};
+
+		auto WriteUsercmd = [](bf_write* buf, CUserCmd* in, CUserCmd* out) {
+			using WriteUsercmd_t = void(__fastcall*)(bf_write*, CUserCmd*, CUserCmd*);
+			static WriteUsercmd_t WriteUsercmdF = (WriteUsercmd_t)Utils::PatternScan(GetModuleHandleA("client.dll"), ("55 8B EC 83 E4 F8 51 53 56 8B D9 8B 0D"));
+			WriteUsercmdF(buf, in, out);
+
+		};
+
+		int* pNumBackupCommands = (int*)((uintptr_t)buf - 0x30);
+		int* pNumNewCommands = (int*)((uintptr_t)buf - 0x2C);
+		auto net_channel = *reinterpret_cast<NetChannel**>(reinterpret_cast<uintptr_t>(g_ClientState) + 0x9C);
+		int32_t new_commands = *pNumNewCommands;
+
+
+		// Manipulate CLC_Move
+		auto nextcmdnumber = g_ClientState->nLastOutgoingCommand + g_ClientState->iChokedCommands + 1;
+		auto totalnewcommands = std::min(nTickBaseShift, 60);
+		nTickBaseShift -= totalnewcommands;
+
+		from = -1;
+		*pNumNewCommands = totalnewcommands;
+		*pNumBackupCommands = 0;
+
+		for (to = nextcmdnumber - new_commands + 1; to <= nextcmdnumber; to++)
+		{
+			if (!hlclient_hook.get_original<WriteUsercmdDeltaToBufferFn>(24)(ECX, /*unk,*/ nSlot, buf, from, to, true))
+				return false;
+
+			from = to;
+		}
+
+		auto lastrealcmd = g_Input->GetUserCmd(nSlot);
+		CUserCmd fromcmd;
+
+		if (lastrealcmd)
+			fromcmd = *lastrealcmd;
+
+		CUserCmd tocmd = fromcmd;
+		tocmd.command_number = nextcmdnumber++;
+		tocmd.tick_count += 100;
+
+		for (int i = new_commands; i <= totalnewcommands; i++)
+		{
+			WriteUsercmd(buf, &tocmd, &fromcmd);
+			fromcmd = tocmd;
+			tocmd.command_number++;
+			tocmd.tick_count++;
+		}
+
+		return true;
 	}
 }

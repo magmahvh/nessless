@@ -33,3 +33,5 @@ void FakeLag::Run(CUserCmd* cmd, bool& bSendPacket)
 
     FakeLag::Get().Override(cmd, bSendPacket, g_Options.fakelag_amount);
 }
+
+
